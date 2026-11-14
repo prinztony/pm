@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nur Al-Amin</title>
+<meta name="description" content="Madrasah-App der Gemeinde Cordoba Osnabrück: Hausaufgaben, Abmeldungen und Nachrichten zwischen Eltern und Lehrkräften.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/gemeinde.webp" type="image/webp">
+<meta name="theme-color" content="#ffffff">
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>/* Gewähltes Farbschema sofort setzen, damit die Seite beim Laden nicht aufblitzt */
+try{var t=localStorage.getItem('nur-al-amin-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+/* Schriften liegen lokal, es wird nichts von fremden Servern geladen. */
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(assets/fonts/montserrat-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(assets/fonts/montserrat-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Gentium Plus';font-style:normal;font-display:swap;font-weight:400;src:url(assets/fonts/gentium-plus-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Gentium Plus';font-style:normal;font-display:swap;font-weight:400;src:url(assets/fonts/gentium-plus-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Gentium Plus';font-style:normal;font-display:swap;font-weight:700;src:url(assets/fonts/gentium-plus-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Gentium Plus';font-style:normal;font-display:swap;font-weight:700;src:url(assets/fonts/gentium-plus-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Gentium Plus';font-style:italic;font-display:swap;font-weight:400;src:url(assets/fonts/gentium-plus-latin-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:400 700;src:url(assets/fonts/noto-naskh-arabic-arabic-wght-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+
+/* ==========================================================================
+   Nur Al-Amin – Gestaltung
+   Layout: weiße App-Spalte (max. 560 px), Abschnitte durch feine dunkle Linien
+   getrennt, flache Farbblöcke in Braun und Grün, kaum Rundungen.
+   Schrift: Montserrat (leicht für Überschriften, Versalien für Navigation),
+   Gentium Plus (fett) für Titel von Einträgen.
+   ========================================================================== */
+:root{
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+
+  /* Flächen */
+  --page:#efebe7; --bg:#ffffff; --surface:#ffffff; --surface-2:#f5f2ef;
+  --ink:#2b2320; --muted:#6c6361; --line:#e1dad4; --rule:#2b2320; --field-line:#8d827d;
+  /* Marke: Dunkelbraun, Rostbraun, gedecktes Grün (aus dem Gemeinde-Logo) */
+  --brand:#472b21; --on-brand:#ffffff; --brand-ink:#7a4a1e; --brand-tint:#f1e8de;
+  --rust:#885424; --time:#b13a1c; --green:#3d6b4f; --on-green:#ffffff; --taupe:#6f5f5c;
+  --hero:#3b2620; --hero-ink:#ffffff; --hero-card:rgba(255,255,255,.9); --hero-card-ink:#2b2320;
+  /* Zustände */
+  --warn:#85560a; --warn-tint:#f7ecd6; --danger:#a8321f; --danger-tint:#f7e4df; --on-danger:#ffffff;
+  --ok:#2f5a3f; --ok-tint:#e4eee6;
+  --scrim:rgba(30,20,16,.5); --shadow:0 1px 8px rgba(43,35,32,.10);
+  --logo-bg:#ffffff; --logo-dark:#000000; --seg-on:#472b21;
+
+  /* Schrift */
+  --f-body:'Montserrat','Noto Naskh Arabic',system-ui,'Segoe UI',Helvetica,Arial,sans-serif;
+  --f-display:'Montserrat',system-ui,'Segoe UI',Helvetica,Arial,sans-serif;
+  --f-serif:'Gentium Plus','Noto Naskh Arabic',Georgia,'Times New Roman',serif;
+  --f-brand:'Gentium Plus',Georgia,'Times New Roman',serif;
+  --f-ar:'Noto Naskh Arabic','Geeza Pro','Arial',serif;
+  --text-xs:.75rem; --text-sm:.8125rem; --text-base:.9375rem; --text-md:1.0625rem; --text-lg:1.1875rem;
+  --text-xl:1.375rem; --text-2xl:1.75rem; --text-3xl:2.125rem; --text-h1:clamp(1.625rem,7vw,1.9375rem);
+  --text-tab:.6875rem;
+  /* Form */
+  --radius-xs:2px; --radius-sm:3px; --radius-md:3px; --radius-lg:3px; --radius-xl:9px; --radius-full:999px;
+  --tap:44px;
+  --ease-out:cubic-bezier(.22,1,.36,1); --ease-sheet:cubic-bezier(.32,.72,0,1); --duration-fast:150ms; --duration-base:250ms;
+  --gl:max(16px,env(safe-area-inset-left,0px)); --gr:max(16px,env(safe-area-inset-right,0px));
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#110d0b; --bg:#1a1513; --surface:#221b18; --surface-2:#2c2420;
+  --ink:#f0eae5; --muted:#b5aaa4; --line:#3a302b; --rule:#8d827d; --field-line:#85786f;
+  --brand:#c08a52; --on-brand:#1a1513; --brand-ink:#dba873; --brand-tint:#3a2b1e;
+  --rust:#c08a52; --time:#ec8e73; --green:#3f6650; --on-green:#ffffff; --taupe:#5c4e4b;
+  --hero:#2a1c17; --hero-ink:#ffffff; --hero-card:rgba(255,255,255,.09); --hero-card-ink:#f0eae5;
+  --warn:#e3ad55; --warn-tint:#3a2c12; --danger:#ee8d7c; --danger-tint:#40201a; --on-danger:#40201a;
+  --ok:#9fcbae; --ok-tint:#1f3327;
+  --scrim:rgba(0,0,0,.65); --shadow:0 1px 8px rgba(0,0,0,.4);
+  --logo-bg:#ffffff; --logo-dark:#000000; --seg-on:#c08a52; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#110d0b; --bg:#1a1513; --surface:#221b18; --surface-2:#2c2420;
+  --ink:#f0eae5; --muted:#b5aaa4; --line:#3a302b; --rule:#8d827d; --field-line:#85786f;
+  --brand:#c08a52; --on-brand:#1a1513; --brand-ink:#dba873; --brand-tint:#3a2b1e;
+  --rust:#c08a52; --time:#ec8e73; --green:#3f6650; --on-green:#ffffff; --taupe:#5c4e4b;
+  --hero:#2a1c17; --hero-ink:#ffffff; --hero-card:rgba(255,255,255,.09); --hero-card-ink:#f0eae5;
+  --warn:#e3ad55; --warn-tint:#3a2c12; --danger:#ee8d7c; --danger-tint:#40201a; --on-danger:#40201a;
+  --ok:#9fcbae; --ok-tint:#1f3327;
+  --scrim:rgba(0,0,0,.65); --shadow:0 1px 8px rgba(0,0,0,.4);
+  --logo-bg:#ffffff; --logo-dark:#000000; --seg-on:#c08a52; color-scheme:dark}
+
+/* ---------- Grundlagen ---------- */
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%}
+body{margin:0;padding:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:var(--text-base);font-weight:500;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+img{max-width:100%}
+[hidden]:not([hidden=until-found i]){display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+:focus-visible{outline:2px solid var(--rust);outline-offset:2px;border-radius:var(--radius-sm)}
+h1,h2,h3,p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+b,strong{font-weight:700}
+.ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.skip-link{position:fixed;left:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:60;background:var(--brand);color:var(--on-brand);padding:12px 16px;border-radius:var(--radius-sm);font-weight:600;transform:translateY(-300%)}
+.skip-link:focus{transform:none}
+main:focus{outline:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+#app{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;background:var(--bg)}
+@media (min-width:600px){#app{box-shadow:0 0 0 1px var(--line)}}
+
+/* ---------- Kopfzeile ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);box-shadow:0 1px 0 var(--line),0 2px 10px rgba(43,35,32,.06);display:flex;align-items:center;gap:12px;min-height:58px;padding-left:var(--gl);padding-right:var(--gr)}
+.top .lt{border:0;border-radius:var(--radius-sm)}
+.top-title{flex:1;min-width:0;font-family:var(--f-display);font-weight:500;font-size:var(--text-sm);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn{width:var(--tap);height:var(--tap);border-radius:var(--radius-sm);display:grid;place-items:center;flex:none;margin-left:-10px}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn:active,.done-btn:active{opacity:.6}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:var(--on-brand);font-weight:600;font-size:var(--text-xs);letter-spacing:.04em;flex:none}
+button.avatar{position:relative}
+button.avatar::before,.switch::before{content:"";position:absolute;inset:-8px}
+.switch::before{inset:-8px 0}
+.demo-pill{font-size:.625rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:3px 7px;border-radius:var(--radius-sm)}
+
+main{flex:1;display:flex;flex-direction:column;gap:30px;padding-left:var(--gl);padding-right:var(--gr);padding-block:26px calc(104px + env(safe-area-inset-bottom,0px))}
+main.sub{padding-bottom:calc(36px + env(safe-area-inset-bottom,0px))}
+main.thread{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px));gap:10px}
+main.enter{animation:enter var(--duration-base) var(--ease-out)}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}}
+
+/* ---------- Tab-Leiste ---------- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bg);box-shadow:0 -1px 0 var(--line),0 -2px 10px rgba(43,35,32,.05);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.tabbar-in{max-width:544px;margin:0 auto;display:grid;grid-template-columns:repeat(var(--n),1fr)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 9px;font-size:var(--text-tab);font-weight:500;letter-spacing:.01em;color:var(--muted);position:relative;min-width:0}
+.tab span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tab .tab-ico{width:44px;height:28px;display:grid;place-items:center;border-radius:var(--radius-sm)}
+.tab::before{content:"";position:absolute;top:0;left:50%;width:28px;height:2px;margin-left:-14px;background:var(--rust);transform:scaleX(0);transition:transform var(--duration-base) var(--ease-out)}
+.tab[aria-current="page"]{color:var(--ink);font-weight:600}
+.tab[aria-current="page"]::before{transform:none}
+.tab.primary .tab-ico{background:var(--rust);color:#fff}
+.tab .badge{position:absolute;top:5px;left:calc(50% + 8px)}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:var(--radius-full);background:var(--danger);color:var(--on-danger);font-size:.6875rem;font-weight:700;letter-spacing:0;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+
+/* ---------- Typografie ---------- */
+.eyebrow{font-size:.6875rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.h1{font-family:var(--f-display);font-weight:300;font-size:var(--text-h1);line-height:1.18;letter-spacing:-.005em;text-wrap:balance;overflow-wrap:anywhere}
+.h2{font-family:var(--f-serif);font-size:var(--text-lg);font-weight:700;line-height:1.3}
+.ar{font-family:var(--f-ar);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:var(--text-sm)}
+.greet{display:flex;flex-direction:column;gap:8px}
+.greet .ar{font-size:var(--text-md);color:var(--brand-ink)}
+.greet .muted{max-width:60ch}
+/* Abschnitte: feine dunkle Linie darüber, leichte Überschrift */
+.sec{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--rule);padding-top:22px}
+.sec-head{display:flex;align-items:center;gap:10px}
+.sec-head h2{flex:1;font-family:var(--f-display);font-size:var(--text-xl);font-weight:300;line-height:1.2;color:var(--ink)}
+.sec-head .link{font-size:.6875rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-ink);min-height:var(--tap);min-width:var(--tap);display:inline-flex;align-items:center;justify-content:center;margin-block:-12px;padding-inline:10px;margin-inline:-10px}
+.sheet .sec,.card .sec,form .sec{border-top:0;padding-top:0}
+.prose{display:flex;flex-direction:column;gap:10px;max-width:65ch}
+.prose p{line-height:1.65}
+
+/* ---------- Block „Nächster Unterricht“: dunkle Fläche mit Flechtmuster, helle Karten ---------- */
+.hero{position:relative;overflow:hidden;background:var(--hero) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' fill='none' stroke='%23ffffff' stroke-opacity='.08'%3E%3Cpath d='M24 4 44 24 24 44 4 24z'/%3E%3Cpath d='M9.9 9.9h28.2v28.2H9.9z'/%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M0 0l4 4M48 0l-4 4M0 48l4-4M48 48l-4-4'/%3E%3C/svg%3E");color:var(--hero-ink);border-radius:var(--radius-sm);padding:22px 16px 18px;display:flex;flex-direction:column;align-items:stretch;gap:6px;text-align:center}
+.hero-eyebrow{font-size:.6875rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;opacity:.82}
+.hero-title{font-family:var(--f-display);font-size:var(--text-xl);font-weight:500;line-height:1.2;margin-bottom:10px}
+.hero-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.hero-list li{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:12px 10px;background:var(--hero-card);color:var(--hero-card-ink);font-size:var(--text-sm);line-height:1.4;min-width:0}
+.hero-list li b{font-weight:600;font-size:var(--text-base)}
+.hero-list li .t{font-style:normal;font-weight:700;color:var(--time);font-variant-numeric:tabular-nums}
+.hero-list li > span{color:var(--hero-card-ink);opacity:.86}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hero-actions:empty{display:none}
+.hero-actions .btn{flex:1 1 130px;padding:0 10px;font-size:var(--text-sm)}
+.btn.btn-on-hero{background:var(--rust);color:#fff}
+.btn.btn-hero-ghost{border-color:rgba(255,255,255,.55);color:var(--hero-ink)}
+.hero .pill{margin-top:4px}
+
+/* ---------- Buttons & Formulare ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--radius-xl);font-weight:500;font-size:var(--text-base);letter-spacing:.04em;border:1px solid transparent;transition:transform var(--duration-fast) var(--ease-out),opacity var(--duration-fast) var(--ease-out),background-color var(--duration-fast)}
+.btn:active{transform:scale(.98);opacity:.85}
+.btn-primary{background:var(--brand);color:var(--on-brand)}
+.btn-primary:hover{background:var(--rust)}
+.btn-ghost{background:transparent;border-color:var(--field-line);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-danger{background:var(--danger-tint);color:var(--danger)}
+.btn-block{width:100%}
+.btn-sm{min-height:var(--tap);padding:0 14px;font-size:var(--text-sm);letter-spacing:.02em}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btns > .btn{flex:1 1 140px}
+form{display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field > span:not(.hint),.label{font-size:.6875rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:var(--text-sm);color:var(--muted)}
+.err{font-size:var(--text-sm);color:var(--danger);background:var(--danger-tint);padding:10px 12px;border-radius:var(--radius-sm)}
+input[type=text],input[type=tel],input[type=email],input[type=date],input[type=time],input[type=search],select,textarea{width:100%;min-height:48px;border:1px solid var(--field-line);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);padding:10px 12px;font:inherit;font-size:1rem}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--rust);outline-offset:-1px;border-color:transparent}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.code-input{letter-spacing:.5em;text-align:center;font-size:var(--text-xl)!important;font-variant-numeric:tabular-nums}
+
+/* Segment-Schalter: flache Leiste, aktive Seite gefüllt */
+.seg{display:flex;border:1px solid var(--field-line);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface)}
+.seg > *{flex:1;min-width:0;min-height:40px;position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 6px;font-weight:500;font-size:.78rem;line-height:1.2;color:var(--ink);text-align:center;padding:4px 4px}
+.seg > * + *{border-left:1px solid var(--field-line)}
+.seg > *::after{content:"";position:absolute;inset:-2px 0}
+.seg [aria-pressed="true"],.seg input:checked + span{background:var(--seg-on);color:var(--on-brand);font-weight:600}
+.seg [aria-pressed="true"] .muted,.seg input:checked + span .muted{color:inherit;opacity:.85}
+.seg label{padding:0}
+.seg label input{position:absolute;opacity:0;pointer-events:none}
+.seg label span{flex:1;align-self:stretch;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px}
+.seg label:has(input:focus-visible) span{outline:2px solid var(--rust);outline-offset:-2px}
+.seg :focus-visible{outline-offset:-2px;border-radius:0}
+
+/* Auswahl-Chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;display:inline-flex}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span,.chip-btn{display:inline-flex;align-items:center;gap:6px;min-height:var(--tap);padding:0 14px;border-radius:var(--radius-sm);border:1px solid var(--field-line);background:var(--surface);font-weight:500;font-size:var(--text-sm)}
+.chip input:checked + span,.chip-btn[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand);font-weight:600}
+.chip input:focus-visible + span{outline:2px solid var(--rust);outline-offset:2px}
+
+/* Options-Karten (Abmeldegrund) */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt span{display:flex;flex-direction:column;gap:4px;height:100%;padding:13px 12px;border:1px solid var(--field-line);border-radius:var(--radius-sm);background:var(--surface)}
+.opt b{font-family:var(--f-serif);font-size:var(--text-md);line-height:1.25}
+.opt small{font-size:var(--text-xs);color:var(--muted);line-height:1.4}
+.opt input:checked + span{border-color:var(--brand);background:var(--brand-tint);box-shadow:inset 0 0 0 1px var(--brand)}
+.opt input:focus-visible + span{outline:2px solid var(--rust);outline-offset:2px}
+.time-field{display:none}
+form:has(#ty-spaet:checked) .time-field,form:has(#ty-frueh:checked) .time-field{display:flex}
+.due-field,.confirm-field{display:none}
+form:has(#pt-ha:checked) .due-field{display:flex}
+form:has(#pt-mi:checked) .confirm-field{display:flex}
+.parent-only,.teacher-only{display:none}
+form:has(#ir-parent:checked) .parent-only{display:flex}
+form:has(#ir-teacher:checked) .teacher-only{display:flex}
+
+/* Schalter */
+.switch{appearance:none;-webkit-appearance:none;width:48px;height:28px;border-radius:var(--radius-full);background:var(--field-line);position:relative;flex:none;cursor:pointer;transition:background var(--duration-fast)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform var(--duration-base) var(--ease-out)}
+.switch:checked{background:var(--green)}
+.switch:checked::after{transform:translateX(20px)}
+.check{width:22px;height:22px;accent-color:var(--brand);flex:none}
+.checkline{display:flex;gap:12px;align-items:center;min-height:var(--tap);font-size:var(--text-sm);line-height:1.45}
+
+/* ---------- Listen ---------- */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden}
+.list > * + *{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;padding:13px 14px;width:100%;min-width:0;min-height:var(--tap)}
+.row-btn:hover{background:var(--surface-2)}
+.row-btn:active,.subj-tile:active,.quick button:active,.stat:active,.file:active{background:var(--surface-2)}
+.row-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.row-title{font-family:var(--f-serif);font-weight:700;font-size:var(--text-md);line-height:1.3;overflow-wrap:anywhere}
+.row-meta{font-size:var(--text-sm);color:var(--muted);overflow-wrap:anywhere;line-height:1.45}
+.row-note{font-size:var(--text-sm);color:var(--ink);background:var(--surface-2);border-radius:var(--radius-sm);padding:7px 10px;margin-top:5px}
+.row > .ic.chev{color:var(--muted);width:16px;height:16px}
+.row-split{display:flex;align-items:stretch}
+.row-split > .row{flex:1}
+.done-btn{width:54px;display:grid;place-items:center;border-left:1px solid var(--line);color:var(--muted);flex:none}
+.done-btn:hover{color:var(--ok);background:var(--ok-tint)}
+.empty{padding:18px 16px;text-align:center;color:var(--muted);font-size:var(--text-sm);background:var(--surface-2);border-radius:var(--radius-sm)}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-sm);font-size:.6875rem;font-weight:600;letter-spacing:.03em;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.pill.danger{background:var(--danger-tint);color:var(--danger)}
+.pill.warn{background:var(--warn-tint);color:var(--warn)}
+.pill.ok{background:var(--ok-tint);color:var(--ok)}
+.pill.info{background:var(--brand-tint);color:var(--brand-ink)}
+.pill .ic{width:13px;height:13px;stroke-width:2.2}
+.meta-line{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+
+/* Logos */
+.lt{width:var(--s);height:var(--s);border-radius:var(--radius-sm);background:var(--logo-bg);border:1px solid var(--line);overflow:hidden;flex:none;display:grid;place-items:center}
+.lt img{width:100%;height:100%;object-fit:contain;display:block}
+.lt-dark{background:var(--logo-dark);border-color:transparent}
+.lt-initial{background:var(--brand-tint);color:var(--brand-ink);font-family:var(--f-serif);font-weight:700;font-size:calc(var(--s) * .42)}
+
+/* Fächer-Kacheln: hellgraue Karte mit feinem Rand, Titel in Serifenschrift */
+.subj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.subj-tile{display:flex;flex-direction:column;gap:10px;padding:7px 7px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);transition:border-color var(--duration-fast)}
+.subj-tile:hover{border-color:var(--field-line)}
+.subj-tile .lt{width:100%;height:auto;aspect-ratio:1;max-width:100%;border:0}
+.subj-tile .meta{display:flex;flex-direction:column;gap:2px;padding:0 5px}
+.subj-tile .meta b{font-family:var(--f-serif);font-size:var(--text-md);line-height:1.25}
+.subj-tile .meta span{font-size:var(--text-xs);color:var(--muted)}
+.subj-head{display:flex;gap:16px;align-items:center}
+.subj-head .lt{--s:84px}
+
+/* Karten */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm)}
+.pad{padding:16px;display:flex;flex-direction:column;gap:14px}
+.callout{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--brand-tint);color:var(--ink);font-size:var(--text-sm);line-height:1.5}
+.callout .ic{margin-top:1px;color:var(--brand-ink)}
+.callout.warn{background:var(--warn-tint)}
+.callout.warn .ic{color:var(--warn)}
+.callout.ok{background:var(--ok-tint)}
+.callout.ok .ic{color:var(--ok)}
+.card.important{border-color:var(--warn);background:var(--warn-tint)}
+.card.important b{font-family:var(--f-serif);font-size:var(--text-md);line-height:1.3}
+
+/* Kennzahlen (Verwaltung) */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden}
+.stat{padding:16px 14px;background:var(--surface);display:flex;flex-direction:column;gap:4px;text-align:left;box-shadow:0 0 0 .5px var(--line)}
+.stat b{font-family:var(--f-display);font-size:var(--text-3xl);font-weight:300;font-variant-numeric:tabular-nums;line-height:1;color:var(--brand-ink)}
+.stat span{font-size:.6875rem;color:var(--muted);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quick button{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);font-weight:600;font-size:var(--text-sm);line-height:1.3}
+.quick button .ic{color:var(--rust);width:24px;height:24px}
+.quick button:hover{background:var(--surface-2)}
+
+/* Fortschritt */
+.bar{height:5px;border-radius:0;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green)}
+.prog{display:flex;flex-direction:column;gap:8px}
+.prog-line{display:flex;justify-content:space-between;gap:10px;font-size:var(--text-xs);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Beitrag */
+.post-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.post-head .row-main{flex:1 1 60%}
+.post-body{font-family:var(--f-serif);font-size:1.125rem;line-height:1.6;max-width:65ch;white-space:pre-wrap;overflow-wrap:anywhere}
+.files{display:flex;flex-direction:column;gap:8px}
+.file{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface);width:100%}
+.file .ic{color:var(--rust)}
+.file span{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:600;font-size:var(--text-sm)}
+.file small{color:var(--muted);font-size:var(--text-xs);white-space:nowrap}
+
+/* Stundenplan: Tageskopf als graue Leiste mit gesperrten Versalien, Zeiten in Rot */
+.tt-day{display:flex;flex-direction:column;gap:0;border-top:0;padding-top:0}
+.tt-day .sec-head{background:var(--taupe);padding:9px 14px;justify-content:center}
+.tt-day .sec-head h2{flex:none;font-size:var(--text-sm);font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#fff}
+.tt-day .list{border-top:0;border-radius:0 0 var(--radius-sm) var(--radius-sm)}
+.tt-row{display:grid;grid-template-columns:58px 1fr;gap:12px;align-items:center;padding:12px 14px;width:100%}
+.tt-time{font-variant-numeric:tabular-nums;font-size:var(--text-sm);color:var(--time);font-weight:700;line-height:1.35}
+.tt-sub{display:flex;gap:12px;align-items:center;min-width:0}
+.tt-pause{padding:7px 12px;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);text-align:center}
+
+/* Termine */
+.datebox{width:50px;flex:none;border-radius:var(--radius-sm);background:var(--green);color:var(--on-green);display:flex;flex-direction:column;align-items:center;padding:7px 0 6px;line-height:1.05}
+.datebox b{font-family:var(--f-serif);font-size:var(--text-xl);font-weight:700}
+.datebox span{font-size:.625rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em}
+
+/* Nachrichten */
+.bubbles{display:flex;flex-direction:column;gap:8px}
+.bubble{max-width:82%;padding:10px 13px;border-radius:var(--radius-xl);font-size:var(--text-base);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble.me{align-self:flex-end;background:var(--brand);color:var(--on-brand);border-bottom-right-radius:2px}
+.bubble.them{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:2px}
+.bubble time{display:block;font-size:.6875rem;opacity:.8;margin-top:4px}
+.bubble.me time{opacity:1}
+.day-sep{align-self:center;font-size:.6875rem;color:var(--muted);font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:8px 0}
+.composer{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bg);box-shadow:0 -1px 0 var(--line);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:var(--gl);padding-right:var(--gr)}
+.composer form{max-width:528px;margin:0 auto;flex-direction:row;gap:8px;align-items:flex-end}
+.composer textarea{min-height:46px;max-height:140px;height:46px;padding:11px 14px;resize:none}
+.send-btn{width:46px;height:46px;border-radius:var(--radius-xl);background:var(--brand);color:var(--on-brand);display:grid;place-items:center;flex:none}
+
+/* Klassenbuch */
+.att{display:flex;flex-direction:column;gap:9px;padding:13px 14px}
+.att-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.att .seg [aria-pressed="true"][data-v="fehlt"]{background:var(--danger);color:var(--on-danger)}
+.att .seg [aria-pressed="true"][data-v="entsch"]{background:var(--warn);color:var(--bg)}
+.att .seg [aria-pressed="true"][data-v="da"]{background:var(--green);color:var(--on-green)}
+.daynav{display:flex;align-items:center;gap:8px}
+.daynav b{flex:1;text-align:center;font-family:var(--f-serif);font-size:var(--text-md)}
+.daynav .icon-btn{margin-left:0;border:1px solid var(--line)}
+
+/* Koran */
+.sura{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.sura-no{width:28px;font-variant-numeric:tabular-nums;color:var(--muted);font-size:var(--text-xs);font-weight:600}
+.sura-name{flex:1;min-width:0;display:flex;flex-direction:column;font-family:var(--f-serif);font-weight:700;font-size:var(--text-md);line-height:1.3}
+.sura-name .ar{font-size:var(--text-base);color:var(--brand-ink);font-weight:500}
+.sura .seg{flex:none;width:180px}
+.sura .seg > *{font-size:.6875rem;padding-inline:2px}
+
+/* Assistent */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.steps li{display:flex;flex-direction:column;gap:7px;font-size:.625rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.steps li i{height:3px;background:var(--line)}
+.steps li.on{color:var(--ink)}
+.steps li.on i{background:var(--rust)}
+
+/* ---------- Login: braunes Kopffeld mit Muster, Schriftzug in gesperrter Kursive ---------- */
+main.login-wrap{padding-top:0;padding-bottom:calc(36px + env(safe-area-inset-bottom,0px));gap:22px;justify-content:flex-start}
+.login-brand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin-left:calc(-1 * var(--gl));margin-right:calc(-1 * var(--gr));padding:40px 20px 34px;color:#fff;background:var(--hero) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' fill='none' stroke='%23ffffff' stroke-opacity='.08'%3E%3Cpath d='M24 4 44 24 24 44 4 24z'/%3E%3Cpath d='M9.9 9.9h28.2v28.2H9.9z'/%3E%3Ccircle cx='24' cy='24' r='7'/%3E%3Cpath d='M0 0l4 4M48 0l-4 4M0 48l4-4M48 48l-4-4'/%3E%3C/svg%3E")}
+.login-brand .lt{--s:92px;border-radius:var(--radius-sm);margin-bottom:14px;border:0;box-shadow:0 0 0 1px rgba(255,255,255,.28),0 0 0 7px rgba(255,255,255,.07)}
+.wordmark{font-family:var(--f-brand);font-style:italic;font-weight:400;font-size:var(--text-3xl);letter-spacing:.14em;line-height:1.1;color:#fff;margin-right:-.14em}
+.login-brand .ar{font-size:var(--text-xl);color:#e9cfa6;line-height:1.5}
+.login-brand .muted{color:rgba(255,255,255,.8);font-size:.6875rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;margin-top:8px}
+.login-wrap > .card{border:0;padding:4px 0 0}
+.demo-box{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line)}
+.demo-box p{font-size:var(--text-sm);color:var(--ink);line-height:1.55}
+.demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.demo-grid button{display:flex;flex-direction:column;gap:2px;padding:11px 12px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line);text-align:left}
+.demo-grid button:hover{border-color:var(--field-line)}
+.demo-grid button b{font-family:var(--f-serif);font-size:var(--text-md);line-height:1.25}
+.demo-grid button span{font-size:var(--text-xs);color:var(--muted)}
+.fine{font-size:var(--text-xs);color:var(--muted);text-align:center;max-width:44ch;align-self:center;line-height:1.6}
+
+/* ---------- Sheet & Toast ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:var(--scrim);animation:fade var(--duration-base) var(--ease-out)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:560px;margin:0 auto;max-height:86vh;overflow:auto;background:var(--surface);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding-top:22px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));padding-left:var(--gl);padding-right:var(--gr);display:flex;flex-direction:column;gap:14px;animation:up .35s var(--ease-sheet);box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.sheet pre{margin:0;max-height:46vh;overflow:auto;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px;font-size:var(--text-xs);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:50;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:var(--radius-sm);font-weight:500;font-size:var(--text-sm);max-width:min(92vw,440px);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media (max-width:380px){.sura .seg{width:144px}.opts{grid-template-columns:1fr}}
+</style>
+<a class="skip-link" href="#main" data-act="skip">Zum Inhalt springen</a>
+<noscript><p style="padding:24px;font:16px system-ui">Diese App braucht JavaScript. Bitte aktiviere es in den Browser-Einstellungen.</p></noscript>
+<div id="app"></div>
+
+<script>
+/* ==========================================================================
+   NUR AL-AMIN – Prototyp
+   Alles, was sich später ändern kann, steht in CONFIG bzw. wird in der App
+   unter „Verwaltung“ gepflegt: Fächer, Gruppen, Stundenplan, Funktionen,
+   Löschfristen. Neue Fächer oder Funktionen brauchen keinen Umbau.
+   ========================================================================== */
+const CONFIG = {
+  app: 'Nur Al-Amin', appAr: 'نور الأمين',
+  org: { name: 'Cordoba Osnabrück', school: 'Madrasah Kids' },
+  schoolYear: '2026/27',
+  demoCode: '123456',
+  subjects: [
+    { id:'fiqh',     name:'Fiqh',     desc:'Reinheit, Gebet, Fasten – die Praxis des Glaubens', logo:'assets/fiqh.webp' },
+    { id:'aqida',    name:'Aqida',    desc:'Glaubensgrundlagen: Allah, Engel, Bücher, Propheten', logo:'assets/aqida.webp' },
+    { id:'arabisch', name:'Arabisch', desc:'Buchstaben, Lesen und erste Wörter', logo:'assets/arabisch.webp' },
+    { id:'koran',    name:'Koran',    desc:'Rezitation, Tadschwīd und Auswendiglernen', logo:'assets/koran.webp' },
+    { id:'sira',     name:'Sira',     desc:'Das Leben des Propheten ﷺ', logo:'assets/sira.webp' }
+  ],
+  groups: [
+    { id:'g1', name:'Gruppe 1', info:'6–8 Jahre' },
+    { id:'g2', name:'Gruppe 2', info:'9–11 Jahre' },
+    { id:'g3', name:'Gruppe 3', info:'12–14 Jahre' }
+  ],
+  timetable: {
+    g1:[{d:6,s:'10:00',e:'10:40',sub:'koran'},{d:6,s:'10:45',e:'11:25',sub:'arabisch'},{d:6,s:'11:25',e:'11:40',pause:true},{d:6,s:'11:40',e:'12:20',sub:'fiqh'},{d:0,s:'10:00',e:'10:40',sub:'sira'},{d:0,s:'10:45',e:'11:25',sub:'aqida'}],
+    g2:[{d:6,s:'10:00',e:'10:40',sub:'arabisch'},{d:6,s:'10:45',e:'11:25',sub:'koran'},{d:6,s:'11:25',e:'11:40',pause:true},{d:6,s:'11:40',e:'12:20',sub:'fiqh'},{d:0,s:'10:00',e:'10:40',sub:'aqida'},{d:0,s:'10:45',e:'11:25',sub:'sira'}],
+    g3:[{d:6,s:'10:00',e:'10:40',sub:'fiqh'},{d:6,s:'10:45',e:'11:25',sub:'aqida'},{d:6,s:'11:25',e:'11:40',pause:true},{d:6,s:'11:40',e:'12:20',sub:'koran'},{d:0,s:'10:00',e:'10:40',sub:'arabisch'},{d:0,s:'10:45',e:'11:25',sub:'sira'}]
+  },
+  features: { messages:true, attendance:true, events:true, quran:true, readReceipts:true },
+  retention: { absences:'180', messages:'365', removed:'30' }
+};
+
+const SURAHS = [[1,'al-Fātiḥa','الفاتحة'],[78,'an-Nabaʾ','النبأ'],[79,'an-Nāziʿāt','النازعات'],[80,'ʿAbasa','عبس'],[81,'at-Takwīr','التكوير'],[82,'al-Infiṭār','الانفطار'],[83,'al-Muṭaffifīn','المطففين'],[84,'al-Inschiqāq','الانشقاق'],[85,'al-Burūdsch','البروج'],[86,'aṭ-Ṭāriq','الطارق'],[87,'al-Aʿlā','الأعلى'],[88,'al-Ghāschiya','الغاشية'],[89,'al-Fadschr','الفجر'],[90,'al-Balad','البلد'],[91,'asch-Schams','الشمس'],[92,'al-Lail','الليل'],[93,'aḍ-Ḍuḥā','الضحى'],[94,'asch-Scharḥ','الشرح'],[95,'at-Tīn','التين'],[96,'al-ʿAlaq','العلق'],[97,'al-Qadr','القدر'],[98,'al-Bayyina','البينة'],[99,'az-Zalzala','الزلزلة'],[100,'al-ʿĀdiyāt','العاديات'],[101,'al-Qāriʿa','القارعة'],[102,'at-Takāthur','التكاثر'],[103,'al-ʿAṣr','العصر'],[104,'al-Humaza','الهمزة'],[105,'al-Fīl','الفيل'],[106,'Quraisch','قريش'],[107,'al-Māʿūn','الماعون'],[108,'al-Kauthar','الكوثر'],[109,'al-Kāfirūn','الكافرون'],[110,'an-Naṣr','النصر'],[111,'al-Masad','المسد'],[112,'al-Ikhlāṣ','الإخلاص'],[113,'al-Falaq','الفلق'],[114,'an-Nās','الناس']];
+
+const ABS_TYPES = {
+  krank:   { label:'Krank',           pill:'danger', hint:'Ohne Diagnose – „krank“ reicht.' },
+  abwesend:{ label:'Abwesend',        pill:'warn',   hint:'Reise, Familie, Termin' },
+  spaet:   { label:'Kommt später',    pill:'info',   hint:'Mit Uhrzeit' },
+  frueh:   { label:'Früher abholen',  pill:'info',   hint:'Mit Uhrzeit' }
+};
+const POST_TYPES = { hausaufgabe:'Hausaufgabe', mitteilung:'Mitteilung', material:'Material' };
+const ROLE_LABEL = { parent:'Elternteil', teacher:'Lehrkraft', admin:'Verwaltung' };
+const STORE_KEY = 'nur-al-amin-demo-v1', SESSION_KEY = 'nur-al-amin-session-v1';
+
+/* ---------- Hilfsfunktionen ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = p => p + Math.random().toString(36).slice(2, 9);
+const HOUR = 36e5;
+function d0(d = new Date()){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function iso(d){ const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth()+1).padStart(2,'0') + '-' + String(x.getDate()).padStart(2,'0'); }
+function parseISO(s){ const [y,m,dd] = s.split('-').map(Number); return new Date(y, m-1, dd); }
+const asDate = d => typeof d === 'string' ? parseISO(d) : d;
+const fmt = (d, o) => new Intl.DateTimeFormat('de-DE', o).format(asDate(d));
+const fmtShort = d => fmt(d, { weekday:'short', day:'numeric', month:'short' });
+const fmtLong = d => fmt(d, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+function hijri(d){ try { return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day:'numeric', month:'long', year:'numeric' }).format(d); } catch(e){ return ''; } }
+function rel(ts){
+  const diff = Date.now() - ts;
+  if (diff < 6e4) return 'gerade eben';
+  if (diff < HOUR) return 'vor ' + Math.round(diff/6e4) + ' Min.';
+  if (iso(ts) === iso(new Date())) return 'heute, ' + fmt(new Date(ts), { hour:'2-digit', minute:'2-digit' });
+  if (iso(ts) === iso(addDays(new Date(), -1))) return 'gestern';
+  return fmt(new Date(ts), { day:'numeric', month:'short' });
+}
+function period(a){ return a.from === a.to ? fmtShort(a.from) : fmtShort(a.from) + ' – ' + fmtShort(a.to); }
+function fileSize(b){ return b > 1048576 ? (b/1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB'; }
+function initials(n){ return n.replace(/^(Ustādha?|Br\.|Sr\.)\s+/,'').split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase(); }
+function nextYear(y){ const a = parseInt(y, 10); return isNaN(a) ? y : (a+1) + '/' + String((a+2) % 100).padStart(2,'0'); }
+function digits(s){ let d = String(s).replace(/\D/g,''); if (d.startsWith('00')) d = d.slice(2); else if (d.startsWith('0')) d = '49' + d.slice(1); return d; }
+function maskPhone(p){ const d = digits(p); return '+' + d.slice(0,2) + ' ' + d.slice(2,5) + ' ••• ' + d.slice(-3); }
+function maskMail(m){ const [a,b] = m.split('@'); return a.slice(0,2) + '•••@' + b; }
+function prettyPhone(p){ const d = digits(p); return '+' + d.slice(0,2) + ' ' + d.slice(2,5) + ' ' + d.slice(5); }
+
+/* ---------- Speicher (nur dieses Gerät, Demo) ---------- */
+let S = null;
+function seed(){
+  const T = d0(), now = Date.now();
+  const nd = nextClassDay(addDays(T, 1)), ndI = iso(nd);
+  const nd2 = nextClassDay(addDays(nd, 1));
+  const pd = prevClassDay(T), pdI = iso(pd);
+  const users = [
+    { id:'p1', role:'parent', name:'Samira El Amrani', phone:'+491512345678', email:'samira.elamrani@example.de', consent:null },
+    { id:'p2', role:'parent', name:'Mehmet Kaya',      phone:'+491609876543', email:'m.kaya@example.de',          consent:now-90*24*HOUR },
+    { id:'p3', role:'parent', name:'Leila Benali',     phone:'+491701112233', email:'leila.benali@example.de',    consent:now-80*24*HOUR },
+    { id:'p4', role:'parent', name:'Arben Osmani',     phone:'+491763334455', email:'a.osmani@example.de',        consent:now-70*24*HOUR },
+    { id:'p5', role:'parent', name:'Nour Haddad',      phone:'+491525556677', email:'nour.haddad@example.de',     consent:now-60*24*HOUR },
+    { id:'p6', role:'parent', name:'Emine Demir',      phone:'+491577778899', email:'e.demir@example.de',         consent:now-50*24*HOUR },
+    { id:'t1', role:'teacher', name:'Ustādh Karim',    subjects:['fiqh'],     groups:['g1','g2','g3'], phone:'+491511000001', email:'fiqh@example.de',     consent:null },
+    { id:'t2', role:'teacher', name:'Ustādh Bilal',    subjects:['koran'],    groups:['g1','g2','g3'], phone:'+491511000002', email:'koran@example.de',    consent:null },
+    { id:'t3', role:'teacher', name:'Ustādha Amina',   subjects:['arabisch'], groups:['g1','g2','g3'], phone:'+491511000003', email:'arabisch@example.de', consent:now-100*24*HOUR },
+    { id:'t4', role:'teacher', name:'Ustādha Hafsa',   subjects:['sira'],     groups:['g1','g2','g3'], phone:'+491511000004', email:'sira@example.de',     consent:now-100*24*HOUR },
+    { id:'t5', role:'teacher', name:'Ustādh Omar',     subjects:['aqida'],    groups:['g2','g3'],      phone:'+491511000005', email:'aqida@example.de',    consent:now-100*24*HOUR },
+    { id:'t6', role:'teacher', name:'Ustādha Khadija', subjects:['aqida'],    groups:['g1'],           phone:'+491511000006', email:'aqida2@example.de',   consent:now-100*24*HOUR },
+    { id:'a1', role:'admin',   name:'Br. Yassin',      phone:'+491511000009', email:'verwaltung@example.de', consent:null }
+  ];
+  const C = (id, first, last, group, parentIds) => ({ id, first, last, group, parentIds });
+  const children = [
+    C('c1','Yusuf','El Amrani','g2',['p1']), C('c2','Maryam','El Amrani','g1',['p1']),
+    C('c3','Elif','Kaya','g2',['p2']), C('c4','Adam','Kaya','g3',['p2']),
+    C('c5','Hamza','Benali','g2',['p3']), C('c6','Aisha','Benali','g1',['p3']), C('c13','Ilyas','Benali','g3',['p3']),
+    C('c7','Ibrahim','Osmani','g2',['p4']), C('c8','Zaynab','Osmani','g3',['p4']),
+    C('c9','Rayan','Haddad','g2',['p5']), C('c10','Sara','Haddad','g1',['p5']),
+    C('c11','Emir','Demir','g3',['p6']), C('c12','Hira','Demir','g2',['p6'])
+  ];
+  const P = o => Object.assign({ groups:['alle'], due:null, important:false, sent:true, attachments:[], readBy:[], confirmBy:[], doneBy:[], archived:false }, o);
+  const elternabend = addDays(T, 17);
+  const posts = [
+    P({ id:'po9', subject:'fiqh', type:'mitteilung', groups:['g2'], authorId:'t1', created:now-5*HOUR, title:'Bitte Gebetskleidung mitbringen', body:'Am Samstag üben wir das Gebet praktisch im Gebetsraum. Bitte gebt euren Kindern bequeme Kleidung mit, Mädchen gern ein Kopftuch.\n\nDie Gebetswaschung machen wir gemeinsam vor Ort.' , readBy:['p3'] }),
+    P({ id:'po4', subject:'allgemein', type:'mitteilung', groups:['alle'], authorId:'a1', created:now-20*HOUR, important:true, title:'Einladung zum Elternabend', body:'Liebe Eltern,\n\nwir laden euch herzlich zum Elternabend am ' + fmt(elternabend, {weekday:'long', day:'numeric', month:'long'}) + ' um 18:30 Uhr in den Gemeindesaal ein.\n\nThemen: Lehrplan des Schuljahres, die neue App Nur Al-Amin und der Rezitationswettbewerb.\n\nBitte bestätigt kurz, dass ihr die Einladung gelesen habt.', readBy:['p2','p4','p6'], confirmBy:['p2','p4'] }),
+    P({ id:'po1', subject:'fiqh', type:'hausaufgabe', groups:['g2'], authorId:'t1', created:now-26*HOUR, due:ndI, title:'Wuḍūʾ-Schritte zu Hause üben', body:'Übt die Gebetswaschung in der richtigen Reihenfolge. Hakt die Schritte auf dem Arbeitsblatt ab und unterschreibt als Elternteil.\n\nWir besprechen das Blatt in der nächsten Stunde.', attachments:[{name:'Wudu-Schritte_Arbeitsblatt.pdf', size:'312 KB'}], readBy:['p2','p3','p5'], doneBy:['c3','c9'] }),
+    P({ id:'po6', subject:'aqida', type:'mitteilung', groups:['g2','g3'], authorId:'t5', created:now-30*HOUR, title:'Neues Thema: die sechs Glaubensgrundsätze', body:'Ab dieser Woche sprechen wir über die Arkān al-Īmān. Fragt eure Kinder gern zu Hause, welche sie schon kennen – das festigt das Gelernte.', readBy:['p2'] }),
+    P({ id:'po2', subject:'koran', type:'hausaufgabe', groups:['g2'], authorId:'t2', created:now-50*HOUR, due:ndI, title:'Sure al-Ikhlāṣ wiederholen', body:'Bitte täglich dreimal laut rezitieren, am besten mit der Audiodatei aus dem Material-Ordner. Am Samstag höre ich jedes Kind einzeln ab.', readBy:['p1','p2'], doneBy:['c1','c5'] }),
+    P({ id:'po3', subject:'arabisch', type:'hausaufgabe', groups:['g1','g2'], authorId:'t3', created:now-52*HOUR, due:iso(nd2), title:'Buchstaben ب ت ث schreiben', body:'Heft Seite 12–13: Jede Buchstabenform (Anfang, Mitte, Ende) zwei Zeilen.', readBy:['p3'] }),
+    P({ id:'po5', subject:'sira', type:'mitteilung', groups:['g1','g2','g3'], authorId:'t4', created:now-72*HOUR, title:'Malwettbewerb zur Hidschra', body:'Die Kinder dürfen bis Ende November ein Bild zur Hidschra nach Medina malen. Abgabe bei mir im Unterricht. Die schönsten Bilder hängen wir im Gemeindesaal auf.', readBy:['p1','p4'] }),
+    P({ id:'po7', subject:'fiqh', type:'material', groups:['g1','g2','g3'], authorId:'t1', created:now-8*24*HOUR, sent:false, title:'Lerngedicht zur Reinheit', body:'Das Gedicht aus dem Unterricht zum Mitsprechen – als Text und als Audio. Ideal für die Autofahrt.', attachments:[{name:'Lerngedicht_Taharah.pdf', size:'148 KB'},{name:'Lerngedicht_Taharah.mp3', size:'2,1 MB'}] }),
+    P({ id:'po8', subject:'koran', type:'material', groups:['g1','g2','g3'], authorId:'t2', created:now-10*24*HOUR, sent:false, title:'Juz ʿAmma zum Mithören', body:'Langsame Rezitation der kurzen Suren zum Nachsprechen.', attachments:[{name:'Juz_Amma_langsam.mp3', size:'18,4 MB'}] }),
+    P({ id:'po10', subject:'arabisch', type:'material', groups:['g1','g2'], authorId:'t3', created:now-12*24*HOUR, sent:false, title:'Alphabet-Poster', body:'Zum Ausdrucken und Aufhängen im Kinderzimmer.', attachments:[{name:'Alphabet_Poster_A3.pdf', size:'1,2 MB'}] })
+  ];
+  const absences = [
+    { id:'ab1', childId:'c3', parentId:'p2', type:'krank', from:ndI, to:ndI, time:'', note:'Elif reicht das Arbeitsblatt nach.', created:now-3*HOUR, seenBy:[] },
+    { id:'ab2', childId:'c11', parentId:'p6', type:'abwesend', from:ndI, to:iso(nd2), time:'', note:'Wir sind am Wochenende bei Verwandten.', created:now-28*HOUR, seenBy:['t1'] },
+    { id:'ab3', childId:'c1', parentId:'p1', type:'krank', from:pdI, to:pdI, time:'', note:'', created:now-4*24*HOUR, seenBy:['t1','t2','t3'] }
+  ];
+  const M = (by, text, ago) => ({ by, text, at: now - ago });
+  const threads = [
+    { id:'th2', parentId:'p2', teacherId:'t1', childId:'c3', messages:[ M('p2','As-salāmu ʿalaikum Ustādh Karim, Elif ist erkältet und bleibt am Samstag zu Hause. Kann sie das Wuḍūʾ-Arbeitsblatt nächste Woche abgeben?', 3*HOUR) ], readAt:{ p2: now } },
+    { id:'th3', parentId:'p1', teacherId:'t2', childId:'c1', messages:[ M('t2','As-salāmu ʿalaikum, Yusuf hat bei der Rezitation von al-Ikhlāṣ große Fortschritte gemacht, māschāʾAllāh. Bitte weiter so üben!', 26*HOUR) ], readAt:{ t2: now } },
+    { id:'th1', parentId:'p1', teacherId:'t1', childId:'c1', messages:[ M('p1','As-salāmu ʿalaikum, Yusuf fragt, ob er das Lerngedicht auch auf Arabisch lernen soll?', 5*24*HOUR), M('t1','Wa ʿalaikum as-salām! Gern, aber Deutsch reicht für den Anfang völlig. Er macht das sehr gut.', 4*24*HOUR) ], readAt:{ p1: now, t1: now } }
+  ];
+  let sat = d0(addDays(T, 36)); while (sat.getDay() !== 6) sat = addDays(sat, 1);
+  const events = [
+    { id:'e1', title:'Elternabend', date:iso(elternabend), time:'18:30', place:'Gemeindesaal', desc:'Lehrplan, App-Vorstellung und Fragen der Eltern.' },
+    { id:'e2', title:'Rezitationswettbewerb', date:iso(sat), time:'11:00', place:'Gebetsraum', desc:'Alle Gruppen. Eltern sind herzlich eingeladen.' },
+    { id:'e3', title:'Kein Unterricht – Winterpause', date:iso(addDays(T, 64)), time:'', place:'', desc:'Der Unterricht beginnt wieder zwei Wochen später.' }
+  ];
+  const quran = {
+    c1:{1:'s',114:'s',113:'s',112:'s',111:'s',110:'s',109:'s',108:'s',107:'s',106:'s',105:'s',104:'s',103:'s',102:'a',101:'a'},
+    c2:{1:'s',114:'s',113:'s',112:'s',111:'a'},
+    c3:{1:'s',114:'s',113:'s',112:'s',111:'s',110:'s',109:'a'}, c5:{1:'s',114:'s',113:'s',112:'s',111:'s',110:'s',109:'s',108:'s',107:'a'},
+    c7:{1:'s',114:'s',113:'s',112:'s',111:'a'}, c9:{1:'s',114:'s',113:'s',112:'a'}, c12:{1:'s',114:'s',113:'s',112:'s',111:'s',110:'s',109:'s',108:'s',107:'s',106:'s',105:'a'}
+  };
+  const attendance = {}; attendance['g2|' + pdI] = { c1:'entsch', c3:'da', c5:'da', c7:'spaet', c9:'da', c12:'da' };
+  return {
+    v:1, org:{...CONFIG.org}, schoolYear:CONFIG.schoolYear,
+    subjects: CONFIG.subjects.map(s => ({ ...s, active:true })),
+    groups: CONFIG.groups.map(g => ({ ...g })),
+    timetable: JSON.parse(JSON.stringify(CONFIG.timetable)),
+    features: { ...CONFIG.features }, retention: { ...CONFIG.retention },
+    users, children, posts, absences, threads, events, quran, attendance,
+    invites: [ { id:'i1', role:'parent', name:'Fatima Yıldız', contact:'+4915724681357', type:'phone', kids:[{ first:'Musa', group:'g1' }], subjects:[], groups:[], status:'offen', created:now-2*24*HOUR } ],
+    removed: [], prefs: {},
+    legal: { dse:false, vvt:false, avv:false, consent:true, confid:false, dsfa:false, dsb:false },
+    audit: [
+      { at:now-2*24*HOUR, who:'Br. Yassin', what:'Einladung an Fatima Yıldız gesendet' },
+      { at:now-20*HOUR, who:'Br. Yassin', what:'Mitteilung „Einladung zum Elternabend“ an alle Eltern gesendet' },
+      { at:now-3*HOUR, who:'Mehmet Kaya', what:'Abmeldung für Elif Kaya gesendet' }
+    ]
+  };
+}
+function load(){ try { const r = localStorage.getItem(STORE_KEY); if (r){ const s = JSON.parse(r); if (s && s.v === 1) return s; } } catch(e){} return null; }
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e){} }
+function log(what){ const u = me(); S.audit.unshift({ at:Date.now(), who: u ? u.name : 'System', what }); S.audit = S.audit.slice(0, 200); }
+
+/* ---------- Datenzugriff ---------- */
+const GENERAL = { id:'allgemein', name:'Allgemein', desc:'Mitteilungen der Gemeinde an alle Eltern', logo:'assets/gemeinde.webp', dark:true, active:true };
+const me = () => S.users.find(u => u.id === UI.userId);
+const user = id => S.users.find(u => u.id === id);
+const child = id => S.children.find(c => c.id === id);
+const group = id => S.groups.find(g => g.id === id) || { id, name:'Ohne Gruppe', info:'' };
+const subj = id => id === 'allgemein' ? GENERAL : (S.subjects.find(s => s.id === id) || { id, name:id, desc:'', logo:'', active:false });
+const kidName = c => c.first + ' ' + c.last;
+const myKids = () => S.children.filter(c => c.parentIds.includes(UI.userId));
+const byNew = (a, b) => b.created - a.created;
+function classDays(){ const set = new Set(); Object.values(S ? S.timetable : CONFIG.timetable).forEach(l => l.forEach(x => set.add(x.d))); return [...set]; }
+function nextClassDay(from){ const days = classDays(); for (let i = 0; i < 21; i++){ const x = addDays(d0(from), i); if (days.includes(x.getDay())) return x; } return d0(from); }
+function prevClassDay(from){ const days = classDays(); for (let i = 1; i < 21; i++){ const x = addDays(d0(from), -i); if (days.includes(x.getDay())) return x; } return d0(from); }
+function nextLessonFor(gid){
+  const tt = (S.timetable[gid] || []).filter(x => !x.pause); if (!tt.length) return null;
+  const now = new Date(), T = d0();
+  for (let i = 0; i < 21; i++){
+    const d = addDays(T, i), L = tt.filter(x => x.d === d.getDay()).sort((a, b) => a.s.localeCompare(b.s));
+    if (!L.length) continue;
+    if (i === 0){ const [h, m] = L[L.length-1].e.split(':').map(Number); if (now.getHours()*60 + now.getMinutes() > h*60 + m) continue; }
+    return { date:d, start:L[0].s, end:L[L.length-1].e, subs:L.map(x => x.sub) };
+  }
+  return null;
+}
+function appliesTo(p, kid){ return p.groups.includes('alle') || p.groups.includes(kid.group); }
+function visiblePosts(u = me()){
+  const live = S.posts.filter(p => !p.archived && (p.subject === 'allgemein' || subj(p.subject).active));
+  if (u.role === 'parent'){ const gs = new Set(myKids().map(c => c.group)); return live.filter(p => p.groups.includes('alle') || p.groups.some(g => gs.has(g))); }
+  if (u.role === 'teacher') return live.filter(p => p.subject === 'allgemein' || (u.subjects || []).includes(p.subject));
+  return live;
+}
+function audience(p){
+  const kids = S.children.filter(c => appliesTo(p, c));
+  const parents = [...new Set(kids.flatMap(c => c.parentIds))].filter(id => user(id));
+  return { kids, parents };
+}
+function teachersFor(kid){ return S.users.filter(u => u.role === 'teacher' && (u.groups || []).includes(kid.group)); }
+function staffGroups(u){ return u.role === 'admin' ? S.groups.map(g => g.id) : (u.groups || []); }
+function canPost(u, sid){ return u.role === 'admin' || (u.role === 'teacher' && (u.subjects || []).includes(sid)); }
+function absenceOn(cid, dateIso){ return S.absences.find(a => a.childId === cid && a.from <= dateIso && a.to >= dateIso); }
+function myThreads(){ const id = UI.userId; return S.threads.filter(t => t.parentId === id || t.teacherId === id).sort((a, b) => b.messages[b.messages.length-1].at - a.messages[a.messages.length-1].at); }
+function unreadIn(t){ const r = (t.readAt || {})[UI.userId] || 0; return t.messages.filter(m => m.by !== UI.userId && m.at > r).length; }
+function unreadTotal(){ return myThreads().filter(t => unreadIn(t) > 0).length; }
+function upcomingEvents(){ const t = iso(d0()); return S.events.filter(e => e.date >= t).sort((a, b) => a.date.localeCompare(b.date)); }
+function staffAbsences(u){ const gs = staffGroups(u), t = iso(d0()); return S.absences.filter(a => { const c = child(a.childId); return c && gs.includes(c.group) && a.to >= t; }).sort((a, b) => a.from.localeCompare(b.from) || b.created - a.created); }
+function pref(key){ const p = S.prefs[UI.userId] || {}; return p[key] !== false; }
+
+/* ---------- Icons ---------- */
+const ICONS = {
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/>',
+  book:'<path d="M4 19V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/>',
+  thermo:'<path d="M14 14.8V4.5a2 2 0 0 0-4 0v10.3a4 4 0 1 0 4 0z"/><path d="M12 11v6"/>',
+  chat:'<path d="M20.5 12a8.5 8.5 0 0 1-12.3 7.6L3.5 21l1.3-4.4A8.5 8.5 0 1 1 20.5 12z"/>',
+  dots:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', back:'<path d="M15 18l-6-6 6-6"/>', chev:'<path d="M9 6l6 6-6 6"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>', x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  cal:'<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>',
+  sliders:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  logout:'<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>',
+  clip:'<path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4L15 7"/>',
+  send:'<path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/>',
+  phone:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>',
+  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  clipboard:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
+  quran:'<path d="M12 6c-2-1.5-5-2-8-1.5V19c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5c-3-.5-6 0-8 1.5z"/><path d="M12 6v14.5"/>',
+  cycle:'<path d="M20 11a8 8 0 0 0-14.5-4.5L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16"/><path d="M20 20.5V16h-4.5"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  mega:'<path d="M4 10v4h3l7 4V6L7 10z"/><path d="M17.5 9a4 4 0 0 1 0 6"/>',
+  pencil:'<path d="M15 4.5l4.5 4.5L9 19.5H4.5V15z"/><path d="M13 6.5l4.5 4.5"/>',
+  file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+  userplus:'<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/>',
+  lock:'<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.5"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  info:'<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'
+};
+const ic = (n, cls = '') => '<svg class="ic ' + cls + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
+const ARCH = '';
+
+/* ---------- Bausteine ---------- */
+function logo(s, size){
+  if (!s.logo) return '<span class="lt lt-initial" style="--s:' + size + 'px" aria-hidden="true">' + esc(s.name.slice(0,1)) + '</span>';
+  return '<span class="lt' + (s.dark ? ' lt-dark' : '') + '" style="--s:' + size + 'px"><img src="' + esc(s.logo) + '" alt="" width="512" height="512" loading="lazy" decoding="async"></span>';
+}
+const pill = (t, k = '') => '<span class="pill ' + k + '">' + t + '</span>';
+const empty = t => '<div class="empty">' + t + '</div>';
+function secHead(t, action = '', count){ return '<div class="sec-head"><h2>' + t + '</h2>' + (count != null ? '<span class="pill">' + count + '</span>' : '') + action + '</div>'; }
+function absPill(a){ const t = ABS_TYPES[a.type] || ABS_TYPES.abwesend; return pill(t.label + (a.time ? ' · ' + esc(a.time) : ''), t.pill); }
+function postRow(p, meta){
+  const s = subj(p.subject), a = user(p.authorId);
+  return '<button class="row row-btn" data-act="open" data-view="post" data-id="' + p.id + '">' + logo(s, 44) +
+    '<span class="row-main"><span class="row-title">' + esc(p.title) + '</span><span class="row-meta">' + (meta || (esc(s.name) + ' · ' + esc(a ? a.name : '') + ' · ' + rel(p.created))) + '</span></span>' + ic('chev','chev') + '</button>';
+}
+function bar(n, total){ const pct = total ? Math.round(n / total * 100) : 0; return '<div class="bar" role="img" aria-label="' + n + ' von ' + total + '"><i style="width:' + pct + '%"></i></div>'; }
+
+/* ---------- Zustand & Navigation ---------- */
+S = load() || seed();
+const UI = { userId:null, tab:'start', stack:[], login:{ method:'phone', step:1, contact:'', err:'', tries:0 }, subjTab:{}, peopleTab:'familien', att:null, wiz:null, flash:null, reset:true, logoDraft:null };
+try { const sid = localStorage.getItem(SESSION_KEY); if (sid && S.users.some(u => u.id === sid)) UI.userId = sid; } catch(e){}
+
+function tabsFor(u){
+  const f = S.features, T = [];
+  if (u.role === 'parent'){
+    T.push(['start','Start','home'], ['faecher','Fächer','book'], ['melden','Abmeldung','thermo','primary']);
+    if (f.messages) T.push(['nachrichten','Nachrichten','chat']);
+    T.push(['mehr','Mehr','dots']);
+  } else if (u.role === 'teacher'){
+    T.push(['start','Start','home'], ['faecher','Fächer','book']);
+    if (f.attendance) T.push(['klassenbuch','Klassenbuch','clipboard']);
+    if (f.messages) T.push(['nachrichten','Nachrichten','chat']);
+    T.push(['mehr','Mehr','dots']);
+  } else {
+    T.push(['start','Übersicht','grid'], ['personen','Personen','users'], ['schuljahr','Schuljahr','cycle'], ['faecher','Fächer','book'], ['mehr','Verwaltung','sliders']);
+  }
+  return T;
+}
+const ROOTS = {
+  parent:  { start:'parentStart', faecher:'subjects', melden:'melden', nachrichten:'messages', mehr:'more' },
+  teacher: { start:'teacherStart', faecher:'subjects', klassenbuch:'attendance', nachrichten:'messages', mehr:'more' },
+  admin:   { start:'adminHome', personen:'people', schuljahr:'year', faecher:'subjects', mehr:'settings' }
+};
+/* Zurück-Taste: Jede geöffnete Unteransicht wird als Eintrag im Browser-Verlauf abgelegt
+   (history.pushState). Drückt jemand „Zurück“ am Handy, meldet der Browser das als
+   „popstate“ und wir stellen die gespeicherte Ansicht wieder her, statt die App zu verlassen. */
+let HIST = true, backTimer = null;
+function hdepth(){ try { const s = history.state; return s && s.app === 'nur' ? s.d : 0; } catch(e){ return 0; } }
+function hset(pushIt){ if (!HIST) return; try { history[pushIt ? 'pushState' : 'replaceState']({ app:'nur', uid:UI.userId, tab:UI.tab, stack:UI.stack, d:hdepth() + (pushIt ? 1 : 0), y:0 }, ''); } catch(e){ HIST = false; } }
+function hsaveScroll(){ if (!HIST) return; try { const s = history.state; if (s && s.app === 'nur') history.replaceState({ ...s, y:window.scrollY }, ''); } catch(e){} }
+function go(tab){ const deep = UI.stack.length > 0; if (deep) hsaveScroll(); UI.tab = tab; UI.stack = []; UI.reset = true; hset(deep); render(); }
+function push(view, params = {}){ hsaveScroll(); UI.stack.push({ view, params }); UI.reset = true; hset(true); render(); }
+function directBack(){ UI.stack.pop(); UI.reset = true; hset(false); render(); }
+function back(){
+  if (HIST && hdepth() > 0){ clearTimeout(backTimer); backTimer = setTimeout(() => { HIST = false; directBack(); }, 500); history.back(); return; }
+  directBack();
+}
+function replaceTop(view, params = {}){ UI.stack.pop(); UI.stack.push({ view, params }); UI.reset = true; hset(false); render(); }
+window.addEventListener('popstate', e => {
+  clearTimeout(backTimer); closeSheet();
+  const s = e.state;
+  if (s && s.app === 'nur' && UI.userId && s.uid === UI.userId){ UI.tab = s.tab; UI.stack = s.stack || []; } else UI.stack = [];
+  UI.reset = false; render();
+  const top = UI.stack[UI.stack.length - 1];
+  if (!top || top.view !== 'thread') window.scrollTo(0, (s && s.y) || 0);
+});
+
+/* ---------- Farbschema: System / Hell / Dunkel ---------- */
+const THEME_KEY = 'nur-al-amin-theme';
+function theme(){ try { const t = localStorage.getItem(THEME_KEY); return t === 'light' || t === 'dark' ? t : 'system'; } catch(e){ return 'system'; } }
+function applyTheme(t){
+  const r = document.documentElement;
+  if (t === 'light' || t === 'dark') r.dataset.theme = t; else delete r.dataset.theme;
+  try { if (t === 'system') localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, t); } catch(e){}
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = getComputedStyle(r).getPropertyValue('--bg').trim() || '#ffffff';
+}
+function themeSec(){
+  const t = theme();
+  return '<section class="sec">' + secHead('Darstellung') + '<div class="seg" role="group" aria-label="Farbschema">' + [['system','System'],['light','Hell'],['dark','Dunkel']].map(([k, l]) => '<button data-act="theme" data-x="' + k + '" aria-pressed="' + (k === t) + '">' + l + '</button>').join('') + '</div></section>';
+}
+
+/* ---------- Ansichten: gemeinsam ---------- */
+const VIEWS = {};
+
+VIEWS.subjects = () => {
+  const u = me();
+  let list = S.subjects.filter(s => s.active);
+  if (u.role === 'teacher') list = list.filter(s => (u.subjects || []).includes(s.id));
+  const items = [...list, GENERAL];
+  const posts = visiblePosts(u), kids = u.role === 'parent' ? myKids() : [];
+  const tiles = items.map(s => {
+    const ps = posts.filter(p => p.subject === s.id);
+    let meta;
+    if (u.role === 'parent'){
+      const open = ps.filter(p => p.type === 'hausaufgabe' && (!p.due || p.due >= iso(d0()))).reduce((n, p) => n + kids.filter(k => appliesTo(p, k) && !p.doneBy.includes(k.id)).length, 0);
+      const fresh = ps.filter(p => !p.readBy.includes(u.id)).length;
+      meta = [open ? open + ' offen' : '', fresh ? fresh + ' neu' : ''].filter(Boolean).join(' · ') || ps.length + ' Einträge';
+    } else meta = ps.length + ' Einträge';
+    return '<button class="subj-tile" data-act="open" data-view="subject" data-id="' + s.id + '">' + logo(s, 120) + '<span class="meta"><b>' + esc(s.name) + '</b><span>' + meta + '</span></span></button>';
+  }).join('');
+  const intro = u.role === 'teacher' ? 'Deine Fächer. Hier legst du Hausaufgaben, Mitteilungen und Material ab.' : u.role === 'admin' ? 'Alle Fächer der Madrasah. Neue Fächer legst du unter Verwaltung an.' : 'Alles zu einem Fach an einem Ort: Hausaufgaben, Mitteilungen und Material.';
+  return { t:'Fächer', h:'<div class="greet"><h1 class="h1">Fächer</h1><p class="muted">' + intro + '</p></div><div class="subj-grid">' + tiles + '</div>' };
+};
+
+VIEWS.subject = ({ id }) => {
+  const u = me(), s = subj(id), tab = UI.subjTab[id] || (id === 'allgemein' ? 'mitteilung' : 'hausaufgabe');
+  const all = visiblePosts(u).filter(p => p.subject === id);
+  const posts = all.filter(p => p.type === tab).sort(byNew);
+  const tabs = id === 'allgemein' ? ['mitteilung'] : ['hausaufgabe','mitteilung','material'];
+  const kids = u.role === 'parent' ? myKids() : [];
+  const rows = posts.map(p => {
+    let meta = esc(user(p.authorId)?.name || '') + ' · ' + rel(p.created);
+    if (p.type === 'hausaufgabe' && p.due) meta = 'bis ' + fmtShort(p.due) + ' · ' + meta;
+    if (u.role === 'parent' && p.type === 'hausaufgabe'){
+      const mine = kids.filter(k => appliesTo(p, k));
+      const done = mine.filter(k => p.doneBy.includes(k.id)).length;
+      meta += ' · ' + (done === mine.length ? '<b style="color:var(--ok)">erledigt</b>' : done + '/' + mine.length + ' erledigt');
+    }
+    if (u.role !== 'parent'){ const a = audience(p); meta += ' · gelesen ' + p.readBy.filter(x => a.parents.includes(x)).length + '/' + a.parents.length; }
+    if (!p.sent && u.role !== 'parent') meta += ' · nur im Ordner';
+    return postRow(p, meta);
+  }).join('');
+  let teachers = '';
+  if (u.role === 'parent' && id !== 'allgemein' && S.features.messages){
+    const ts = S.users.filter(t => t.role === 'teacher' && (t.subjects || []).includes(id) && kids.some(k => (t.groups || []).includes(k.group)));
+    if (ts.length) teachers = '<section class="sec">' + secHead('Lehrkraft') + '<div class="list">' + ts.map(t => '<div class="row"><span class="avatar">' + initials(t.name) + '</span><span class="row-main"><span class="row-title">' + esc(t.name) + '</span><span class="row-meta">' + t.groups.filter(g => kids.some(k => k.group === g)).map(g => group(g).name).join(', ') + '</span></span><button class="btn btn-ghost btn-sm" data-act="writeTo" data-id="' + t.id + '">' + ic('chat') + 'Schreiben</button></div>').join('') + '</div></section>';
+  }
+  const add = canPost(u, id) ? '<button class="btn btn-primary btn-block" data-act="open" data-view="compose" data-id="' + id + '" data-x="' + tab + '">' + ic('plus') + POST_TYPES[tab] + ' erstellen</button>' : '';
+  const emptyText = { hausaufgabe:'Keine Hausaufgaben in diesem Fach.', mitteilung:'Noch keine Mitteilungen.', material:'Noch kein Material abgelegt.' }[tab];
+  return { t: s.name, cls:'sub', h:
+    '<div class="subj-head">' + logo(s, 84) + '<div class="row-main"><h1 class="h1">' + esc(s.name) + '</h1><p class="muted small">' + esc(s.desc || '') + '</p></div></div>' +
+    (tabs.length > 1 ? '<div class="seg" role="group" aria-label="Bereich">' + tabs.map(t => '<button data-act="subjTab" data-id="' + id + '" data-x="' + t + '" aria-pressed="' + (t === tab) + '">' + (t === 'hausaufgabe' ? 'Hausaufgaben' : t === 'mitteilung' ? 'Mitteilungen' : 'Material') + ' <span class="muted small">' + all.filter(p => p.type === t).length + '</span></button>').join('') + '</div>' : '') +
+    add + (rows ? '<div class="list">' + rows + '</div>' : empty(emptyText)) + teachers };
+};
+
+VIEWS.post = ({ id }) => {
+  const u = me(), p = S.posts.find(x => x.id === id);
+  if (!p) return { t:'Beitrag', cls:'sub', h: empty('Dieser Beitrag wurde gelöscht.') };
+  if (u.role === 'parent' && !p.readBy.includes(u.id)){ p.readBy.push(u.id); save(); }
+  const s = subj(p.subject), a = user(p.authorId);
+  const kids = u.role === 'parent' ? myKids().filter(k => appliesTo(p, k)) : [];
+  let h = '<div class="post-head">' + logo(s, 56) + '<div class="row-main"><span class="eyebrow">' + esc(s.name) + ' · ' + POST_TYPES[p.type] + '</span><span class="muted small">' + esc(a ? a.name : '') + ' · ' + fmt(new Date(p.created), { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) + '</span></div></div>';
+  h += '<h1 class="h1">' + esc(p.title) + '</h1>';
+  const metas = [];
+  if (p.due) metas.push(pill(ic('clock') + 'bis ' + fmtShort(p.due), p.due < iso(d0()) ? 'danger' : 'warn'));
+  metas.push(pill(p.groups.includes('alle') ? 'Alle Gruppen' : p.groups.map(g => esc(group(g).name)).join(', ')));
+  if (p.important) metas.push(pill('Lesebestätigung', 'warn'));
+  h += '<div class="meta-line">' + metas.join('') + '</div>';
+  h += '<div class="post-body">' + esc(p.body) + '</div>';
+  if (p.attachments.length) h += '<section class="sec">' + secHead('Anhänge') + '<div class="files">' + p.attachments.map(f => '<button class="file" data-act="fileOpen">' + ic('file') + '<span>' + esc(f.name) + '</span><small>' + esc(f.size) + '</small></button>').join('') + '</div></section>';
+  if (u.role === 'parent'){
+    if (p.important && S.features.readReceipts){
+      h += p.confirmBy.includes(u.id) ? '<div class="callout ok">' + ic('check') + '<span>Du hast bestätigt, dass du diese Mitteilung gelesen hast.</span></div>'
+        : '<button class="btn btn-primary btn-block" data-act="confirmRead" data-id="' + p.id + '">' + ic('check') + 'Gelesen bestätigen</button>';
+    }
+    if (p.type === 'hausaufgabe' && kids.length){
+      h += '<section class="sec">' + secHead('Erledigt?') + '<div class="list">' + kids.map(k => '<label class="row"><span class="row-main"><span class="row-title">' + esc(k.first) + '</span><span class="row-meta">' + esc(group(k.group).name) + '</span></span><input type="checkbox" class="switch" data-chg="done" data-id="' + p.id + '" data-c="' + k.id + '"' + (p.doneBy.includes(k.id) ? ' checked' : '') + ' aria-label="' + esc(k.first) + ' hat die Aufgabe erledigt"></label>').join('') + '</div></section>';
+    }
+    if (S.features.messages && a && a.role === 'teacher') h += '<button class="btn btn-ghost btn-block" data-act="writeTo" data-id="' + a.id + '" data-x="' + esc(p.title) + '">' + ic('chat') + 'Frage an ' + esc(a.name) + '</button>';
+  } else {
+    const aud = audience(p), read = p.readBy.filter(x => aud.parents.includes(x)).length;
+    let st = '<div class="card pad"><div class="prog"><div class="prog-line"><span>Von Eltern gelesen</span><span>' + read + ' / ' + aud.parents.length + '</span></div>' + bar(read, aud.parents.length) + '</div>';
+    if (p.important){ const c = p.confirmBy.filter(x => aud.parents.includes(x)).length; st += '<div class="prog"><div class="prog-line"><span>Lesebestätigung</span><span>' + c + ' / ' + aud.parents.length + '</span></div>' + bar(c, aud.parents.length) + '</div>'; }
+    if (p.type === 'hausaufgabe'){
+      const d = p.doneBy.filter(x => aud.kids.some(k => k.id === x)).length;
+      st += '<div class="prog"><div class="prog-line"><span>Als erledigt markiert</span><span>' + d + ' / ' + aud.kids.length + '</span></div>' + bar(d, aud.kids.length) + '</div>';
+      const open = aud.kids.filter(k => !p.doneBy.includes(k.id));
+      if (open.length) st += '<p class="small muted">Noch offen: ' + open.map(k => esc(k.first + ' ' + k.last.slice(0,1) + '.')).join(', ') + '</p>';
+    }
+    st += '<p class="small muted">' + (p.sent ? 'An die Eltern gesendet und im Ordner abgelegt.' : 'Nur im Ordner abgelegt, ohne Benachrichtigung.') + '</p></div>';
+    h += st;
+    if (canPost(u, p.subject)) h += '<div class="btns"><button class="btn btn-ghost" data-act="remind" data-id="' + p.id + '">' + ic('bell') + 'Erinnern</button><button class="btn btn-danger" data-act="askDeletePost" data-id="' + p.id + '">' + ic('trash') + 'Löschen</button></div>';
+  }
+  return { t: POST_TYPES[p.type], cls:'sub', h };
+};
+
+VIEWS.compose = ({ id, x }) => {
+  const u = me();
+  const options = (u.role === 'admin' ? [GENERAL, ...S.subjects.filter(s => s.active)] : S.subjects.filter(s => s.active && (u.subjects || []).includes(s.id)));
+  const type = x || 'hausaufgabe', groups = staffGroups(u);
+  const T = (v, idAttr, label) => '<label><input type="radio" name="type" value="' + v + '" id="' + idAttr + '"' + (type === v ? ' checked' : '') + '><span>' + label + '</span></label>';
+  const def = iso(nextClassDay(addDays(d0(), 1)));
+  return { t:'Neuer Beitrag', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Neuer Beitrag</h1><p class="muted">Senden heißt: Die Eltern bekommen eine Benachrichtigung, und der Beitrag liegt im Fach-Ordner.</p></div>' +
+    '<form data-form="compose" novalidate>' +
+      '<div class="field"><span>Art</span><div class="seg">' + T('hausaufgabe','pt-ha','Hausaufgabe') + T('mitteilung','pt-mi','Mitteilung') + T('material','pt-ma','Material') + '</div></div>' +
+      '<label class="field" for="c-subject"><span>Fach</span><select id="c-subject" name="subject">' + options.map(s => '<option value="' + s.id + '"' + (s.id === id ? ' selected' : '') + '>' + esc(s.name) + '</option>').join('') + '</select></label>' +
+      '<div class="field"><span>Für</span><div class="chips">' + (u.role === 'admin' ? '<label class="chip"><input type="checkbox" name="groups" value="alle" checked><span>Alle Gruppen</span></label>' : '') + groups.map(g => '<label class="chip"><input type="checkbox" name="groups" value="' + g + '"' + (u.role !== 'admin' && groups.length === 1 ? ' checked' : '') + '><span>' + esc(group(g).name) + '</span></label>').join('') + '</div></div>' +
+      '<label class="field" for="c-title"><span>Titel</span><input type="text" id="c-title" name="title" maxlength="90" placeholder="z. B. Sure an-Nās wiederholen"></label>' +
+      '<label class="field" for="c-body"><span>Text</span><textarea id="c-body" name="body" placeholder="Was sollen die Kinder tun? Was müssen die Eltern wissen?"></textarea></label>' +
+      '<label class="field due-field" for="c-due"><span>Fällig am</span><input type="date" id="c-due" name="due" value="' + def + '" min="' + iso(d0()) + '"></label>' +
+      '<label class="field" for="c-files"><span>Anhänge</span><input type="file" id="c-files" name="files" multiple accept=".pdf,.jpg,.jpeg,.png,.mp3,.m4a,.docx"><span class="hint">PDF, Bilder oder Audio. Im Prototyp wird nur der Dateiname gespeichert.</span></label>' +
+      (S.features.readReceipts ? '<label class="checkline confirm-field"><input type="checkbox" class="check" name="important"><span><b>Lesebestätigung anfordern</b><br><span class="hint">Eltern bestätigen mit einem Tipp, dass sie es gelesen haben. Du siehst, wer noch fehlt.</span></span></label>' : '') +
+      '<div id="c-err" hidden class="err"></div>' +
+      '<div class="btns"><button class="btn btn-primary" name="mode" value="send">' + ic('send') + 'An Eltern senden</button><button class="btn btn-ghost" name="mode" value="folder">' + ic('folder') + 'Nur ablegen</button></div>' +
+    '</form>' };
+};
+
+VIEWS.messages = () => {
+  const u = me(), th = myThreads();
+  const rows = th.map(t => {
+    const other = user(u.id === t.parentId ? t.teacherId : t.parentId), last = t.messages[t.messages.length-1], c = child(t.childId), n = unreadIn(t);
+    return '<button class="row row-btn" data-act="open" data-view="thread" data-id="' + t.id + '"><span class="avatar">' + initials(other ? other.name : '?') + '</span><span class="row-main"><span class="row-title">' + esc(other ? other.name : 'Ehemaliges Mitglied') + '</span><span class="row-meta">' + (c ? 'zu ' + esc(c.first) + ' · ' : '') + (last.by === u.id ? 'Du: ' : '') + esc(last.text.slice(0, 70)) + (last.text.length > 70 ? '…' : '') + '</span></span><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="small muted">' + rel(last.at) + '</span>' + (n ? '<span class="badge">' + n + '</span>' : '') + '</span></button>';
+  }).join('');
+  return { t:'Nachrichten', h:
+    '<div class="greet"><h1 class="h1">Nachrichten</h1><p class="muted">' + (u.role === 'parent' ? 'Direkter Draht zu den Lehrkräften deiner Kinder.' : 'Nachrichten mit den Eltern deiner Gruppen.') + '</p></div>' +
+    '<button class="btn btn-primary btn-block" data-act="open" data-view="newMsg">' + ic('plus') + 'Neue Nachricht</button>' +
+    (rows ? '<div class="list">' + rows + '</div>' : empty('Noch keine Nachrichten.')) +
+    '<p class="hint">Nachrichten sehen nur du und dein Gegenüber. Sie werden nach ' + S.retention.messages + ' Tagen ohne neue Antwort automatisch gelöscht.</p>' };
+};
+
+VIEWS.newMsg = ({ id, x }) => {
+  const u = me();
+  let to = '', about = '';
+  if (u.role === 'parent'){
+    const kids = myKids(), ts = S.users.filter(t => t.role === 'teacher' && kids.some(k => (t.groups || []).includes(k.group)));
+    to = ts.map(t => '<option value="' + t.id + '"' + (t.id === id ? ' selected' : '') + '>' + esc(t.name) + ' – ' + (t.subjects || []).map(s => esc(subj(s).name)).join(', ') + '</option>').join('');
+    about = kids.map(k => '<label class="chip"><input type="radio" name="child" value="' + k.id + '"' + (k === kids[0] ? ' checked' : '') + '><span>' + esc(k.first) + '</span></label>').join('');
+  } else {
+    const gs = staffGroups(u);
+    to = S.children.filter(c => gs.includes(c.group)).sort((a, b) => a.first.localeCompare(b.first)).flatMap(c => c.parentIds.map(pid => { const p = user(pid); return p ? '<option value="' + pid + '|' + c.id + '">' + esc(kidName(c)) + ' – ' + esc(p.name) + ' (' + esc(group(c.group).name) + ')</option>' : ''; })).join('');
+  }
+  return { t:'Neue Nachricht', cls:'sub', h:
+    '<h1 class="sr">Neue Nachricht</h1><form data-form="newMsg" novalidate>' +
+      '<label class="field" for="m-to"><span>' + (u.role === 'parent' ? 'An' : 'An die Eltern von') + '</span><select id="m-to" name="to">' + to + '</select></label>' +
+      (about ? '<div class="field"><span>Es geht um</span><div class="chips">' + about + '</div></div>' : '') +
+      '<label class="field" for="m-text"><span>Nachricht</span><textarea id="m-text" name="text" placeholder="As-salāmu ʿalaikum …">' + (x ? esc('Frage zu „' + x + '“: ') : '') + '</textarea></label>' +
+      '<p class="hint">Bitte keine Gesundheitsdetails schreiben. Für Krankmeldungen gibt es die Abmeldung.</p>' +
+      '<div id="m-err" hidden class="err"></div>' +
+      '<button class="btn btn-primary btn-block">' + ic('send') + 'Senden</button>' +
+    '</form>' };
+};
+
+VIEWS.thread = ({ id }) => {
+  const u = me(), t = S.threads.find(x => x.id === id);
+  if (!t) return { t:'Nachricht', cls:'sub', h:empty('Unterhaltung nicht gefunden.') };
+  t.readAt = t.readAt || {}; t.readAt[u.id] = Date.now(); save();
+  const other = user(u.id === t.parentId ? t.teacherId : t.parentId), c = child(t.childId);
+  let lastDay = '', b = '';
+  t.messages.forEach(m => {
+    const day = iso(m.at);
+    if (day !== lastDay){ b += '<div class="day-sep">' + fmt(new Date(m.at), { weekday:'short', day:'numeric', month:'long' }) + '</div>'; lastDay = day; }
+    b += '<div class="bubble ' + (m.by === u.id ? 'me' : 'them') + '">' + esc(m.text) + '<time>' + fmt(new Date(m.at), { hour:'2-digit', minute:'2-digit' }) + '</time></div>';
+  });
+  return { t: other ? other.name : 'Nachricht', cls:'thread', h:
+    '<h1 class="sr">Nachrichten mit ' + esc(other ? other.name : 'ehemaligem Mitglied') + '</h1><div class="callout">' + ic('lock') + '<span>' + (c ? 'Es geht um ' + esc(kidName(c)) + '. ' : '') + 'Nur ihr beide seht diesen Verlauf.</span></div>' +
+    '<div class="bubbles" id="bubbles">' + b + '</div>',
+    after: '<div class="composer"><form data-form="reply" data-id="' + t.id + '"><label class="sr" for="r-text">Antwort</label><textarea id="r-text" name="text" rows="1" placeholder="Nachricht schreiben"></textarea><button class="send-btn" aria-label="Senden">' + ic('send') + '</button></form></div>' };
+};
+
+VIEWS.timetable = () => {
+  const u = me();
+  const gs = u.role === 'parent' ? [...new Set(myKids().map(k => k.group))] : staffGroups(u);
+  const sel = UI.ttGroup && gs.includes(UI.ttGroup) ? UI.ttGroup : gs[0];
+  const tt = (S.timetable[sel] || []).slice().sort((a, b) => ((a.d + 6) % 7) - ((b.d + 6) % 7) || a.s.localeCompare(b.s));
+  const days = [...new Set(tt.map(x => x.d))];
+  const names = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const who = u.role === 'parent' ? myKids().filter(k => k.group === sel).map(k => k.first).join(', ') : group(sel).info;
+  const body = days.length ? days.map(d => '<section class="tt-day">' + secHead(names[d]) + '<div class="list">' + tt.filter(x => x.d === d).map(x => x.pause ? '<div class="tt-pause">Pause · ' + x.s + '–' + x.e + '</div>' : '<button class="tt-row row-btn" data-act="open" data-view="subject" data-id="' + x.sub + '"><span class="tt-time">' + x.s + '<br>' + x.e + '</span><span class="tt-sub">' + logo(subj(x.sub), 36) + '<span class="row-main"><span class="row-title">' + esc(subj(x.sub).name) + '</span><span class="row-meta">' + esc(S.users.filter(t => t.role === 'teacher' && (t.subjects || []).includes(x.sub) && (t.groups || []).includes(sel)).map(t => t.name).join(', ')) + '</span></span></span></button>').join('') + '</div></section>').join('') : empty('Für diese Gruppe ist noch kein Stundenplan hinterlegt.');
+  return { t:'Stundenplan', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Stundenplan</h1><p class="muted">' + esc(group(sel).name) + (who ? ' · ' + esc(who) : '') + '</p></div>' +
+    (gs.length > 1 ? '<div class="chips">' + gs.map(g => '<button class="chip-btn" data-act="ttGroup" data-id="' + g + '" aria-pressed="' + (g === sel) + '">' + esc(group(g).name) + '</button>').join('') + '</div>' : '') + body };
+};
+
+VIEWS.events = () => {
+  const u = me(), ev = upcomingEvents();
+  const rows = ev.map(e => { const d = parseISO(e.date); return '<div class="row"><span class="datebox"><b>' + d.getDate() + '</b><span>' + fmt(d, { month:'short' }).replace('.', '') + '</span></span><span class="row-main"><span class="row-title">' + esc(e.title) + '</span><span class="row-meta">' + fmt(d, { weekday:'long' }) + (e.time ? ' · ' + esc(e.time) + ' Uhr' : ' · ganztägig') + (e.place ? ' · ' + esc(e.place) : '') + '</span>' + (e.desc ? '<span class="row-meta">' + esc(e.desc) + '</span>' : '') + '</span>' + (u.role === 'admin' ? '<button class="icon-btn" data-act="deleteEvent" data-id="' + e.id + '" aria-label="Termin löschen">' + ic('trash') + '</button>' : '') + '</div>'; }).join('');
+  return { t:'Termine', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Termine</h1><p class="muted">Elternabende, Wettbewerbe und unterrichtsfreie Tage.</p></div>' +
+    (u.role === 'admin' ? '<button class="btn btn-primary btn-block" data-act="open" data-view="eventNew">' + ic('plus') + 'Termin anlegen</button>' : '') +
+    (rows ? '<div class="list">' + rows + '</div>' : empty('Keine anstehenden Termine.')) };
+};
+
+VIEWS.eventNew = () => ({ t:'Neuer Termin', cls:'sub', h:
+  '<h1 class="sr">Neuer Termin</h1><form data-form="event" novalidate>' +
+  '<label class="field" for="e-title"><span>Titel</span><input type="text" id="e-title" name="title" placeholder="z. B. Elternsprechtag"></label>' +
+  '<div class="row2"><label class="field" for="e-date"><span>Datum</span><input type="date" id="e-date" name="date" value="' + iso(addDays(d0(), 7)) + '"></label><label class="field" for="e-time"><span>Uhrzeit</span><input type="time" id="e-time" name="time"></label></div>' +
+  '<label class="field" for="e-place"><span>Ort</span><input type="text" id="e-place" name="place" placeholder="Gemeindesaal"></label>' +
+  '<label class="field" for="e-desc"><span>Beschreibung</span><textarea id="e-desc" name="desc"></textarea></label>' +
+  '<label class="checkline"><input type="checkbox" class="check" name="notify" checked><span>Alle Eltern benachrichtigen</span></label>' +
+  '<div id="e-err" hidden class="err"></div><button class="btn btn-primary btn-block">Termin speichern</button></form>' });
+
+VIEWS.quran = () => {
+  const u = me();
+  const editable = u.role === 'admin' || (u.role === 'teacher' && (u.subjects || []).includes('koran'));
+  let kids;
+  if (u.role === 'parent') kids = myKids();
+  else { const gs = staffGroups(u); const sel = UI.qGroup && gs.includes(UI.qGroup) ? UI.qGroup : gs[0]; UI.qGroup = sel; kids = S.children.filter(c => c.group === sel); }
+  const total = SURAHS.length;
+  const rows = kids.map(k => { const q = S.quran[k.id] || {}; const s = Object.values(q).filter(v => v === 's').length, a = Object.values(q).filter(v => v === 'a').length;
+    return '<button class="row row-btn" data-act="open" data-view="quranKid" data-id="' + k.id + '"><span class="avatar">' + initials(kidName(k)) + '</span><span class="row-main"><span class="row-title">' + esc(kidName(k)) + '</span><span class="row-meta">' + s + ' sicher · ' + a + ' in Arbeit</span><div class="prog">' + bar(s, total) + '</div></span>' + ic('chev','chev') + '</button>'; }).join('');
+  const gs = u.role === 'parent' ? [] : staffGroups(u);
+  return { t:'Koran-Fortschritt', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Koran-Fortschritt</h1><p class="muted">Auswendiglernen: al-Fātiḥa und Juz ʿAmma (Sure 78–114). ' + (editable ? 'Tippe auf ein Kind, um Suren einzutragen.' : 'Die Koran-Lehrkraft trägt den Stand ein.') + '</p></div>' +
+    (gs.length > 1 ? '<div class="chips">' + gs.map(g => '<button class="chip-btn" data-act="qGroup" data-id="' + g + '" aria-pressed="' + (g === UI.qGroup) + '">' + esc(group(g).name) + '</button>').join('') + '</div>' : '') +
+    (rows ? '<div class="list">' + rows + '</div>' : empty('Keine Kinder in dieser Gruppe.')) };
+};
+
+VIEWS.quranKid = ({ id }) => {
+  const u = me(), k = child(id); if (!k) return { t:'Koran', cls:'sub', h:empty('Kind nicht gefunden.') };
+  const editable = u.role === 'admin' || (u.role === 'teacher' && (u.subjects || []).includes('koran'));
+  const q = S.quran[k.id] || {}, s = Object.values(q).filter(v => v === 's').length;
+  const rows = SURAHS.map(([n, de, ar]) => { const v = q[n] || '';
+    const ctl = editable ? '<div class="seg" role="group" aria-label="Stand ' + de + '">' + [['','—'],['a','Übt'],['s','Sicher']].map(([val, l]) => '<button data-act="quranSet" data-id="' + k.id + '" data-n="' + n + '" data-v="' + val + '" aria-pressed="' + (v === val) + '">' + l + '</button>').join('') + '</div>'
+      : (v === 's' ? pill(ic('check') + 'sicher', 'ok') : v === 'a' ? pill('in Arbeit', 'warn') : '');
+    return '<div class="sura"><span class="sura-no">' + n + '</span><span class="sura-name"><b>' + de + '</b><span class="ar" lang="ar" dir="rtl">' + ar + '</span></span>' + ctl + '</div>'; }).join('');
+  return { t: k.first, cls:'sub', h:
+    '<div class="greet"><span class="eyebrow">Koran-Fortschritt</span><h1 class="h1">' + esc(kidName(k)) + '</h1></div>' +
+    '<div class="card pad"><div class="prog"><div class="prog-line"><span>Sicher auswendig</span><span>' + s + ' von ' + SURAHS.length + ' Suren</span></div>' + bar(s, SURAHS.length) + '</div></div>' +
+    '<div class="list">' + rows + '</div>' };
+};
+
+VIEWS.privacy = () => {
+  const u = me(), kids = u.role === 'parent' ? myKids() : [];
+  const nAbs = S.absences.filter(a => a.parentId === u.id).length, nMsg = myThreads().reduce((n, t) => n + t.messages.filter(m => m.by === u.id).length, 0);
+  const R = (k, v) => '<div class="row"><span class="row-main"><span class="row-meta">' + k + '</span><span class="row-title">' + v + '</span></span></div>';
+  return { t:'Datenschutz', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Deine Daten</h1><p class="muted">Was über dich gespeichert ist und was du jederzeit tun kannst.</p></div>' +
+    '<div class="list">' + R('Name', esc(u.name)) + R('Login', esc(prettyPhone(u.phone)) + ' · ' + esc(u.email)) + (kids.length ? R('Kinder', kids.map(k => esc(k.first) + ' (' + esc(group(k.group).name) + ')').join(', ')) : '') + (u.role === 'parent' ? R('Abmeldungen', nAbs + ' gespeichert · Löschung nach ' + S.retention.absences + ' Tagen') : '') + R('Nachrichten', nMsg + ' von dir gesendet') + R('Einwilligung', u.consent ? 'erteilt am ' + fmt(new Date(u.consent), { day:'numeric', month:'long', year:'numeric' }) : 'nicht erteilt') + '</div>' +
+    '<div class="btns"><button class="btn btn-ghost" data-act="showExport">' + ic('eye') + 'Datenauskunft</button><button class="btn btn-ghost" data-act="askDeletion">' + ic('trash') + 'Konto löschen</button></div>' +
+    '<section class="sec">' + secHead('So schützen wir eure Daten') + '<div class="list">' +
+      '<div class="row"><span class="row-main"><span class="row-title">Nur auf Einladung</span><span class="row-meta">Wer nicht von der Gemeinde freigeschaltet ist, kommt nicht hinein.</span></span></div>' +
+      '<div class="row"><span class="row-main"><span class="row-title">Nur so viel wie nötig</span><span class="row-meta">Keine Diagnosen, keine Fotos, keine Adressen. Lehrkräfte sehen nur ihre Gruppen.</span></span></div>' +
+      '<div class="row"><span class="row-main"><span class="row-title">Keine Weitergabe</span><span class="row-meta">Die Teilnahme an der Madrasah lässt auf die Religion schließen. Deshalb verlassen die Daten die Gemeinde nicht.</span></span></div>' +
+      '<div class="row"><span class="row-main"><span class="row-title">Automatisch gelöscht</span><span class="row-meta">Abmeldungen nach ' + S.retention.absences + ' Tagen, Konten ' + S.retention.removed + ' Tage nach dem Austritt.</span></span></div>' +
+    '</div></section>' };
+};
+
+VIEWS.notify = () => {
+  const u = me(), keys = u.role === 'parent' ? [['hausaufgabe','Neue Hausaufgaben'],['mitteilung','Mitteilungen aus den Fächern'],['nachricht','Nachrichten von Lehrkräften'],['termin','Termine und Erinnerungen']] : [['abmeldung','Abmeldungen meiner Gruppen'],['nachricht','Nachrichten von Eltern'],['termin','Termine']];
+  return { t:'Benachrichtigungen', cls:'sub', h:'<div class="greet"><h1 class="h1">Benachrichtigungen</h1><p class="muted">Worüber dich die App aufs Handy informiert.</p></div><div class="list">' + keys.map(([k, l]) => '<label class="row"><span class="row-main"><span class="row-title">' + l + '</span></span><input type="checkbox" class="switch" data-chg="pref" data-id="' + k + '"' + (pref(k) ? ' checked' : '') + '></label>').join('') + '</div><p class="hint">Wichtige Mitteilungen mit Lesebestätigung kommen immer an.</p>' };
+};
+
+VIEWS.more = () => {
+  const u = me(), f = S.features;
+  const L = (view, icon, title, meta) => '<button class="row row-btn" data-act="open" data-view="' + view + '">' + ic(icon) + '<span class="row-main"><span class="row-title">' + title + '</span>' + (meta ? '<span class="row-meta">' + meta + '</span>' : '') + '</span>' + ic('chev','chev') + '</button>';
+  const kids = u.role === 'parent' ? myKids() : [];
+  let h = '<div class="card pad" style="flex-direction:row;align-items:center"><span class="avatar" style="width:52px;height:52px;font-size:var(--text-md)">' + initials(u.name) + '</span><div class="row-main"><b style="font-size:var(--text-md)">' + esc(u.name) + '</b><span class="muted small">' + ROLE_LABEL[u.role] + (u.role === 'teacher' ? ' · ' + (u.subjects || []).map(s => esc(subj(s).name)).join(', ') : '') + '</span><span class="muted small">' + esc(prettyPhone(u.phone)) + '</span></div></div>';
+  if (kids.length) h += '<section class="sec">' + secHead('Meine Kinder') + '<div class="list">' + kids.map(k => '<div class="row"><span class="avatar">' + initials(kidName(k)) + '</span><span class="row-main"><span class="row-title">' + esc(kidName(k)) + '</span><span class="row-meta">' + esc(group(k.group).name) + ' · ' + esc(group(k.group).info) + '</span></span></div>').join('') + '</div><p class="hint">Falsche Gruppe oder ein Kind fehlt? Die Verwaltung ändert das für dich.</p></section>';
+  h += '<section class="sec">' + secHead('Madrasah') + '<div class="list">' + L('timetable','cal','Stundenplan') + (f.events ? L('events','bell','Termine', upcomingEvents().length + ' anstehend') : '') + (f.quran ? L('quran','quran','Koran-Fortschritt') : '') + '</div></section>';
+  h += themeSec();
+  h += '<section class="sec">' + secHead('Konto') + '<div class="list">' + L('notify','bell','Benachrichtigungen') + L('privacy','shield','Datenschutz & meine Daten') + '<button class="row row-btn" data-act="logout">' + ic('logout') + '<span class="row-main"><span class="row-title">Ausloggen</span></span></button></div></section>';
+  h += '<button class="btn btn-ghost btn-sm" style="align-self:center" data-act="askReset">Demo-Daten zurücksetzen</button>';
+  return { t:'Mehr', h:'<h1 class="sr">Mehr</h1>' + h };
+};
+
+/* ---------- Ansichten: Eltern ---------- */
+VIEWS.parentStart = () => {
+  const u = me(), kids = myKids(), T = d0(), tI = iso(T), posts = visiblePosts(u);
+  const imp = S.features.readReceipts ? posts.filter(p => p.important && !p.confirmBy.includes(u.id)).sort(byNew) : [];
+  const hw = []; posts.filter(p => p.type === 'hausaufgabe' && (!p.due || p.due >= tI)).sort((a, b) => (a.due || '').localeCompare(b.due || '')).forEach(p => kids.forEach(k => { if (appliesTo(p, k) && !p.doneBy.includes(k.id)) hw.push({ p, k }); }));
+  const news = posts.filter(p => p.type !== 'hausaufgabe' && !(p.important && !p.confirmBy.includes(u.id))).sort(byNew).slice(0, 3);
+  const abs = S.absences.filter(a => a.parentId === u.id && a.to >= tI).sort((a, b) => a.from.localeCompare(b.from));
+  const lessons = kids.map(k => ({ k, n: nextLessonFor(k.group) })).filter(x => x.n);
+  const first = lessons.length ? lessons.reduce((m, x) => x.n.date < m ? x.n.date : m, lessons[0].n.date) : null;
+  let h = '<div class="greet"><span class="eyebrow">' + fmtLong(T) + '</span><h1 class="h1">As-salāmu ʿalaikum, ' + esc(u.name.split(' ')[0]) + '</h1><p class="ar" lang="ar" dir="rtl">' + hijri(T) + '</p></div>';
+  h += '<section class="hero">' + ARCH + '<p class="hero-eyebrow">Nächster Unterricht</p><p class="hero-title">' + (first ? fmt(first, { weekday:'long', day:'numeric', month:'long' }) : 'Kein Termin') + '</p><ul class="hero-list">' +
+    lessons.map(({ k, n }) => { const ab = absenceOn(k.id, iso(n.date)); return '<li><em class="t">' + n.start + ' – ' + n.end + '</em><b>' + esc(k.first) + '</b><span>' + esc(group(k.group).name) + (iso(n.date) !== iso(first) ? ' · ' + fmtShort(n.date) : '') + (ab ? ' ' + pill(ABS_TYPES[ab.type].label) : '') + '</span></li>'; }).join('') +
+    '</ul><div class="hero-actions"><button class="btn btn-on-hero" data-act="go" data-tab="melden">' + ic('thermo') + 'Kind abmelden</button><button class="btn btn-hero-ghost" data-act="open" data-view="timetable">' + ic('cal') + 'Stundenplan</button></div></section>';
+  if (imp.length) h += '<section class="sec">' + secHead('Bitte bestätigen', '', imp.length) + imp.map(p => '<div class="card pad important"><div class="post-head">' + logo(subj(p.subject), 40) + '<div class="row-main"><b>' + esc(p.title) + '</b><span class="muted small">' + esc(subj(p.subject).name) + ' · ' + rel(p.created) + '</span></div>' + pill('Lesebestätigung', 'warn') + '</div><p class="small" style="line-height:1.55">' + esc(p.body.split('\n').filter(Boolean).slice(0, 2).join(' ')).slice(0, 180) + '…</p><div class="btns"><button class="btn btn-primary btn-sm" data-act="confirmRead" data-id="' + p.id + '">' + ic('check') + 'Gelesen bestätigen</button><button class="btn btn-ghost btn-sm" data-act="open" data-view="post" data-id="' + p.id + '">Ganz lesen</button></div></div>').join('') + '</section>';
+  h += '<section class="sec">' + secHead('Offene Hausaufgaben', '', hw.length) + (hw.length ? '<div class="list">' + hw.map(({ p, k }) => '<div class="row-split">' + postRow(p, esc(k.first) + ' · ' + esc(subj(p.subject).name) + (p.due ? ' · bis ' + fmtShort(p.due) : '')) + '<button class="done-btn" data-act="doneQuick" data-id="' + p.id + '" data-c="' + k.id + '" aria-label="' + esc(k.first) + ': ' + esc(p.title) + ' erledigt">' + ic('check') + '</button></div>').join('') + '</div>' : empty('Alles erledigt. Keine offenen Hausaufgaben.')) + '</section>';
+  if (abs.length) h += '<section class="sec">' + secHead('Meine Abmeldungen') + '<div class="list">' + abs.map(a => absRowParent(a)).join('') + '</div></section>';
+  h += '<section class="sec">' + secHead('Neu aus den Fächern', '<button class="link" data-act="go" data-tab="faecher">Alle Fächer</button>') + (news.length ? '<div class="list">' + news.map(p => postRow(p)).join('') + '</div>' : empty('Noch nichts Neues.')) + '</section>';
+  if (S.features.events){ const ev = upcomingEvents().slice(0, 2); if (ev.length) h += '<section class="sec">' + secHead('Termine', '<button class="link" data-act="open" data-view="events">Alle</button>') + '<div class="list">' + ev.map(e => { const d = parseISO(e.date); return '<div class="row"><span class="datebox"><b>' + d.getDate() + '</b><span>' + fmt(d, { month:'short' }).replace('.', '') + '</span></span><span class="row-main"><span class="row-title">' + esc(e.title) + '</span><span class="row-meta">' + fmt(d, { weekday:'long' }) + (e.time ? ' · ' + esc(e.time) + ' Uhr' : '') + (e.place ? ' · ' + esc(e.place) : '') + '</span></span></div>'; }).join('') + '</div></section>'; }
+  return { t:'Start', h };
+};
+
+function absRowParent(a){
+  const c = child(a.childId), seen = a.seenBy.map(user).filter(Boolean);
+  return '<div class="row"><span class="row-main"><span class="meta-line"><span class="row-title">' + esc(c ? c.first : '—') + '</span>' + absPill(a) + '</span><span class="row-meta">' + period(a) + ' · ' + (seen.length ? 'Gesehen von ' + esc(seen.map(s => s.name).join(', ')) : 'Gesendet ' + rel(a.created)) + '</span>' + (a.note ? '<span class="row-note">' + esc(a.note) + '</span>' : '') + '</span>' + (a.from >= iso(d0()) ? '<button class="btn btn-ghost btn-sm" data-act="withdrawAbs" data-id="' + a.id + '">Zurückziehen</button>' : '') + '</div>';
+}
+
+VIEWS.melden = () => {
+  const u = me(), kids = myKids(), def = iso(nextClassDay(d0())), tI = iso(d0());
+  const mine = S.absences.filter(a => a.parentId === u.id).sort((a, b) => b.from.localeCompare(a.from)).slice(0, 8);
+  const flash = UI.flash && UI.flash.type === 'abs' ? '<div class="callout ok">' + ic('check') + '<span>' + esc(UI.flash.text) + '</span></div>' : '';
+  UI.flash = null;
+  const O = (v, idA, title, sub, checked) => '<label class="opt"><input type="radio" name="type" value="' + v + '" id="' + idA + '"' + (checked ? ' checked' : '') + '><span><b>' + title + '</b><small>' + sub + '</small></span></label>';
+  return { t:'Abmeldung', h:
+    '<div class="greet"><h1 class="h1">Kind abmelden</h1><p class="muted">Krank oder verhindert? Die Lehrkräfte der Gruppe sehen es sofort.</p></div>' + flash +
+    '<form data-form="absence" class="card pad" novalidate>' +
+      '<div class="field"><span>Kind</span><div class="chips">' + kids.map((k, i) => '<label class="chip"><input type="checkbox" name="child" value="' + k.id + '"' + (kids.length === 1 || i === 0 ? ' checked' : '') + '><span>' + esc(k.first) + '</span></label>').join('') + '</div></div>' +
+      '<div class="field"><span>Grund</span><div class="opts">' + O('krank','ty-krank','Krank', ABS_TYPES.krank.hint, true) + O('abwesend','ty-abw','Abwesend', ABS_TYPES.abwesend.hint) + O('spaet','ty-spaet','Kommt später', ABS_TYPES.spaet.hint) + O('frueh','ty-frueh','Früher abholen', ABS_TYPES.frueh.hint) + '</div></div>' +
+      '<div class="row2"><label class="field" for="a-from"><span>Von</span><input type="date" id="a-from" name="from" value="' + def + '" min="' + tI + '"></label><label class="field" for="a-to"><span>Bis</span><input type="date" id="a-to" name="to" value="' + def + '" min="' + tI + '"></label></div>' +
+      '<label class="field time-field" for="a-time"><span>Uhrzeit</span><input type="time" id="a-time" name="time" value="11:00"></label>' +
+      '<label class="field" for="a-note"><span>Nachricht an die Lehrkräfte <span class="muted">(optional)</span></span><textarea id="a-note" name="note" maxlength="300" placeholder="z. B. Hausaufgaben holt sie nächste Woche nach."></textarea><span class="hint">Bitte keine Diagnosen oder Gesundheitsdetails angeben.</span></label>' +
+      '<div id="a-err" hidden class="err"></div>' +
+      '<button class="btn btn-primary btn-block">' + ic('send') + 'Abmeldung senden</button>' +
+    '</form>' +
+    '<section class="sec">' + secHead('Bisherige Abmeldungen') + (mine.length ? '<div class="list">' + mine.map(absRowParent).join('') + '</div>' : empty('Noch keine Abmeldungen.')) + '</section>' };
+};
+
+/* ---------- Ansichten: Lehrkraft ---------- */
+VIEWS.teacherStart = () => {
+  const u = me(), T = d0(), gs = staffGroups(u);
+  const nd = nextClassDay(T), ndI = iso(nd);
+  const abs = staffAbsences(u), absNext = abs.filter(a => a.from <= ndI && a.to >= ndI);
+  const unread = myThreads().filter(t => unreadIn(t) > 0);
+  const mine = S.posts.filter(p => p.authorId === u.id && !p.archived).sort(byNew).slice(0, 3);
+  const kidsCount = S.children.filter(c => gs.includes(c.group)).length;
+  let h = '<div class="greet"><span class="eyebrow">' + fmtLong(T) + '</span><h1 class="h1">As-salāmu ʿalaikum, ' + esc(u.name) + '</h1><p class="ar" lang="ar" dir="rtl">' + hijri(T) + '</p></div>';
+  h += '<section class="hero">' + ARCH + '<p class="hero-eyebrow">Nächster Unterricht</p><p class="hero-title">' + fmt(nd, { weekday:'long', day:'numeric', month:'long' }) + '</p><ul class="hero-list"><li><span>' + (u.subjects || []).map(s => esc(subj(s).name)).join(', ') + ' · ' + gs.map(g => esc(group(g).name.replace('Gruppe ', 'G'))).join(', ') + '</span><span>' + kidsCount + ' Kinder</span></li><li><span>Abgemeldet</span><b>' + absNext.length + '</b></li></ul>' +
+    '<div class="hero-actions">' + (S.features.attendance ? '<button class="btn btn-on-hero" data-act="go" data-tab="klassenbuch">' + ic('clipboard') + 'Klassenbuch</button>' : '') + '</div></section>';
+  h += '<section class="sec">' + secHead('Abmeldungen', '', abs.length) + (abs.length ? '<div class="list">' + abs.map(a => absRowStaff(a, u)).join('') + '</div>' : empty('Keine Abmeldungen für deine Gruppen.')) + '</section>';
+  if (S.features.messages) h += '<section class="sec">' + secHead('Ungelesene Nachrichten', '<button class="link" data-act="go" data-tab="nachrichten">Alle</button>', unread.length) + (unread.length ? '<div class="list">' + unread.map(t => { const o = user(t.parentId), c = child(t.childId), l = t.messages[t.messages.length-1]; return '<button class="row row-btn" data-act="open" data-view="thread" data-id="' + t.id + '"><span class="avatar">' + initials(o ? o.name : '?') + '</span><span class="row-main"><span class="row-title">' + esc(o ? o.name : '—') + (c ? ' <span class="muted small">(' + esc(c.first) + ')</span>' : '') + '</span><span class="row-meta">' + esc(l.text.slice(0, 80)) + '</span></span><span class="badge">' + unreadIn(t) + '</span></button>'; }).join('') + '</div>' : empty('Alles beantwortet.')) + '</section>';
+  const first = (u.subjects || [])[0];
+  if (first) h += '<section class="sec">' + secHead('Schnell erstellen') + '<div class="quick"><button data-act="open" data-view="compose" data-id="' + first + '" data-x="hausaufgabe">' + ic('pencil') + 'Hausaufgabe</button><button data-act="open" data-view="compose" data-id="' + first + '" data-x="mitteilung">' + ic('mega') + 'Mitteilung</button></div></section>';
+  if (mine.length) h += '<section class="sec">' + secHead('Meine letzten Beiträge') + '<div class="list">' + mine.map(p => { const a = audience(p), r = p.readBy.filter(x => a.parents.includes(x)).length; return postRow(p, POST_TYPES[p.type] + ' · gelesen ' + r + '/' + a.parents.length + (p.type === 'hausaufgabe' ? ' · erledigt ' + p.doneBy.filter(x => a.kids.some(k => k.id === x)).length + '/' + a.kids.length : '')); }).join('') + '</div></section>';
+  return { t:'Start', h };
+};
+
+function absRowStaff(a, u){
+  const c = child(a.childId), p = user(a.parentId), seen = a.seenBy.includes(u.id);
+  return '<div class="row"><span class="row-main"><span class="meta-line"><span class="row-title">' + esc(c ? kidName(c) : '—') + '</span>' + absPill(a) + '</span><span class="row-meta">' + esc(c ? group(c.group).name : '') + ' · ' + period(a) + ' · von ' + esc(p ? p.name : '—') + ', ' + rel(a.created) + '</span>' + (a.note ? '<span class="row-note">' + esc(a.note) + '</span>' : '') + '</span>' +
+    (seen ? pill(ic('check') + 'gesehen', 'ok') : '<button class="btn btn-primary btn-sm" data-act="seenAbs" data-id="' + a.id + '">Gesehen</button>') + '</div>';
+}
+
+VIEWS.attendance = () => {
+  const u = me(), gs = staffGroups(u);
+  if (!UI.att || !gs.includes(UI.att.group)) UI.att = { group: gs[0], date: iso(nextClassDay(d0())) };
+  const { group: g, date } = UI.att, key = g + '|' + date, rec = S.attendance[key] || {};
+  const kids = S.children.filter(c => c.group === g).sort((a, b) => a.first.localeCompare(b.first));
+  const status = c => rec[c.id] || (() => { const a = absenceOn(c.id, date); return a ? (a.type === 'spaet' ? 'spaet' : 'entsch') : 'da'; })();
+  const counts = { da:0, fehlt:0, entsch:0, spaet:0 }; kids.forEach(c => counts[status(c)]++);
+  const rows = kids.map(c => { const st = status(c), a = absenceOn(c.id, date);
+    return '<div class="att"><div class="att-top"><span class="row-main"><span class="row-title">' + esc(kidName(c)) + '</span>' + (a ? '<span class="row-meta">' + ic('thermo') + ' Abmeldung: ' + esc(ABS_TYPES[a.type].label) + (a.note ? ' – „' + esc(a.note) + '“' : '') + '</span>' : '') + '</span></div><div class="seg" role="group" aria-label="Anwesenheit ' + esc(c.first) + '">' +
+      [['da','Da'],['spaet','Spät'],['entsch','Entsch.'],['fehlt','Fehlt']].map(([v, l]) => '<button data-act="attSet" data-id="' + c.id + '" data-v="' + v + '" aria-pressed="' + (st === v) + '">' + l + '</button>').join('') + '</div></div>'; }).join('');
+  return { t:'Klassenbuch', h:
+    '<div class="greet"><h1 class="h1">Klassenbuch</h1><p class="muted">Anwesenheit eintragen. Abmeldungen der Eltern sind schon als entschuldigt markiert.</p></div>' +
+    (gs.length > 1 ? '<div class="chips">' + gs.map(x => '<button class="chip-btn" data-act="attGroup" data-id="' + x + '" aria-pressed="' + (x === g) + '">' + esc(group(x).name) + '</button>').join('') + '</div>' : '') +
+    '<div class="daynav"><button class="icon-btn btn-ghost" style="border:1px solid var(--line)" data-act="attDay" data-v="-1" aria-label="Vorheriger Unterrichtstag">' + ic('back') + '</button><b>' + fmt(date, { weekday:'long', day:'numeric', month:'long' }) + '</b><button class="icon-btn btn-ghost" style="border:1px solid var(--line)" data-act="attDay" data-v="1" aria-label="Nächster Unterrichtstag">' + ic('chev') + '</button></div>' +
+    '<div class="meta-line">' + pill(counts.da + ' da', 'ok') + pill(counts.spaet + ' spät', 'info') + pill(counts.entsch + ' entschuldigt', 'warn') + pill(counts.fehlt + ' fehlt', 'danger') + (S.attendance[key] ? pill('gespeichert') : '') + '</div>' +
+    (kids.length ? '<div class="list">' + rows + '</div>' : empty('Keine Kinder in dieser Gruppe.')) +
+    '<div class="btns"><button class="btn btn-primary" data-act="attSave">' + ic('check') + 'Speichern</button>' + (counts.fehlt ? '<button class="btn btn-ghost" data-act="attNotify">' + ic('bell') + 'Eltern informieren (' + counts.fehlt + ')</button>' : '') + '</div>' };
+};
+
+/* ---------- Ansichten: Verwaltung ---------- */
+VIEWS.adminHome = () => {
+  const u = me(), fam = S.users.filter(x => x.role === 'parent'), tea = S.users.filter(x => x.role === 'teacher'), inv = S.invites.filter(i => i.status === 'offen');
+  const nd = nextClassDay(d0()), ndI = iso(nd), absNext = S.absences.filter(a => a.from <= ndI && a.to >= ndI);
+  const legalDone = Object.values(S.legal).filter(Boolean).length, legalAll = Object.keys(S.legal).length;
+  const st = (n, l, tab) => '<button class="stat" data-act="peopleGo" data-x="' + tab + '"><b>' + n + '</b><span>' + l + '</span></button>';
+  let h = '<div class="greet"><span class="eyebrow">Schuljahr ' + esc(S.schoolYear) + ' · ' + esc(S.org.school) + '</span><h1 class="h1">As-salāmu ʿalaikum, ' + esc(u.name) + '</h1><p class="ar" lang="ar" dir="rtl">' + hijri(d0()) + '</p></div>';
+  h += '<div class="stats">' + st(fam.length, 'Familien', 'familien') + st(S.children.length, 'Kinder', 'familien') + st(tea.length, 'Lehrkräfte', 'lehrkraefte') + st(inv.length, 'Einladungen offen', 'einladungen') + '</div>';
+  h += '<section class="hero">' + ARCH + '<p class="hero-eyebrow">Nächster Unterricht</p><p class="hero-title">' + fmt(nd, { weekday:'long', day:'numeric', month:'long' }) + '</p><ul class="hero-list">' + S.groups.map(g => { const n = absNext.filter(a => child(a.childId)?.group === g.id).length; return '<li><span>' + esc(g.name) + ' · ' + S.children.filter(c => c.group === g.id).length + ' Kinder</span><span>' + n + ' abgemeldet</span></li>'; }).join('') + '</ul></section>';
+  h += '<section class="sec">' + secHead('Schnellzugriff') + '<div class="quick"><button data-act="open" data-view="compose" data-id="allgemein" data-x="mitteilung">' + ic('mega') + 'Mitteilung an alle</button><button data-act="open" data-view="invite">' + ic('userplus') + 'Person einladen</button><button data-act="open" data-view="eventNew">' + ic('cal') + 'Termin anlegen</button><button data-act="go" data-tab="schuljahr">' + ic('cycle') + 'Schuljahreswechsel</button></div></section>';
+  h += '<section class="sec">' + secHead('Vor dem echten Start') + '<button class="card pad row-btn" style="text-align:left" data-act="open" data-view="legal"><div class="prog"><div class="prog-line"><span><b style="color:var(--ink)">Rechtliches & Datenschutz</b></span><span>' + legalDone + ' / ' + legalAll + ' erledigt</span></div>' + bar(legalDone, legalAll) + '</div><span class="small muted">Datenschutzerklärung, Auftragsverarbeitung, Verpflichtung der Lehrkräfte …</span></button></section>';
+  return { t:'Übersicht', h };
+};
+
+VIEWS.people = () => {
+  const tab = UI.peopleTab;
+  const fam = S.users.filter(x => x.role === 'parent').sort((a, b) => a.name.localeCompare(b.name));
+  const tea = S.users.filter(x => x.role === 'teacher' || x.role === 'admin').sort((a, b) => a.name.localeCompare(b.name));
+  const inv = S.invites.slice().sort(byNew);
+  let list = '';
+  if (tab === 'familien') list = fam.map(p => { const ks = S.children.filter(c => c.parentIds.includes(p.id)); return '<button class="row row-btn" data-act="open" data-view="family" data-id="' + p.id + '" data-search="' + esc((p.name + ' ' + ks.map(kidName).join(' ')).toLowerCase()) + '"><span class="avatar">' + initials(p.name) + '</span><span class="row-main"><span class="row-title">' + esc(p.name) + '</span><span class="row-meta">' + (ks.length ? ks.map(k => esc(k.first) + ' (' + esc(group(k.group).name.replace('Gruppe ', 'G')) + ')').join(', ') : 'keine Kinder') + '</span></span>' + (p.consent ? '' : pill('Einwilligung offen', 'warn')) + ic('chev','chev') + '</button>'; }).join('');
+  if (tab === 'lehrkraefte') list = tea.map(t => '<button class="row row-btn" data-act="open" data-view="teacher" data-id="' + t.id + '" data-search="' + esc(t.name.toLowerCase()) + '"><span class="avatar">' + initials(t.name) + '</span><span class="row-main"><span class="row-title">' + esc(t.name) + '</span><span class="row-meta">' + (t.role === 'admin' ? 'Verwaltung' : (t.subjects || []).map(s => esc(subj(s).name)).join(', ') + ' · ' + (t.groups || []).map(g => esc(group(g).name.replace('Gruppe ', 'G'))).join(', ')) + '</span></span>' + ic('chev','chev') + '</button>').join('');
+  if (tab === 'einladungen') list = inv.map(i => '<div class="row" data-search="' + esc(i.name.toLowerCase()) + '"><span class="avatar">' + initials(i.name) + '</span><span class="row-main"><span class="meta-line"><span class="row-title">' + esc(i.name) + '</span>' + pill(i.status === 'offen' ? 'offen' : 'angenommen', i.status === 'offen' ? 'warn' : 'ok') + '</span><span class="row-meta">' + ROLE_LABEL[i.role] + ' · ' + esc(i.type === 'phone' ? prettyPhone(i.contact) : i.contact) + ' · ' + rel(i.created) + (i.kids && i.kids.length ? ' · ' + i.kids.map(k => esc(k.first)).join(', ') : '') + '</span>' + (i.status === 'offen' ? '<span class="btns" style="margin-top:6px"><button class="btn btn-ghost btn-sm" data-act="acceptInvite" data-id="' + i.id + '">Annahme simulieren</button><button class="btn btn-danger btn-sm" data-act="withdrawInvite" data-id="' + i.id + '">Zurückziehen</button></span>' : '') + '</span></div>').join('');
+  return { t:'Personen', h:
+    '<div class="greet"><h1 class="h1">Personen</h1><p class="muted">Nur wer hier steht, kommt in die App. Zugänge vergibst und entziehst du jederzeit.</p></div>' +
+    '<button class="btn btn-primary btn-block" data-act="open" data-view="invite">' + ic('userplus') + 'Person einladen</button>' +
+    '<div class="seg" role="group" aria-label="Liste">' + [['familien','Familien',fam.length],['lehrkraefte','Team',tea.length],['einladungen','Einladungen',inv.filter(i => i.status === 'offen').length]].map(([k, l, n]) => '<button data-act="peopleTab" data-x="' + k + '" aria-pressed="' + (k === tab) + '">' + l + ' <span class="muted small">' + n + '</span></button>').join('') + '</div>' +
+    '<label class="sr" for="p-search">Suchen</label><input type="search" id="p-search" placeholder="Name suchen …" data-input="search" autocomplete="off">' +
+    (list ? '<div class="list" id="p-list">' + list + '</div>' : empty('Hier ist noch niemand.')) };
+};
+
+VIEWS.family = ({ id }) => {
+  const p = user(id); if (!p) return { t:'Familie', cls:'sub', h:empty('Dieses Konto gibt es nicht mehr.') };
+  const ks = S.children.filter(c => c.parentIds.includes(p.id));
+  const gOpts = sel => S.groups.map(g => '<option value="' + g.id + '"' + (g.id === sel ? ' selected' : '') + '>' + esc(g.name) + '</option>').join('');
+  return { t: p.name, cls:'sub', h:
+    '<div class="greet"><span class="eyebrow">Elternteil</span><h1 class="h1">' + esc(p.name) + '</h1></div>' +
+    '<div class="list"><div class="row">' + ic('phone') + '<span class="row-main"><span class="row-meta">Handynummer (Login)</span><span class="row-title">' + esc(prettyPhone(p.phone)) + '</span></span></div><div class="row">' + ic('mail') + '<span class="row-main"><span class="row-meta">E-Mail (Login)</span><span class="row-title">' + esc(p.email) + '</span></span></div><div class="row">' + ic('shield') + '<span class="row-main"><span class="row-meta">Einwilligung</span><span class="row-title">' + (p.consent ? 'erteilt am ' + fmt(new Date(p.consent), { day:'numeric', month:'short', year:'numeric' }) : 'noch nicht erteilt (beim ersten Login)') + '</span></span></div></div>' +
+    '<section class="sec">' + secHead('Kinder') + '<div class="list">' + ks.map(k => '<div class="row"><span class="row-main"><span class="row-title">' + esc(kidName(k)) + '</span></span><label class="sr" for="g-' + k.id + '">Gruppe von ' + esc(k.first) + '</label><select id="g-' + k.id + '" style="width:auto;min-height:44px" data-chg="kidGroup" data-id="' + k.id + '">' + gOpts(k.group) + '</select><button class="icon-btn" data-act="askRemoveKid" data-id="' + k.id + '" aria-label="' + esc(k.first) + ' entfernen">' + ic('trash') + '</button></div>').join('') + '</div>' +
+      '<form data-form="addKid" data-id="' + p.id + '" class="card pad" novalidate><b>Kind hinzufügen</b><div class="row2"><label class="field" for="k-first"><span>Vorname</span><input type="text" id="k-first" name="first"></label><label class="field" for="k-group"><span>Gruppe</span><select id="k-group" name="group">' + gOpts(S.groups[0]?.id) + '</select></label></div><button class="btn btn-ghost">' + ic('plus') + 'Hinzufügen</button></form></section>' +
+    '<button class="btn btn-danger btn-block" data-act="askRevoke" data-id="' + p.id + '">' + ic('lock') + 'Zugang entziehen</button>' +
+    '<p class="hint">Der Login wird sofort gesperrt. Die Daten werden nach ' + S.retention.removed + ' Tagen endgültig gelöscht.</p>' };
+};
+
+VIEWS.teacher = ({ id }) => {
+  const t = user(id); if (!t) return { t:'Lehrkraft', cls:'sub', h:empty('Dieses Konto gibt es nicht mehr.') };
+  if (t.role === 'admin') return { t:t.name, cls:'sub', h:'<div class="greet"><span class="eyebrow">Verwaltung</span><h1 class="h1">' + esc(t.name) + '</h1></div><div class="callout">' + ic('info') + '<span>Verwaltungskonten können Personen einladen, Fächer anlegen und den Schuljahreswechsel durchführen.</span></div>' };
+  return { t:t.name, cls:'sub', h:
+    '<div class="greet"><span class="eyebrow">Lehrkraft</span><h1 class="h1">' + esc(t.name) + '</h1><p class="muted">' + esc(prettyPhone(t.phone)) + ' · ' + esc(t.email) + '</p></div>' +
+    '<section class="sec">' + secHead('Fächer') + '<div class="chips">' + S.subjects.map(s => '<label class="chip"><input type="checkbox" data-chg="tSubj" data-id="' + t.id + '" value="' + s.id + '"' + ((t.subjects || []).includes(s.id) ? ' checked' : '') + '><span>' + esc(s.name) + '</span></label>').join('') + '</div></section>' +
+    '<section class="sec">' + secHead('Gruppen') + '<div class="chips">' + S.groups.map(g => '<label class="chip"><input type="checkbox" data-chg="tGroup" data-id="' + t.id + '" value="' + g.id + '"' + ((t.groups || []).includes(g.id) ? ' checked' : '') + '><span>' + esc(g.name) + '</span></label>').join('') + '</div><p class="hint">Lehrkräfte sehen nur Kinder, Abmeldungen und Eltern ihrer Gruppen.</p></section>' +
+    '<button class="btn btn-danger btn-block" data-act="askRevoke" data-id="' + t.id + '">' + ic('lock') + 'Zugang entziehen</button>' };
+};
+
+VIEWS.invite = () => {
+  const gOpts = S.groups.map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('');
+  const kidRow = i => '<div class="row2 kid-row"><label class="field" for="ik-' + i + '"><span>Vorname Kind</span><input type="text" id="ik-' + i + '" name="kidFirst"></label><label class="field" for="ig-' + i + '"><span>Gruppe</span><select id="ig-' + i + '" name="kidGroup">' + gOpts + '</select></label></div>';
+  return { t:'Person einladen', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Person einladen</h1><p class="muted">Die Person bekommt eine SMS oder E-Mail und meldet sich dann mit genau dieser Nummer oder Adresse an.</p></div>' +
+    '<form data-form="invite" novalidate>' +
+      '<div class="field"><span>Rolle</span><div class="seg"><label><input type="radio" name="role" value="parent" id="ir-parent" checked><span>Elternteil</span></label><label><input type="radio" name="role" value="teacher" id="ir-teacher"><span>Lehrkraft</span></label><label><input type="radio" name="role" value="admin" id="ir-admin"><span>Verwaltung</span></label></div></div>' +
+      '<label class="field" for="i-name"><span>Vor- und Nachname</span><input type="text" id="i-name" name="name" autocomplete="off"></label>' +
+      '<div class="field"><span>Login über</span><div class="seg"><label><input type="radio" name="ctype" value="phone" checked><span>' + ic('phone') + 'Handy</span></label><label><input type="radio" name="ctype" value="email"><span>' + ic('mail') + 'E-Mail</span></label></div></div>' +
+      '<label class="field" for="i-contact"><span>Handynummer oder E-Mail</span><input type="text" id="i-contact" name="contact" placeholder="0151 23456789 oder name@example.de" autocomplete="off"></label>' +
+      '<div class="field parent-only" style="flex-direction:column;gap:10px"><span class="label">Kinder</span><div id="kid-rows" style="display:flex;flex-direction:column;gap:10px">' + kidRow(0) + '</div><button type="button" class="btn btn-ghost btn-sm" style="align-self:flex-start" data-act="addKidRow">' + ic('plus') + 'Weiteres Kind</button></div>' +
+      '<div class="field teacher-only" style="flex-direction:column;gap:10px"><span class="label">Fächer</span><div class="chips">' + S.subjects.map(s => '<label class="chip"><input type="checkbox" name="subjects" value="' + s.id + '"><span>' + esc(s.name) + '</span></label>').join('') + '</div><span class="label">Gruppen</span><div class="chips">' + S.groups.map(g => '<label class="chip"><input type="checkbox" name="groups" value="' + g.id + '"><span>' + esc(g.name) + '</span></label>').join('') + '</div></div>' +
+      '<div id="i-err" hidden class="err"></div>' +
+      '<button class="btn btn-primary btn-block">' + ic('send') + 'Einladung senden</button>' +
+    '</form>' };
+};
+
+VIEWS.year = () => {
+  const ny = nextYear(S.schoolYear);
+  if (!UI.wiz) UI.wiz = { step:0, leave:[], leaveT:[], moves:{}, opts:{ archive:true, purgeAbs:true, purgeAtt:true, purgeMsgs:false }, ok:false };
+  const W = UI.wiz;
+  const steps = ['Abgänge','Versetzung','Aufräumen','Prüfen'];
+  const stepper = '<ol class="steps" aria-label="Schritte">' + steps.map((s, i) => '<li class="' + (i < W.step ? 'on' : '') + '"><i></i>' + (i + 1) + '. ' + s + '</li>').join('') + '</ol>';
+  const nextG = gid => { const i = S.groups.findIndex(g => g.id === gid); return S.groups[Math.min(i + 1, S.groups.length - 1)]?.id || gid; };
+  const remaining = S.children.filter(c => !W.leave.includes(c.id));
+  const nav = (canNext = true, label = 'Weiter') => '<div class="btns">' + (W.step > 1 ? '<button class="btn btn-ghost" data-act="wiz" data-v="-1">Zurück</button>' : '') + '<button class="btn btn-primary" data-act="wiz" data-v="1"' + (canNext ? '' : ' disabled') + '>' + label + '</button></div>';
+  let h = '';
+  if (W.step === 0){
+    h = '<div class="greet"><span class="eyebrow">Aktuell: ' + esc(S.schoolYear) + '</span><h1 class="h1">Schuljahreswechsel</h1><p class="muted">In vier Schritten ins Schuljahr ' + esc(ny) + ': Abgänge entfernen, Kinder versetzen, alte Daten aufräumen. Neue Familien lädst du danach ein.</p></div>' +
+      '<div class="list">' + steps.map((s, i) => '<div class="row"><span class="avatar">' + (i + 1) + '</span><span class="row-main"><span class="row-title">' + s + '</span><span class="row-meta">' + ['Wer verlässt die Madrasah? Familien ohne Kind verlieren den Zugang.','Jedes Kind rückt eine Gruppe auf, einzeln änderbar.','Hausaufgaben archivieren, Abmeldungen löschen.','Alles prüfen und erst dann ausführen.'][i] + '</span></span></div>').join('') + '</div>' +
+      '<button class="btn btn-primary btn-block" data-act="wiz" data-v="1">' + ic('cycle') + 'Wechsel vorbereiten</button>' +
+      '<p class="hint">Einzelne Personen kannst du auch mitten im Jahr unter Personen entfernen.</p>';
+  } else if (W.step === 1){
+    h = stepper + '<div class="greet"><h1 class="h1">Wer verlässt die Madrasah?</h1><p class="muted">Markiere Kinder und Lehrkräfte, die im neuen Schuljahr nicht mehr dabei sind.</p></div>' +
+      S.groups.map(g => { const ks = S.children.filter(c => c.group === g.id); return ks.length ? '<section class="sec">' + secHead(esc(g.name) + ' · ' + esc(g.info)) + '<div class="list">' + ks.map(c => '<label class="row"><input type="checkbox" class="check" data-chg="wizLeave" value="' + c.id + '"' + (W.leave.includes(c.id) ? ' checked' : '') + '><span class="row-main"><span class="row-title">' + esc(kidName(c)) + '</span><span class="row-meta">' + c.parentIds.map(id => esc(user(id)?.name || '')).join(', ') + '</span></span></label>').join('') + '</div></section>' : ''; }).join('') +
+      '<section class="sec">' + secHead('Lehrkräfte') + '<div class="list">' + S.users.filter(u => u.role === 'teacher').map(t => '<label class="row"><input type="checkbox" class="check" data-chg="wizLeaveT" value="' + t.id + '"' + (W.leaveT.includes(t.id) ? ' checked' : '') + '><span class="row-main"><span class="row-title">' + esc(t.name) + '</span><span class="row-meta">' + (t.subjects || []).map(s => esc(subj(s).name)).join(', ') + '</span></span></label>').join('') + '</div></section>' + nav();
+  } else if (W.step === 2){
+    remaining.forEach(c => { if (!W.moves[c.id]) W.moves[c.id] = nextG(c.group); });
+    h = stepper + '<div class="greet"><h1 class="h1">Versetzung</h1><p class="muted">Vorschlag: jedes Kind eine Gruppe höher. Kinder in der letzten Gruppe bleiben dort, bis du es änderst.</p></div>' +
+      '<div class="list">' + remaining.map(c => '<div class="row"><span class="row-main"><span class="row-title">' + esc(kidName(c)) + '</span><span class="row-meta">bisher ' + esc(group(c.group).name) + '</span></span><label class="sr" for="mv-' + c.id + '">Neue Gruppe</label><select id="mv-' + c.id + '" style="width:auto;min-height:44px" data-chg="wizMove" data-id="' + c.id + '">' + S.groups.map(g => '<option value="' + g.id + '"' + (W.moves[c.id] === g.id ? ' selected' : '') + '>' + esc(g.name) + '</option>').join('') + '</select></div>').join('') + '</div>' + nav();
+  } else if (W.step === 3){
+    const O = (k, t, d) => '<label class="row"><span class="row-main"><span class="row-title">' + t + '</span><span class="row-meta">' + d + '</span></span><input type="checkbox" class="switch" data-chg="wizOpt" data-id="' + k + '"' + (W.opts[k] ? ' checked' : '') + '></label>';
+    h = stepper + '<div class="greet"><h1 class="h1">Aufräumen</h1><p class="muted">Was mit den Daten des alten Schuljahres passiert.</p></div>' +
+      '<div class="list">' + O('archive','Beiträge archivieren','Hausaufgaben, Mitteilungen und Material verschwinden aus den Ordnern, bleiben aber für die Verwaltung einsehbar.') + O('purgeAbs','Abmeldungen löschen','Empfohlen. Krankmeldungen werden nach dem Schuljahr nicht mehr gebraucht.') + O('purgeAtt','Klassenbuch leeren','Anwesenheitslisten des alten Jahres löschen.') + O('purgeMsgs','Nachrichten löschen','Alle Unterhaltungen zwischen Eltern und Lehrkräften entfernen.') + '</div>' + nav();
+  } else if (W.step === 4){
+    const leaveFam = S.users.filter(u => u.role === 'parent' && S.children.filter(c => c.parentIds.includes(u.id)).every(c => W.leave.includes(c.id)));
+    const moved = remaining.filter(c => W.moves[c.id] && W.moves[c.id] !== c.group).length;
+    h = stepper + '<div class="greet"><h1 class="h1">Prüfen und ausführen</h1><p class="muted">Schuljahr ' + esc(S.schoolYear) + ' → <b>' + esc(ny) + '</b></p></div>' +
+      '<div class="list">' +
+        '<div class="row">' + ic('users') + '<span class="row-main"><span class="row-title">' + W.leave.length + ' Kinder verlassen die Madrasah</span><span class="row-meta">' + (W.leave.map(id => esc(child(id)?.first || '')).join(', ') || 'keine') + '</span></span></div>' +
+        '<div class="row">' + ic('lock') + '<span class="row-main"><span class="row-title">' + (leaveFam.length + W.leaveT.length) + ' Zugänge werden gesperrt</span><span class="row-meta">' + ([...leaveFam, ...W.leaveT.map(user)].map(u => esc(u.name)).join(', ') || 'keine') + '</span></span></div>' +
+        '<div class="row">' + ic('cycle') + '<span class="row-main"><span class="row-title">' + moved + ' Kinder wechseln die Gruppe</span></span></div>' +
+        '<div class="row">' + ic('trash') + '<span class="row-main"><span class="row-title">Aufräumen</span><span class="row-meta">' + ([W.opts.archive && 'Beiträge archivieren', W.opts.purgeAbs && 'Abmeldungen löschen', W.opts.purgeAtt && 'Klassenbuch leeren', W.opts.purgeMsgs && 'Nachrichten löschen'].filter(Boolean).join(', ') || 'nichts') + '</span></span></div>' +
+      '</div>' +
+      '<label class="checkline"><input type="checkbox" class="check" data-chg="wizOk"' + (W.ok ? ' checked' : '') + '><span>Ich habe die Liste geprüft. Gesperrte Konten werden nach ' + S.retention.removed + ' Tagen endgültig gelöscht.</span></label>' +
+      nav(W.ok, 'Schuljahreswechsel durchführen');
+  } else {
+    h = '<div class="callout ok">' + ic('check') + '<span>Schuljahr <b>' + esc(S.schoolYear) + '</b> ist aktiv.</span></div>' +
+      '<div class="greet"><h1 class="h1">Neue Familien einladen</h1><p class="muted">Jetzt die neuen Kinder und Eltern hinzufügen. Sie bekommen eine Einladung per SMS oder E-Mail.</p></div>' +
+      '<div class="btns"><button class="btn btn-primary" data-act="open" data-view="invite">' + ic('userplus') + 'Person einladen</button><button class="btn btn-ghost" data-act="wizDone">Fertig</button></div>';
+  }
+  return { t:'Schuljahr', h };
+};
+
+VIEWS.settings = () => {
+  const f = S.features;
+  const F = (k, t, d) => '<label class="row"><span class="row-main"><span class="row-title">' + t + '</span><span class="row-meta">' + d + '</span></span><input type="checkbox" class="switch" data-chg="feature" data-id="' + k + '"' + (f[k] ? ' checked' : '') + '></label>';
+  const R = (k, t, opts) => '<div class="row"><span class="row-main"><span class="row-title">' + t + '</span></span><label class="sr" for="rt-' + k + '">' + t + '</label><select id="rt-' + k + '" style="width:auto;min-height:44px" data-chg="retention" data-id="' + k + '">' + opts.map(([v, l]) => '<option value="' + v + '"' + (S.retention[k] === v ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></div>';
+  return { t:'Verwaltung', h:
+    '<div class="greet"><h1 class="h1">Verwaltung</h1><p class="muted">Hier passt du die App an, ohne dass programmiert werden muss.</p></div>' +
+    '<section class="sec">' + secHead('Fächer', '<button class="link" data-act="open" data-view="subjectEdit" data-id="">+ Fach</button>') + '<div class="list">' + S.subjects.map(s => '<div class="row">' + logo(s, 40) + '<button class="row-main" data-act="open" data-view="subjectEdit" data-id="' + s.id + '"><span class="row-title">' + esc(s.name) + '</span><span class="row-meta">' + esc(s.desc) + '</span></button><input type="checkbox" class="switch" data-chg="subjActive" data-id="' + s.id + '"' + (s.active ? ' checked' : '') + ' aria-label="' + esc(s.name) + ' aktiv"></div>').join('') + '</div></section>' +
+    '<section class="sec">' + secHead('Gruppen') + '<div class="list">' + S.groups.map(g => '<div class="row"><span class="row-main"><span class="row-title">' + esc(g.name) + '</span><span class="row-meta">' + esc(g.info) + ' · ' + S.children.filter(c => c.group === g.id).length + ' Kinder</span></span><button class="icon-btn" data-act="removeGroup" data-id="' + g.id + '" aria-label="' + esc(g.name) + ' löschen">' + ic('trash') + '</button></div>').join('') + '</div>' +
+      '<form data-form="addGroup" class="row2" novalidate style="align-items:end"><label class="field" for="ng-name"><span>Neue Gruppe</span><input type="text" id="ng-name" name="name" placeholder="Gruppe 4"></label><label class="field" for="ng-info"><span>Alter / Stufe</span><input type="text" id="ng-info" name="info" placeholder="Hifz-Klasse"></label><button class="btn btn-ghost" style="grid-column:1/-1">' + ic('plus') + 'Gruppe anlegen</button></form></section>' +
+    '<section class="sec">' + secHead('Funktionen') + '<div class="list">' + F('messages','Nachrichten','Eltern und Lehrkräfte schreiben sich direkt.') + F('attendance','Klassenbuch','Anwesenheit pro Unterrichtstag.') + F('events','Termine','Elternabende, Wettbewerbe, freie Tage.') + F('quran','Koran-Fortschritt','Auswendiggelernte Suren pro Kind.') + F('readReceipts','Lesebestätigungen','Für wichtige Mitteilungen.') + '</div></section>' +
+    '<section class="sec">' + secHead('Löschfristen') + '<div class="list">' + R('absences','Abmeldungen löschen nach', [['30','30 Tagen'],['90','90 Tagen'],['180','180 Tagen']]) + R('messages','Nachrichten ohne Antwort nach', [['180','6 Monaten'],['365','12 Monaten']]) + R('removed','Gesperrte Konten nach', [['7','7 Tagen'],['30','30 Tagen'],['90','90 Tagen']]) + '</div></section>' +
+    themeSec() +
+    '<section class="sec">' + secHead('Weitere') + '<div class="list">' +
+      '<button class="row row-btn" data-act="open" data-view="events">' + ic('cal') + '<span class="row-main"><span class="row-title">Termine</span></span>' + ic('chev','chev') + '</button>' +
+      '<button class="row row-btn" data-act="open" data-view="timetable">' + ic('clock') + '<span class="row-main"><span class="row-title">Stundenplan</span></span>' + ic('chev','chev') + '</button>' +
+      '<button class="row row-btn" data-act="open" data-view="quran">' + ic('quran') + '<span class="row-main"><span class="row-title">Koran-Fortschritt</span></span>' + ic('chev','chev') + '</button>' +
+      '<button class="row row-btn" data-act="open" data-view="legal">' + ic('shield') + '<span class="row-main"><span class="row-title">Rechtliches & Datenschutz</span></span>' + ic('chev','chev') + '</button>' +
+      '<button class="row row-btn" data-act="open" data-view="audit">' + ic('list') + '<span class="row-main"><span class="row-title">Protokoll</span><span class="row-meta">Wer hat wann was geändert</span></span>' + ic('chev','chev') + '</button>' +
+      '<button class="row row-btn" data-act="logout">' + ic('logout') + '<span class="row-main"><span class="row-title">Ausloggen</span></span></button>' +
+    '</div></section>' +
+    '<button class="btn btn-ghost btn-sm" style="align-self:center" data-act="askReset">Demo-Daten zurücksetzen</button>' };
+};
+
+VIEWS.subjectEdit = ({ id }) => {
+  const s = id ? S.subjects.find(x => x.id === id) : null;
+  UI.logoDraft = null;
+  return { t: s ? s.name : 'Neues Fach', cls:'sub', h:
+    '<form data-form="subject" data-id="' + (s ? s.id : '') + '" novalidate>' +
+      '<div class="subj-head"><span id="logo-prev">' + logo(s || { name:'?', logo:'' }, 84) + '</span><div class="row-main"><h1 class="h1">' + (s ? esc(s.name) : 'Neues Fach') + '</h1><p class="hint">Das Logo wird so angezeigt, wie ihr es hochladet – nichts wird zugeschnitten oder umgefärbt.</p></div></div>' +
+      '<label class="field" for="s-name"><span>Name</span><input type="text" id="s-name" name="name" value="' + esc(s ? s.name : '') + '" placeholder="z. B. Tadschwīd"></label>' +
+      '<label class="field" for="s-desc"><span>Kurzbeschreibung</span><input type="text" id="s-desc" name="desc" value="' + esc(s ? s.desc : '') + '" placeholder="Worum geht es in diesem Fach?"></label>' +
+      '<label class="field" for="s-logo"><span>Logo</span><input type="file" id="s-logo" accept="image/png,image/jpeg,image/webp,image/svg+xml" data-chg="logoPick"><span class="hint">PNG oder SVG, am besten quadratisch.</span></label>' +
+      '<div id="s-err" hidden class="err"></div>' +
+      '<button class="btn btn-primary btn-block">' + (s ? 'Speichern' : 'Fach anlegen') + '</button>' +
+    '</form>' };
+};
+
+VIEWS.legal = () => {
+  const items = [
+    ['dse','Datenschutzerklärung für die App','Was, wofür, wie lange, Rechte der Eltern. In der App und beim ersten Login verlinkt.'],
+    ['vvt','Verzeichnis der Verarbeitungstätigkeiten','Pflicht nach Art. 30 DSGVO. Eine Seite reicht für den Anfang.'],
+    ['avv','Vertrag zur Auftragsverarbeitung mit dem Hoster','Server in Deutschland oder der EU, AV-Vertrag nach Art. 28 DSGVO.'],
+    ['consent','Einwilligung der Eltern beim ersten Login','Ist in der App eingebaut. Text mit dem Vorstand abstimmen.'],
+    ['confid','Lehrkräfte auf Vertraulichkeit verpflichten','Schriftlich oder beim ersten Login in der App.'],
+    ['dsfa','Datenschutz-Folgenabschätzung prüfen','Bei Daten von Kindern mit religiösem Bezug sinnvoll zu prüfen.'],
+    ['dsb','Ansprechpartner für Datenschutz benennen','Name und Kontakt in die Datenschutzerklärung.']
+  ];
+  return { t:'Rechtliches', cls:'sub', h:
+    '<div class="greet"><h1 class="h1">Vor dem echten Start</h1><p class="muted">Diese Punkte sollten erledigt sein, bevor echte Daten von Kindern in die App kommen.</p></div>' +
+    '<div class="list">' + items.map(([k, t, d]) => '<label class="row"><input type="checkbox" class="check" data-chg="legal" data-id="' + k + '"' + (S.legal[k] ? ' checked' : '') + '><span class="row-main"><span class="row-title">' + t + '</span><span class="row-meta">' + d + '</span></span></label>').join('') + '</div>' +
+    '<div class="callout warn">' + ic('info') + '<span>Das ist eine Arbeitsliste, keine Rechtsberatung. Lasst die Texte von einer Fachperson für Datenschutz prüfen.</span></div>' };
+};
+
+VIEWS.audit = () => ({ t:'Protokoll', cls:'sub', h:
+  '<div class="greet"><h1 class="h1">Protokoll</h1><p class="muted">Einladungen, Löschungen und Änderungen – nachvollziehbar für den Vorstand.</p></div>' +
+  (S.audit.length ? '<div class="list">' + S.audit.map(a => '<div class="row"><span class="row-main"><span class="row-title" style="font-weight:600">' + esc(a.what) + '</span><span class="row-meta">' + esc(a.who) + ' · ' + fmt(new Date(a.at), { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) + '</span></span></div>').join('') + '</div>' : empty('Noch keine Einträge.')) });
+
+VIEWS.consent = () => {
+  const u = me(), isParent = u.role === 'parent';
+  return { t:'Willkommen', h:
+    '<div class="greet"><span class="eyebrow">Erster Login</span><h1 class="h1">Willkommen bei Nur Al-Amin</h1><p class="muted">Bevor es losgeht: So gehen wir mit ' + (isParent ? 'deinen Daten und denen deiner Kinder' : 'den Daten der Familien') + ' um.</p></div>' +
+    '<div class="list">' +
+      '<div class="row">' + ic('folder') + '<span class="row-main"><span class="row-title">Was gespeichert wird</span><span class="row-meta">Name, Handynummer oder E-Mail' + (isParent ? ', Vornamen und Gruppen deiner Kinder, Abmeldungen und Nachrichten.' : ', deine Fächer und Gruppen, deine Beiträge und Nachrichten.') + '</span></span></div>' +
+      '<div class="row">' + ic('eye') + '<span class="row-main"><span class="row-title">Wer es sieht</span><span class="row-meta">Lehrkräfte nur ihre Gruppen. Nachrichten nur die Beteiligten. Keine Weitergabe an Dritte, keine Werbung.</span></span></div>' +
+      '<div class="row">' + ic('clock') + '<span class="row-main"><span class="row-title">Wie lange</span><span class="row-meta">Abmeldungen ' + S.retention.absences + ' Tage, Konten bis ' + S.retention.removed + ' Tage nach dem Austritt.</span></span></div>' +
+      '<div class="row">' + ic('shield') + '<span class="row-main"><span class="row-title">Deine Rechte</span><span class="row-meta">Auskunft, Berichtigung, Löschung und Widerruf – jederzeit unter Mehr → Datenschutz.</span></span></div>' +
+    '</div>' +
+    '<form data-form="consent" novalidate>' +
+      '<label class="checkline"><input type="checkbox" class="check" name="ok" id="cs-ok"><span>' + (isParent ? 'Ich habe die Datenschutzhinweise gelesen und willige ein, dass meine Daten und die meiner Kinder für die Organisation des Unterrichts verarbeitet werden.' : 'Ich verpflichte mich, die Daten der Kinder und Eltern vertraulich zu behandeln und nur für den Unterricht zu nutzen.') + '</span></label>' +
+      '<label class="checkline"><input type="checkbox" class="check" name="push" checked><span>Benachrichtigungen aufs Handy erlauben</span></label>' +
+      '<div id="cs-err" hidden class="err"></div>' +
+      '<button class="btn btn-primary btn-block">Zustimmen und weiter</button>' +
+      '<button type="button" class="btn btn-ghost btn-block" data-act="logout">Ablehnen und ausloggen</button>' +
+    '</form>' };
+};
+
+/* ---------- Login ---------- */
+function renderLogin(){
+  const L = UI.login;
+  const contactShown = L.method === 'phone' ? maskPhone(L.contact) : maskMail(L.contact);
+  const step1 = '<form data-form="loginStart" novalidate><div class="seg" role="group" aria-label="Anmelden mit"><button type="button" data-act="loginMethod" data-x="phone" aria-pressed="' + (L.method === 'phone') + '">' + ic('phone') + 'Handynummer</button><button type="button" data-act="loginMethod" data-x="email" aria-pressed="' + (L.method === 'email') + '">' + ic('mail') + 'E-Mail</button></div>' +
+    '<label class="field" for="l-contact"><span>' + (L.method === 'phone' ? 'Deine Handynummer' : 'Deine E-Mail-Adresse') + '</span><input id="l-contact" name="contact" ' + (L.method === 'phone' ? 'type="tel" inputmode="tel" autocomplete="tel" placeholder="0151 23456789"' : 'type="email" inputmode="email" autocomplete="email" placeholder="name@example.de"') + ' value="' + esc(L.contact) + '"></label>' +
+    (L.err ? '<div class="err">' + esc(L.err) + '</div>' : '') + '<button class="btn btn-primary btn-block">Code anfordern</button></form>';
+  const step2 = '<form data-form="loginCode" novalidate><p>Wir haben einen 6-stelligen Code an <b>' + esc(contactShown) + '</b> geschickt.</p><label class="field" for="l-code"><span>Code</span><input id="l-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="code-input" placeholder="••••••"></label>' +
+    (L.err ? '<div class="err">' + esc(L.err) + '</div>' : '') + '<button class="btn btn-primary btn-block">Anmelden</button><div class="btns"><button type="button" class="btn btn-ghost btn-sm" data-act="loginBack">Andere ' + (L.method === 'phone' ? 'Nummer' : 'Adresse') + '</button><button type="button" class="btn btn-ghost btn-sm" data-act="resend">Code erneut senden</button></div></form>';
+  const D = (id, t, s) => '<button data-act="demoLogin" data-id="' + id + '"><b>' + t + '</b><span>' + s + '</span></button>';
+  return '<main id="main" tabindex="-1" class="login-wrap">' +
+    '<div class="login-brand"><span class="lt lt-dark"><img src="assets/gemeinde.webp" alt="Logo der Gemeinde" width="512" height="512"></span><h1 class="wordmark">' + esc(CONFIG.app) + '</h1><p class="ar" lang="ar" dir="rtl">' + CONFIG.appAr + '</p><p class="muted">' + esc(S.org.school) + ' · ' + esc(S.org.name) + '</p></div>' +
+    '<section class="card pad">' + (L.step === 1 ? step1 : step2) + '</section>' +
+    '<p class="fine">Nur für Mitglieder, die von der Gemeinde freigeschaltet wurden. Noch kein Zugang? Die Verwaltung schickt dir eine Einladung.</p>' +
+    '<section class="demo-box"><p><b>Prototyp mit Beispieldaten.</b> Bitte keine echten Daten eingeben. Testzugang direkt wählen oder mit einer Beispielnummer und dem Code <b>' + CONFIG.demoCode + '</b> anmelden (z. B. 0151 2345678).</p><div class="demo-grid">' +
+      D('p1','Elternteil','Samira · 2 Kinder') + D('t1','Lehrkraft Fiqh','Ustādh Karim') + D('t2','Lehrkraft Koran','Ustādh Bilal') + D('a1','Verwaltung','Br. Yassin') + '</div></section>' +
+  '</main>';
+}
+
+/* ---------- Rahmen: Kopf, Tabs, Render ---------- */
+function topbar(title, sub){
+  const u = me();
+  return '<header class="top">' + (sub ? '<button class="icon-btn" data-act="back" aria-label="Zurück">' + ic('back') + '</button>' : logo(GENERAL, 34)) +
+    '<span class="top-title">' + esc(title) + '</span><span class="demo-pill">Demo</span>' +
+    (u ? '<button class="avatar" data-act="go" data-tab="mehr" aria-label="Profil">' + initials(u.name) + '</button>' : '') + '</header>';
+}
+function tabbar(u){
+  const tabs = tabsFor(u), n = unreadTotal();
+  return '<nav class="tabbar" aria-label="Hauptmenü"><div class="tabbar-in" style="--n:' + tabs.length + '">' + tabs.map(([k, l, icon, cls]) => '<button class="tab ' + (cls || '') + '" data-act="go" data-tab="' + k + '"' + (UI.tab === k ? ' aria-current="page"' : '') + '><span class="tab-ico">' + ic(icon) + '</span>' + (k === 'nachrichten' && n ? '<span class="badge">' + n + '</span>' : '') + '<span>' + l + '</span></button>').join('') + '</div></nav>';
+}
+function render(){
+  const app = document.getElementById('app');
+  if (!UI.userId){ app.innerHTML = renderLogin(); if (UI.reset){ window.scrollTo(0, 0); UI.reset = false; } return; }
+  const u = me(); if (!u){ logout(); return; }
+  let v, sub = UI.stack.length > 0;
+  if (!u.consent){ v = VIEWS.consent(); sub = false; app.innerHTML = topbar(v.t, false) + '<main id="main" tabindex="-1" class="sub">' + v.h + '</main>'; return; }
+  const tabs = tabsFor(u).map(t => t[0]); if (!tabs.includes(UI.tab)) UI.tab = 'start';
+  const top = sub ? UI.stack[UI.stack.length - 1] : { view: ROOTS[u.role][UI.tab], params:{} };
+  v = (VIEWS[top.view] || VIEWS[ROOTS[u.role].start])(top.params || {});
+  app.innerHTML = topbar(v.t, sub) + '<main id="main" tabindex="-1" class="' + (v.cls || '') + (UI.reset ? ' enter' : '') + '">' + v.h + '</main>' + (sub ? '' : tabbar(u)) + (v.after || '');
+  if (top.view === 'thread'){ window.scrollTo(0, document.body.scrollHeight); UI.reset = false; }
+  else if (UI.reset){ window.scrollTo(0, 0); UI.reset = false; }
+}
+
+/* ---------- Toast & Sheet ---------- */
+function toast(msg){
+  let t = document.getElementById('toast');
+  if (!t){ t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2800);
+}
+function openSheet(html){ closeSheet(); const w = document.createElement('div'); w.id = 'sheet'; w.innerHTML = '<div class="scrim" data-act="closeSheet"></div><div class="sheet" role="dialog" aria-modal="true">' + html + '</div>'; document.body.appendChild(w); w.querySelector('.sheet button')?.focus(); }
+function closeSheet(){ document.getElementById('sheet')?.remove(); }
+function confirmSheet(title, text, okLabel, act, id, danger = true){
+  openSheet('<h2 class="h2">' + title + '</h2><p class="muted">' + text + '</p><div class="btns"><button class="btn btn-ghost" data-act="closeSheet">Abbrechen</button><button class="btn ' + (danger ? 'btn-danger' : 'btn-primary') + '" data-act="' + act + '" data-id="' + (id || '') + '">' + okLabel + '</button></div>');
+}
+
+/* ---------- Aktionen ---------- */
+function login(id){ UI.userId = id; UI.tab = 'start'; UI.stack = []; UI.login = { method:'phone', step:1, contact:'', err:'', tries:0 }; UI.att = null; UI.wiz = null; try { localStorage.setItem(SESSION_KEY, id); } catch(e){} log('Login'); save(); UI.reset = true; hset(false); render(); }
+function logout(){ UI.userId = null; UI.stack = []; try { localStorage.removeItem(SESSION_KEY); } catch(e){} UI.reset = true; hset(false); render(); }
+function removeUser(id, reason){
+  const u = user(id); if (!u) return;
+  S.users = S.users.filter(x => x.id !== id);
+  S.children.forEach(c => c.parentIds = c.parentIds.filter(p => p !== id));
+  const orphans = S.children.filter(c => !c.parentIds.length).map(c => c.id);
+  S.children = S.children.filter(c => c.parentIds.length);
+  S.absences = S.absences.filter(a => a.parentId !== id && !orphans.includes(a.childId));
+  orphans.forEach(cid => delete S.quran[cid]);
+  S.removed.push({ name:u.name, at:Date.now(), purgeAt:Date.now() + Number(S.retention.removed) * 24 * HOUR });
+  log('Zugang entzogen: ' + u.name + (reason ? ' (' + reason + ')' : ''));
+}
+
+const ACT = {
+  go: el => go(el.dataset.tab),
+  skip: () => { const m = document.getElementById('main'); if (m) m.focus(); },
+  theme: el => { applyTheme(el.dataset.x); render(); },
+  back: () => back(),
+  open: el => push(el.dataset.view, { id: el.dataset.id, x: el.dataset.x }),
+  closeSheet: () => closeSheet(),
+  loginMethod: el => { UI.login.method = el.dataset.x; UI.login.err = ''; UI.login.contact = ''; render(); },
+  loginBack: () => { UI.login.step = 1; UI.login.err = ''; render(); },
+  resend: () => toast('Neuer Code gesendet. In der Demo: ' + CONFIG.demoCode),
+  demoLogin: el => login(el.dataset.id),
+  logout: () => logout(),
+  askReset: () => confirmSheet('Demo zurücksetzen?', 'Alle Änderungen in diesem Browser gehen verloren und die Beispieldaten werden neu geladen.', 'Zurücksetzen', 'doReset', '', false),
+  doReset: () => { closeSheet(); S = seed(); save(); UI.stack = []; UI.wiz = null; UI.att = null; toast('Beispieldaten neu geladen'); logout(); },
+  subjTab: el => { UI.subjTab[el.dataset.id] = el.dataset.x; render(); },
+  confirmRead: el => { const p = S.posts.find(x => x.id === el.dataset.id); if (!p.confirmBy.includes(UI.userId)) p.confirmBy.push(UI.userId); if (!p.readBy.includes(UI.userId)) p.readBy.push(UI.userId); save(); toast('Bestätigt. Danke!'); render(); },
+  doneQuick: el => { const p = S.posts.find(x => x.id === el.dataset.id); if (!p.doneBy.includes(el.dataset.c)) p.doneBy.push(el.dataset.c); save(); toast(child(el.dataset.c).first + ': als erledigt markiert'); render(); },
+  fileOpen: () => toast('Im Prototyp sind keine echten Dateien hinterlegt.'),
+  remind: el => { const p = S.posts.find(x => x.id === el.dataset.id), a = audience(p); const n = p.type === 'hausaufgabe' ? new Set(a.kids.filter(k => !p.doneBy.includes(k.id)).flatMap(k => k.parentIds)).size : a.parents.filter(x => !p.readBy.includes(x)).length; toast(n ? 'Erinnerung an ' + n + ' Eltern gesendet' : 'Alle sind schon dran – keine Erinnerung nötig'); },
+  askDeletePost: el => confirmSheet('Beitrag löschen?', 'Der Beitrag verschwindet für alle Eltern aus dem Ordner.', 'Löschen', 'deletePost', el.dataset.id),
+  deletePost: el => { const p = S.posts.find(x => x.id === el.dataset.id); S.posts = S.posts.filter(x => x.id !== el.dataset.id); log('Beitrag gelöscht: ' + (p ? p.title : '')); save(); closeSheet(); toast('Beitrag gelöscht'); back(); },
+  writeTo: el => push('newMsg', { id: el.dataset.id, x: el.dataset.x }),
+  withdrawAbs: el => { S.absences = S.absences.filter(a => a.id !== el.dataset.id); save(); toast('Abmeldung zurückgezogen'); render(); },
+  seenAbs: el => { const a = S.absences.find(x => x.id === el.dataset.id); if (!a.seenBy.includes(UI.userId)) a.seenBy.push(UI.userId); save(); toast('Die Eltern sehen jetzt „gesehen“'); render(); },
+  ttGroup: el => { UI.ttGroup = el.dataset.id; render(); },
+  qGroup: el => { UI.qGroup = el.dataset.id; render(); },
+  quranSet: el => { const c = el.dataset.id, n = el.dataset.n, v = el.dataset.v; S.quran[c] = S.quran[c] || {}; if (v) S.quran[c][n] = v; else delete S.quran[c][n]; save(); render(); },
+  attGroup: el => { UI.att.group = el.dataset.id; render(); },
+  attDay: el => { const d = parseISO(UI.att.date); UI.att.date = iso(el.dataset.v === '1' ? nextClassDay(addDays(d, 1)) : prevClassDay(d)); render(); },
+  attSet: el => { const key = UI.att.group + '|' + UI.att.date; S.attendance[key] = S.attendance[key] || {}; const kids = S.children.filter(c => c.group === UI.att.group); kids.forEach(c => { if (!S.attendance[key][c.id]){ const a = absenceOn(c.id, UI.att.date); S.attendance[key][c.id] = a ? (a.type === 'spaet' ? 'spaet' : 'entsch') : 'da'; } }); S.attendance[key][el.dataset.id] = el.dataset.v; save(); render(); },
+  attSave: () => { const key = UI.att.group + '|' + UI.att.date; if (!S.attendance[key]){ S.attendance[key] = {}; S.children.filter(c => c.group === UI.att.group).forEach(c => { const a = absenceOn(c.id, UI.att.date); S.attendance[key][c.id] = a ? (a.type === 'spaet' ? 'spaet' : 'entsch') : 'da'; }); } log('Klassenbuch ' + group(UI.att.group).name + ', ' + fmtShort(UI.att.date) + ' gespeichert'); save(); toast('Klassenbuch gespeichert'); render(); },
+  attNotify: () => { const rec = S.attendance[UI.att.group + '|' + UI.att.date] || {}; const n = Object.values(rec).filter(v => v === 'fehlt').length; toast(n + (n === 1 ? ' Familie' : ' Familien') + ' per Benachrichtigung informiert'); },
+  showExport: () => {
+    const u = me(), kids = u.role === 'parent' ? myKids() : [];
+    const data = { profil:{ name:u.name, rolle:ROLE_LABEL[u.role], handy:u.phone, email:u.email, einwilligung:u.consent ? new Date(u.consent).toISOString() : null }, kinder:kids.map(k => ({ name:kidName(k), gruppe:group(k.group).name })), abmeldungen:S.absences.filter(a => a.parentId === u.id).map(a => ({ kind:child(a.childId)?.first, art:ABS_TYPES[a.type].label, von:a.from, bis:a.to, notiz:a.note })), nachrichten:myThreads().flatMap(t => t.messages.filter(m => m.by === u.id).map(m => ({ an:user(u.id === t.parentId ? t.teacherId : t.parentId)?.name, text:m.text, zeit:new Date(m.at).toISOString() }))) };
+    UI.exportText = JSON.stringify(data, null, 2);
+    openSheet('<h2 class="h2">Datenauskunft</h2><p class="muted small">Alles, was die App über dich gespeichert hat (Art. 15 DSGVO). In der echten App kommt das als Datei per E-Mail.</p><pre id="export-pre">' + esc(UI.exportText) + '</pre><div class="btns"><button class="btn btn-ghost" data-act="copyExport">' + ic('copy') + 'Kopieren</button><button class="btn btn-primary" data-act="closeSheet">Schließen</button></div>');
+  },
+  copyExport: () => { navigator.clipboard.writeText(UI.exportText).then(() => toast('Kopiert'), () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('export-pre')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Text markiert – jetzt kopieren'); }); },
+  askDeletion: () => confirmSheet('Konto löschen?', 'Die Verwaltung bekommt deinen Antrag. Dein Zugang wird gesperrt und deine Daten werden nach ' + S.retention.removed + ' Tagen gelöscht.', 'Löschung beantragen', 'doDeletion'),
+  doDeletion: () => { closeSheet(); log('Löschantrag gestellt'); save(); toast('Antrag an die Verwaltung gesendet'); },
+  peopleTab: el => { UI.peopleTab = el.dataset.x; render(); },
+  peopleGo: el => { UI.peopleTab = el.dataset.x; go('personen'); },
+  addKidRow: () => { const box = document.getElementById('kid-rows'); const i = box.children.length; const div = document.createElement('div'); div.className = 'row2 kid-row'; div.innerHTML = '<label class="field" for="ik-' + i + '"><span>Vorname Kind</span><input type="text" id="ik-' + i + '" name="kidFirst"></label><label class="field" for="ig-' + i + '"><span>Gruppe</span><select id="ig-' + i + '" name="kidGroup">' + S.groups.map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></label>'; box.appendChild(div); div.querySelector('input').focus(); },
+  acceptInvite: el => {
+    const i = S.invites.find(x => x.id === el.dataset.id); if (!i) return;
+    const id = uid('u'), last = i.name.split(' ').slice(-1)[0];
+    const u = { id, role:i.role, name:i.name, phone:i.type === 'phone' ? '+' + digits(i.contact) : '+490000000000', email:i.type === 'email' ? i.contact : '—', consent:null };
+    if (i.role === 'teacher'){ u.subjects = i.subjects; u.groups = i.groups; }
+    S.users.push(u);
+    (i.kids || []).forEach(k => S.children.push({ id:uid('c'), first:k.first, last, group:k.group, parentIds:[id] }));
+    i.status = 'angenommen'; log('Einladung angenommen: ' + i.name); save(); toast(i.name + ' ist jetzt in der App'); render();
+  },
+  withdrawInvite: el => { const i = S.invites.find(x => x.id === el.dataset.id); S.invites = S.invites.filter(x => x.id !== el.dataset.id); log('Einladung zurückgezogen: ' + (i ? i.name : '')); save(); render(); },
+  askRemoveKid: el => { const c = child(el.dataset.id); confirmSheet(esc(c.first) + ' entfernen?', 'Das Kind verschwindet aus Gruppe, Klassenbuch und Koran-Fortschritt. Das Elternkonto bleibt bestehen.', 'Entfernen', 'removeKid', c.id); },
+  removeKid: el => { const c = child(el.dataset.id); S.children = S.children.filter(x => x.id !== c.id); S.absences = S.absences.filter(a => a.childId !== c.id); delete S.quran[c.id]; log('Kind entfernt: ' + kidName(c)); save(); closeSheet(); toast(c.first + ' entfernt'); render(); },
+  askRevoke: el => { const u = user(el.dataset.id); const ks = S.children.filter(c => c.parentIds.length === 1 && c.parentIds[0] === u.id); confirmSheet('Zugang von ' + esc(u.name) + ' entziehen?', 'Der Login wird sofort gesperrt.' + (ks.length ? ' Auch ' + ks.map(k => esc(k.first)).join(' und ') + ' werden entfernt.' : '') + ' Endgültige Löschung nach ' + S.retention.removed + ' Tagen.', 'Zugang entziehen', 'revoke', u.id); },
+  revoke: el => { const u = user(el.dataset.id); removeUser(u.id); save(); closeSheet(); toast('Zugang von ' + u.name + ' entzogen'); back(); },
+  wiz: el => { const W = UI.wiz; W.step = Math.max(0, W.step + Number(el.dataset.v)); if (W.step === 5) runYearChange(); UI.reset = true; render(); },
+  wizDone: () => { UI.wiz = null; go('start'); },
+  removeGroup: el => { const g = group(el.dataset.id); const n = S.children.filter(c => c.group === g.id).length; if (n){ toast('In ' + g.name + ' sind noch ' + n + ' Kinder. Erst versetzen, dann löschen.'); return; } S.groups = S.groups.filter(x => x.id !== g.id); delete S.timetable[g.id]; S.users.forEach(u => { if (u.groups) u.groups = u.groups.filter(x => x !== g.id); }); log('Gruppe gelöscht: ' + g.name); save(); render(); },
+  deleteEvent: el => { S.events = S.events.filter(e => e.id !== el.dataset.id); log('Termin gelöscht'); save(); render(); }
+};
+
+function runYearChange(){
+  const W = UI.wiz, old = S.schoolYear;
+  S.children = S.children.filter(c => !W.leave.includes(c.id));
+  W.leave.forEach(id => delete S.quran[id]);
+  S.users.filter(u => u.role === 'parent' && !S.children.some(c => c.parentIds.includes(u.id))).forEach(u => removeUser(u.id, 'Schuljahreswechsel'));
+  W.leaveT.forEach(id => removeUser(id, 'Schuljahreswechsel'));
+  S.children.forEach(c => { if (W.moves[c.id]) c.group = W.moves[c.id]; });
+  if (W.opts.archive) S.posts.forEach(p => { p.archived = true; p.year = old; });
+  if (W.opts.purgeAbs) S.absences = [];
+  if (W.opts.purgeAtt) S.attendance = {};
+  if (W.opts.purgeMsgs) S.threads = [];
+  S.schoolYear = nextYear(old);
+  log('Schuljahreswechsel ' + old + ' → ' + S.schoolYear + ': ' + W.leave.length + ' Abgänge');
+  save();
+}
+
+const CHG = {
+  done: el => { const p = S.posts.find(x => x.id === el.dataset.id), c = el.dataset.c; p.doneBy = p.doneBy.filter(x => x !== c); if (el.checked) p.doneBy.push(c); save(); },
+  pref: el => { S.prefs[UI.userId] = S.prefs[UI.userId] || {}; S.prefs[UI.userId][el.dataset.id] = el.checked; save(); },
+  kidGroup: el => { const c = child(el.dataset.id); c.group = el.value; log(kidName(c) + ' → ' + group(el.value).name); save(); toast(c.first + ' ist jetzt in ' + group(el.value).name); },
+  tSubj: el => { const t = user(el.dataset.id); t.subjects = (t.subjects || []).filter(x => x !== el.value); if (el.checked) t.subjects.push(el.value); save(); },
+  tGroup: el => { const t = user(el.dataset.id); t.groups = (t.groups || []).filter(x => x !== el.value); if (el.checked) t.groups.push(el.value); save(); },
+  feature: el => { S.features[el.dataset.id] = el.checked; log('Funktion ' + el.dataset.id + (el.checked ? ' eingeschaltet' : ' ausgeschaltet')); save(); render(); },
+  retention: el => { S.retention[el.dataset.id] = el.value; log('Löschfrist geändert'); save(); },
+  subjActive: el => { const s = S.subjects.find(x => x.id === el.dataset.id); s.active = el.checked; log('Fach ' + s.name + (el.checked ? ' aktiviert' : ' ausgeblendet')); save(); },
+  legal: el => { S.legal[el.dataset.id] = el.checked; save(); },
+  wizLeave: el => { const W = UI.wiz; W.leave = W.leave.filter(x => x !== el.value); if (el.checked) W.leave.push(el.value); },
+  wizLeaveT: el => { const W = UI.wiz; W.leaveT = W.leaveT.filter(x => x !== el.value); if (el.checked) W.leaveT.push(el.value); },
+  wizMove: el => { UI.wiz.moves[el.dataset.id] = el.value; },
+  wizOpt: el => { UI.wiz.opts[el.dataset.id] = el.checked; },
+  wizOk: el => { UI.wiz.ok = el.checked; render(); },
+  logoPick: el => {
+    const f = el.files && el.files[0]; if (!f) return;
+    if (f.size > 1.5 * 1048576){ toast('Das Logo ist größer als 1,5 MB. Bitte eine kleinere Datei wählen.'); el.value = ''; return; }
+    const r = new FileReader(); r.onload = () => { UI.logoDraft = r.result; document.getElementById('logo-prev').innerHTML = '<span class="lt" style="--s:84px"><img src="' + r.result + '" alt="Neues Logo"></span>'; }; r.readAsDataURL(f);
+  }
+};
+
+function showErr(id, msg){ const e = document.getElementById(id); if (e){ e.textContent = msg; e.hidden = false; e.scrollIntoView({ block:'nearest', behavior:'smooth' }); } }
+
+const FORMS = {
+  loginStart: (f, fd) => {
+    const L = UI.login, v = String(fd.get('contact') || '').trim(); L.contact = v;
+    if (!v){ L.err = L.method === 'phone' ? 'Bitte gib deine Handynummer ein.' : 'Bitte gib deine E-Mail-Adresse ein.'; return render(); }
+    const found = L.method === 'phone' ? S.users.find(u => digits(u.phone) === digits(v)) : S.users.find(u => u.email.toLowerCase() === v.toLowerCase());
+    if (!found){ L.err = (L.method === 'phone' ? 'Diese Nummer' : 'Diese Adresse') + ' ist nicht freigeschaltet. Nur eingeladene Mitglieder der Gemeinde können sich anmelden. Bitte wende dich an die Verwaltung.'; return render(); }
+    L.pending = found.id; L.step = 2; L.err = ''; render(); setTimeout(() => document.getElementById('l-code')?.focus(), 30);
+  },
+  loginCode: (f, fd) => {
+    const L = UI.login, c = String(fd.get('code') || '').replace(/\D/g, '');
+    if (L.tries >= 5){ L.err = 'Zu viele Versuche. Fordere bitte einen neuen Code an.'; return render(); }
+    if (c !== CONFIG.demoCode){ L.tries++; L.err = 'Der Code stimmt nicht. Prüfe die SMS bzw. E-Mail oder fordere einen neuen Code an.'; return render(); }
+    login(L.pending);
+  },
+  consent: (f, fd) => {
+    if (!fd.get('ok')) return showErr('cs-err', 'Bitte bestätige den Hinweis, um die App zu nutzen.');
+    const u = me(); u.consent = Date.now(); if (!fd.get('push')){ S.prefs[u.id] = { hausaufgabe:false, mitteilung:false, nachricht:false, termin:false, abmeldung:false }; }
+    log(u.role === 'parent' ? 'Einwilligung erteilt' : 'Vertraulichkeit bestätigt'); save(); UI.reset = true; render();
+  },
+  absence: (f, fd) => {
+    const kids = fd.getAll('child'), type = fd.get('type'), from = fd.get('from'), to = fd.get('to') || from, note = String(fd.get('note') || '').trim(), time = (type === 'spaet' || type === 'frueh') ? fd.get('time') : '';
+    if (!kids.length) return showErr('a-err', 'Bitte wähle mindestens ein Kind aus.');
+    if (!from) return showErr('a-err', 'Bitte gib an, ab wann.');
+    if (from < iso(d0())) return showErr('a-err', 'Das Datum liegt in der Vergangenheit.');
+    if (to < from) return showErr('a-err', '„Bis“ liegt vor „Von“. Bitte die Daten prüfen.');
+    kids.forEach(cid => S.absences.push({ id:uid('ab'), childId:cid, parentId:UI.userId, type, from, to, time, note, created:Date.now(), seenBy:[] }));
+    const names = kids.map(id => child(id).first).join(' und ');
+    log('Abmeldung für ' + names + ' gesendet'); save();
+    UI.flash = { type:'abs', text:'Abmeldung für ' + names + ' gesendet (' + period({ from, to }) + '). Die Lehrkräfte sehen sie jetzt.' };
+    UI.reset = true; render();
+  },
+  compose: (f, fd, e) => {
+    const u = me(), mode = (e.submitter && e.submitter.value) || 'send';
+    const type = fd.get('type'), subject = fd.get('subject'), title = String(fd.get('title') || '').trim(), body = String(fd.get('body') || '').trim();
+    let groups = fd.getAll('groups'); if (groups.includes('alle')) groups = ['alle'];
+    if (!groups.length) return showErr('c-err', 'Bitte wähle mindestens eine Gruppe.');
+    if (!title) return showErr('c-err', 'Bitte gib einen Titel ein.');
+    if (type === 'hausaufgabe' && !fd.get('due')) return showErr('c-err', 'Bitte gib an, bis wann die Hausaufgabe erledigt sein soll.');
+    const files = [...(f.querySelector('#c-files')?.files || [])].map(x => ({ name:x.name, size:fileSize(x.size) }));
+    const p = { id:uid('po'), subject, type, groups, title, body, due:type === 'hausaufgabe' ? fd.get('due') : null, authorId:u.id, created:Date.now(), important:type === 'mitteilung' && !!fd.get('important'), sent:mode === 'send', attachments:files, readBy:[], confirmBy:[], doneBy:[], archived:false };
+    S.posts.push(p); log(POST_TYPES[type] + ' „' + title + '“ ' + (p.sent ? 'gesendet' : 'abgelegt')); save();
+    const n = audience(p).parents.length;
+    toast(p.sent ? 'An ' + n + ' Eltern gesendet und im Ordner abgelegt' : 'Im Ordner ' + subj(subject).name + ' abgelegt');
+    UI.subjTab[subject] = type; replaceTop('post', { id:p.id });
+  },
+  newMsg: (f, fd) => {
+    const u = me(), text = String(fd.get('text') || '').trim(), to = String(fd.get('to') || '');
+    if (!to) return showErr('m-err', 'Bitte wähle aus, an wen die Nachricht geht.');
+    if (!text) return showErr('m-err', 'Die Nachricht ist leer.');
+    let parentId, teacherId, childId;
+    if (u.role === 'parent'){ parentId = u.id; teacherId = to; childId = fd.get('child') || myKids()[0]?.id; }
+    else { [parentId, childId] = to.split('|'); teacherId = u.id; }
+    let t = S.threads.find(x => x.parentId === parentId && x.teacherId === teacherId && x.childId === childId);
+    if (!t){ t = { id:uid('th'), parentId, teacherId, childId, messages:[], readAt:{} }; S.threads.push(t); }
+    t.messages.push({ by:u.id, text, at:Date.now() }); t.readAt[u.id] = Date.now(); save();
+    replaceTop('thread', { id:t.id }); toast('Gesendet');
+  },
+  reply: (f, fd) => {
+    const t = S.threads.find(x => x.id === f.dataset.id), text = String(fd.get('text') || '').trim(); if (!text) return;
+    t.messages.push({ by:UI.userId, text, at:Date.now() }); t.readAt[UI.userId] = Date.now(); save(); render();
+    setTimeout(() => document.getElementById('r-text')?.focus(), 20);
+  },
+  invite: (f, fd) => {
+    const role = fd.get('role'), name = String(fd.get('name') || '').trim(), ctype = fd.get('ctype'), contact = String(fd.get('contact') || '').trim();
+    if (!name) return showErr('i-err', 'Bitte gib den Namen ein.');
+    if (ctype === 'phone' && digits(contact).length < 10) return showErr('i-err', 'Die Handynummer sieht unvollständig aus. Beispiel: 0151 23456789');
+    if (ctype === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact)) return showErr('i-err', 'Die E-Mail-Adresse ist ungültig. Beispiel: name@example.de');
+    const exists = S.users.some(u => ctype === 'phone' ? digits(u.phone) === digits(contact) : u.email.toLowerCase() === contact.toLowerCase());
+    if (exists) return showErr('i-err', 'Mit dieser ' + (ctype === 'phone' ? 'Nummer' : 'Adresse') + ' gibt es schon ein Konto.');
+    const firsts = fd.getAll('kidFirst'), gs = fd.getAll('kidGroup');
+    const kids = role === 'parent' ? firsts.map((k, i) => ({ first:String(k).trim(), group:gs[i] })).filter(k => k.first) : [];
+    if (role === 'parent' && !kids.length) return showErr('i-err', 'Bitte trage mindestens ein Kind ein.');
+    S.invites.push({ id:uid('i'), role, name, contact: ctype === 'phone' ? '+' + digits(contact) : contact, type:ctype, kids, subjects:fd.getAll('subjects'), groups:fd.getAll('groups'), status:'offen', created:Date.now() });
+    log('Einladung an ' + name + ' gesendet'); save();
+    UI.peopleTab = 'einladungen'; toast('Einladung an ' + name + ' gesendet');
+    if (UI.tab !== 'personen' && UI.tab !== 'schuljahr'){ UI.stack = []; go('personen'); } else back();
+  },
+  addKid: (f, fd) => {
+    const p = user(f.dataset.id), first = String(fd.get('first') || '').trim(); if (!first){ toast('Bitte einen Vornamen eingeben.'); return; }
+    S.children.push({ id:uid('c'), first, last:p.name.split(' ').slice(-1)[0], group:fd.get('group'), parentIds:[p.id] });
+    log('Kind hinzugefügt: ' + first + ' (' + p.name + ')'); save(); toast(first + ' hinzugefügt'); render();
+  },
+  subject: (f, fd) => {
+    const id = f.dataset.id, name = String(fd.get('name') || '').trim(), desc = String(fd.get('desc') || '').trim();
+    if (!name) return showErr('s-err', 'Bitte gib dem Fach einen Namen.');
+    if (id){ const s = S.subjects.find(x => x.id === id); s.name = name; s.desc = desc; if (UI.logoDraft) s.logo = UI.logoDraft; log('Fach geändert: ' + name); }
+    else { const nid = uid('s'); S.subjects.push({ id:nid, name, desc, logo:UI.logoDraft || '', active:true }); log('Fach angelegt: ' + name); }
+    UI.logoDraft = null;
+    try { save(); } catch(e){}
+    toast(id ? 'Gespeichert' : 'Fach „' + name + '“ angelegt'); back();
+  },
+  addGroup: (f, fd) => {
+    const name = String(fd.get('name') || '').trim(); if (!name){ toast('Bitte einen Namen für die Gruppe eingeben.'); return; }
+    const id = uid('g'); S.groups.push({ id, name, info:String(fd.get('info') || '').trim() }); S.timetable[id] = [];
+    log('Gruppe angelegt: ' + name); save(); toast(name + ' angelegt'); render();
+  },
+  event: (f, fd) => {
+    const title = String(fd.get('title') || '').trim(), date = fd.get('date');
+    if (!title || !date) return showErr('e-err', 'Bitte Titel und Datum angeben.');
+    S.events.push({ id:uid('e'), title, date, time:fd.get('time') || '', place:String(fd.get('place') || '').trim(), desc:String(fd.get('desc') || '').trim() });
+    log('Termin angelegt: ' + title); save(); toast(fd.get('notify') ? 'Termin gespeichert, Eltern benachrichtigt' : 'Termin gespeichert'); back();
+  }
+};
+
+/* ---------- Ereignisse ---------- */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const fn = ACT[el.dataset.act]; if (!fn) return;
+  e.preventDefault(); fn(el, e);
+});
+document.addEventListener('change', e => { const el = e.target.closest('[data-chg]'); if (el && CHG[el.dataset.chg]) CHG[el.dataset.chg](el, e); });
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset && el.dataset.input === 'search'){ const q = el.value.trim().toLowerCase(); document.querySelectorAll('#p-list [data-search]').forEach(r => { r.hidden = q && !r.dataset.search.includes(q); }); }
+  if (el.id === 'r-text'){ el.style.height = 'auto'; el.style.height = Math.min(140, el.scrollHeight) + 'px'; }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSheet();
+  if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'r-text'){ e.preventDefault(); e.target.form.requestSubmit(); }
+});
+document.addEventListener('submit', e => {
+  const f = e.target; if (!f.dataset.form) return; e.preventDefault();
+  const fn = FORMS[f.dataset.form]; if (fn) fn(f, new FormData(f), e);
+});
+
+applyTheme(theme());
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme(theme())); } catch(e){}
+try { history.scrollRestoration = 'manual'; const s = history.state; if (s && s.app === 'nur' && UI.userId && s.uid === UI.userId){ UI.tab = s.tab; UI.stack = s.stack || []; } else hset(false); } catch(e){}
+save();
+render();
+</script>
+
+</body></html>
