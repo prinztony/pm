@@ -1,0 +1,1739 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dämmerung</title>
+<meta name="description" content="Smarter Wecker im Browser: erkennt Leichtschlaf über Mikrofon und Bewegungssensor und weckt dich im passenden Moment innerhalb deines Weckfensters.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a0c1c">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dämmerung">
+<meta name="application-name" content="Dämmerung">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c1c'/%3E%3Cpath d='M14 42a18 18 0 0 1 36 0z' fill='%23ffb07c'/%3E%3Cpath d='M8 47h48' stroke='%23ef6f7b' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* Schriften liegen lokal im Repo, es wird nichts von fremden Servern geladen. */
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(../assets/fonts/montserrat-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(../assets/fonts/montserrat-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(../assets/fonts/nunito-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(../assets/fonts/nunito-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+/* Layout: eine ruhige Spalte wie ein Nachttisch-Display. Einziges großes Motiv ist das Horizont-Glühen um die Weckzeit.
+   Bewusst nur ein dunkles Farbschema: Die App wird nachts benutzt, ein heller Bildschirm würde blenden. */
+:root{
+  --night:#0a0c1c;
+  --night-2:#121531;
+  --night-3:#1b1f40;
+  --line:#272c55;
+  --black:#000;
+  --bar-bg:rgba(10,12,28,.9);
+  --text:#eceaf8;
+  --muted:#a2a5cc;
+  --faint:#6f739e;
+  --dawn:#ffb07c;
+  --dawn-deep:#ef6f7b;
+  --dawn-tint:rgba(255,176,124,.13);
+  --dawn-edge:rgba(255,176,124,.5);
+  --on-dawn:#2a1020;
+  --glow-a:rgba(239,111,123,.30);
+  --glow-b:rgba(255,176,124,.11);
+  --wach:#ffc48f;
+  --leicht:#8fb0ff;
+  --tief:#7463ee;
+  --leicht-tint:rgba(143,176,255,.14);
+  --warn:#ffd27a;
+  --warn-tint:rgba(255,210,122,.08);
+  --warn-edge:rgba(255,210,122,.28);
+  --sky-1:#15173d;
+  --sky-2:#4b2a5e;
+  --sky-3:#d9636f;
+  --sky-4:#ffb27a;
+  --sun-core:#fff4dc;
+  --sun-mid:#ffcf93;
+  --glass:rgba(10,12,28,.42);
+  --glass-edge:rgba(255,255,255,.22);
+  --f-display:'Montserrat','Avenir Next','Segoe UI',system-ui,sans-serif;
+  --f-body:'Nunito','Segoe UI',system-ui,-apple-system,sans-serif;
+  --tabbar:62px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--night);-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+body{margin:0;min-height:100vh;background:var(--night);color:var(--text);font:16px/1.5 var(--f-body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+/* Als installierte App: kein Markieren und kein Kontextmenü beim langen Drücken */
+@media (display-mode:standalone),(display-mode:fullscreen){
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .tagline{display:none}
+}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--dawn);outline-offset:3px;border-radius:10px}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.app{max-width:500px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(var(--tabbar) + env(safe-area-inset-bottom,0px) + 28px)}
+
+/* Kopf */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:16px 2px}
+.brand{display:flex;align-items:center;gap:10px;font:600 17px/1 var(--f-display);letter-spacing:.01em}
+.brand svg{width:28px;height:28px;flex:none}
+.tagline{font-size:13px;color:var(--faint)}
+
+/* Hinweise */
+.notes{display:grid;gap:10px;margin-top:12px}
+.notes:empty{display:none}
+.note{display:grid;gap:10px;padding:13px 14px;border-radius:16px;background:var(--warn-tint);border:1px solid var(--warn-edge);font-size:14px;line-height:1.45}
+.note b{color:var(--warn)}
+.note-actions{display:flex;flex-wrap:wrap;gap:8px}
+.note-actions button{border:1px solid var(--warn-edge);background:transparent;border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
+.note-actions button.go{background:var(--warn);color:var(--on-dawn);border-color:var(--warn)}
+
+/* Weckzeit */
+.hero{position:relative;isolation:isolate;text-align:center;padding-block:28px 30px}
+.hero::before{content:"";position:absolute;z-index:-1;left:50%;bottom:0;width:min(150%,720px);height:90%;transform:translateX(-50%);background:radial-gradient(50% 62% at 50% 100%,var(--glow-a),var(--glow-b) 52%,transparent 76%);pointer-events:none}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--dawn-edge),transparent)}
+.eyebrow{margin:0;font:600 12px/1.2 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bigtime{position:relative;display:inline-block;margin:8px 0 4px;padding:0 6px;font:200 clamp(76px,25vw,124px)/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;cursor:pointer;border-radius:18px}
+.bigtime input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;padding:0;margin:0;background:transparent;color:transparent}
+.bigtime:focus-within{outline:2px solid var(--dawn-edge);outline-offset:4px}
+.hero-sub{margin:6px 0 0;color:var(--muted);font-size:15px}
+.hero-sub strong{color:var(--dawn);font-weight:800;font-variant-numeric:tabular-nums}
+.until{margin:2px 0 0;font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums}
+.adjust{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.adjust button{border:1px solid var(--line);background:var(--night-2);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--muted)}
+
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:22px;padding:17px 20px;border:0;border-radius:18px;font:700 17px/1 var(--f-display);letter-spacing:.01em;color:var(--on-dawn);background:linear-gradient(100deg,var(--dawn-deep),var(--dawn));box-shadow:0 14px 34px -16px var(--dawn-deep)}
+.btn-primary svg{width:20px;height:20px}
+.btn-primary:active{transform:translateY(1px)}
+.start-hint{margin:10px 0 0;text-align:center;font-size:13px;color:var(--faint)}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:14px;border:1px solid var(--line);background:var(--night-2);font-weight:700;font-size:15px}
+
+/* App installieren */
+.install{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;margin-top:22px;padding:14px 16px;border-radius:18px;background:var(--night-2);border:1px solid var(--dawn-edge)}
+.install img{width:52px;height:52px;border-radius:13px;display:block}
+.install h2{margin:0;font:600 15px/1.3 var(--f-display)}
+.install p{margin:3px 0 11px;font-size:13.5px;color:var(--muted)}
+.install p b{color:var(--text)}
+.install-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-small{padding:8px 14px;border-radius:12px;font-weight:800;font-size:14px;border:1px solid var(--line);background:var(--night-3)}
+.btn-small.go{background:var(--dawn);color:var(--on-dawn);border-color:var(--dawn)}
+.share-ico{display:inline-block;width:16px;height:16px;vertical-align:-3px;color:var(--leicht)}
+
+/* Schlafzyklen */
+.cycles{margin-top:28px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.sec-head h2,.sec-title{margin:0;font:600 15px/1.3 var(--f-display);text-wrap:balance}
+.sec-head span{font-size:12.5px;color:var(--faint);text-align:right}
+.cycle-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cycle{padding:12px 6px;border-radius:14px;background:var(--night-2);border:1px solid var(--line);text-align:center;min-width:0}
+.cycle b{display:block;font:500 20px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.cycle small{display:block;margin-top:5px;font-size:12px;color:var(--faint)}
+.cycle.past{opacity:.42}
+
+/* Einstellungen */
+.panel{margin-top:26px;border-radius:20px;background:var(--night-2);border:1px solid var(--line)}
+.row{display:grid;gap:11px;padding:15px 16px}
+.row+.row{border-top:1px solid var(--line)}
+.row-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.row-label{font-weight:800;font-size:15px}
+.row-val{font-size:13px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:50px;padding:9px 6px;border-radius:12px;background:var(--night-3);color:var(--muted);border:1px solid transparent;font-weight:700;font-size:14px;white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--dawn-tint);color:var(--dawn);border-color:var(--dawn-edge)}
+.play{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 9px;border-radius:99px;border:1px solid var(--line);background:var(--night-3);color:var(--dawn);font-weight:800;font-size:13px}
+.play svg{width:15px;height:15px}
+.play.on{background:var(--dawn-tint);border-color:var(--dawn-edge)}
+.range{width:100%;accent-color:var(--dawn);margin:0}
+.switch-row{grid-template-columns:1fr auto;align-items:center}
+.switch-row p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.switch{position:relative;width:50px;height:30px;border-radius:99px;border:1px solid var(--line);background:var(--night-3);flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s}
+.switch[aria-checked="true"]{background:var(--dawn-tint);border-color:var(--dawn-edge)}
+.switch[aria-checked="true"]::after{transform:translateX(20px);background:var(--dawn)}
+
+.trial{margin-top:26px;padding:16px;border-radius:20px;border:1px dashed var(--line)}
+.trial p{margin:6px 0 12px;font-size:14px;color:var(--muted)}
+
+/* Seiten */
+.page-title{margin:20px 0 4px;font:600 26px/1.2 var(--f-display);text-wrap:balance}
+.lead{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.card{margin-top:14px;padding:16px;border-radius:20px;background:var(--night-2);border:1px solid var(--line);min-width:0}
+.card>h2{margin:0 0 12px;font:600 15px/1.3 var(--f-display)}
+.caption{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.graph{overflow:hidden;min-width:0}
+.graph svg{display:block;max-width:100%;height:auto}
+
+/* Bericht */
+.rep-top{display:flex;align-items:center;gap:14px;padding-block:18px 4px}
+.back{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--night-2);display:grid;place-items:center;color:var(--muted)}
+.back svg{width:20px;height:20px}
+.rep-title{margin:3px 0 0;font:600 26px/1.15 var(--f-display);text-wrap:balance}
+.badge{display:inline-block;padding:3px 9px;border-radius:99px;font:800 11px/1.4 var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--dawn-tint);color:var(--dawn)}
+.note-inline{margin:12px 0 0;padding:11px 13px;border-radius:14px;background:var(--leicht-tint);font-size:13.5px;color:var(--text)}
+.score{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-top:16px}
+.score-ring{position:relative;width:124px;height:124px}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.sr-track{fill:none;stroke:var(--night-3);stroke-width:9}
+.sr-val{fill:none;stroke-width:9;stroke-linecap:round}
+.st-dawn-a{stop-color:var(--dawn-deep)}
+.st-dawn-b{stop-color:var(--dawn)}
+.score-num{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font:300 40px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.score-num small{display:block;margin-top:6px;font:800 10.5px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts{display:grid;gap:12px;min-width:0}
+.fact b{display:block;font:500 21px/1.15 var(--f-display);font-variant-numeric:tabular-nums}
+.fact span{font-size:13px;color:var(--muted)}
+.verdict{display:inline-block;margin-bottom:2px;font-weight:800;font-size:14px;color:var(--dawn)}
+.woke{display:flex;gap:12px;align-items:center;margin-top:18px;padding:12px 14px;border-radius:16px;background:var(--night-2);border:1px solid var(--line);font-size:14px}
+.woke-dot{flex:none;width:12px;height:12px;border-radius:50%;background:var(--dawn);box-shadow:0 0 12px var(--dawn)}
+.woke b{font-variant-numeric:tabular-nums}
+.stagebar{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px}
+.stagebar span{display:block;height:100%;min-width:2px}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.legend div{min-width:0}
+.legend span{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.legend i{width:9px;height:9px;border-radius:3px;flex:none}
+.legend b{display:block;margin-top:2px;font:500 17px/1.2 var(--f-display);font-variant-numeric:tabular-nums}
+.legend small{font-size:12px;color:var(--faint)}
+.c-wach{background:var(--wach)}.c-leicht{background:var(--leicht)}.c-tief{background:var(--tief)}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fig{padding:12px 14px;border-radius:16px;background:var(--night-3);min-width:0}
+.fig b{display:block;font:500 19px/1.2 var(--f-display);font-variant-numeric:tabular-nums}
+.fig span{font-size:12.5px;color:var(--muted)}
+.rep-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.danger{background:none;border:1px solid var(--line);color:var(--muted);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700}
+.danger.armed{border-color:var(--dawn-deep);color:var(--dawn-deep)}
+
+/* Diagramme */
+.g-band{fill:var(--night-3);opacity:.32}
+.g-band.alt{opacity:.62}
+.g-label{fill:var(--muted);font:700 11px var(--f-body)}
+.g-tick{fill:var(--faint);font:700 11px var(--f-body);font-variant-numeric:tabular-nums}
+.g-tick.strong{fill:var(--muted)}
+.g-grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+.g-window{fill:var(--dawn);opacity:.1}
+.g-wlabel{fill:var(--dawn);font:800 9.5px var(--f-body);letter-spacing:.08em}
+.g-line{fill:none;stroke:var(--text);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;opacity:.85}
+.g-wake{stroke:var(--dawn);stroke-width:1.2;stroke-dasharray:3 3}
+.g-dot{fill:var(--dawn);stroke:var(--night-2);stroke-width:2}
+.g-gap{fill:var(--faint);opacity:.55}
+.st-wach{stop-color:var(--wach);stop-opacity:.6}
+.st-leicht{stop-color:var(--leicht);stop-opacity:.34}
+.st-tief{stop-color:var(--tief);stop-opacity:.22}
+.spark{fill:none;stroke:var(--leicht);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.g-guide{stroke:var(--faint);stroke-dasharray:3 4;opacity:.7}
+.bar{fill:var(--faint)}
+.bar.q-hi{fill:var(--dawn)}
+.bar.q-mid{fill:var(--leicht)}
+.g-q{fill:var(--muted);font:800 10px var(--f-body);font-variant-numeric:tabular-nums}
+
+/* Nächte */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.sum{padding:12px;border-radius:16px;background:var(--night-2);border:1px solid var(--line);min-width:0}
+.sum b{display:block;font:400 23px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.sum span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
+.nightlist{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}
+.nightitem{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;text-align:left;padding:13px 14px 13px 16px;border-radius:16px;background:var(--night-2);border:1px solid var(--line)}
+.ni-date{font:600 15px/1.3 var(--f-display);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ni-meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ni-q{grid-row:1 / span 2;grid-column:2;display:flex;align-items:center;gap:10px}
+.ni-q svg{width:72px;height:28px}
+.qpill{min-width:50px;text-align:center;padding:5px 8px;border-radius:99px;font:800 13px/1.2 var(--f-body);font-variant-numeric:tabular-nums;background:var(--night-3);color:var(--muted)}
+.qpill.q-hi{background:var(--dawn-tint);color:var(--dawn)}
+.qpill.q-mid{background:var(--leicht-tint);color:var(--leicht)}
+.list-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.empty{margin-top:22px;padding:28px 20px;border-radius:22px;background:var(--night-2);border:1px solid var(--line);text-align:center}
+.empty svg{width:96px;height:64px}
+.empty h2{margin:12px 0 4px;font:600 18px var(--f-display)}
+.empty p{margin:0 auto 16px;max-width:34ch;color:var(--muted);font-size:14.5px}
+
+/* Info */
+.steps{margin:18px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:12px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;font-size:15px;color:var(--muted)}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--dawn-edge);color:var(--dawn);font:600 15px var(--f-display)}
+.steps b{color:var(--text)}
+.checks{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.checks li{padding:11px 14px;border-radius:14px;background:var(--night-2);border:1px solid var(--line);font-size:14.5px;color:var(--muted)}
+.checks b{color:var(--text)}
+.prose{max-width:62ch;color:var(--muted);font-size:15px}
+.info-block{margin-top:26px}
+
+/* Tabs */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;background:var(--bar-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabbar-inner{display:flex;width:100%;max-width:500px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:var(--tabbar);justify-content:center;background:none;border:0;color:var(--faint);font:700 11.5px var(--f-body)}
+.tab svg{width:24px;height:24px}
+.tab[aria-current="page"]{color:var(--dawn)}
+
+/* Vollbild-Ebenen */
+.overlay{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hold{position:relative;overflow:hidden;width:min(100%,340px);padding:17px 20px;border-radius:99px;border:1px solid var(--line);background:var(--night-2);color:var(--text);font:700 15px var(--f-body);touch-action:none}
+.hold-fill{position:absolute;inset:0;background:var(--dawn-tint);transform:scaleX(var(--p,0));transform-origin:left center}
+.hold-label{position:relative}
+
+.sleep{background:var(--black);color:var(--dawn);padding:calc(env(safe-area-inset-top,0px) + 24px) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 28px) max(20px,env(safe-area-inset-left,0px))}
+.sleep-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:transform 6s ease}
+.sleep-clock{margin:0;font:200 clamp(68px,24vw,170px)/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;opacity:.3;transition:opacity .8s}
+.sleep-line{margin:12px 0 0;font-size:15px;opacity:.3;transition:opacity .8s;font-variant-numeric:tabular-nums}
+.sleep.awake .sleep-clock{opacity:.8}
+.sleep.awake .sleep-line{opacity:.75}
+.sleep-ui{display:grid;gap:14px;justify-items:center;opacity:0;pointer-events:none;transition:opacity .8s}
+.sleep.awake .sleep-ui{opacity:1;pointer-events:auto}
+.sensor-row{display:flex;gap:18px;font-size:13px;color:var(--muted)}
+.sensor{display:flex;align-items:center;gap:7px}
+.sensor i{width:9px;height:9px;border-radius:50%;background:var(--faint);transition:box-shadow .2s}
+.sensor.on i{background:var(--leicht);box-shadow:0 0 calc(2px + var(--lvl,0) * 16px) var(--leicht)}
+.sensor.off{opacity:.55}
+.sleep-note{margin:0;max-width:36ch;text-align:center;font-size:13px;color:var(--muted)}
+.sleep-note:empty{display:none}
+.sleep .hold{background:transparent;color:var(--muted)}
+
+.ring{background:var(--sky-1);color:var(--text);text-align:center}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 42%,var(--sky-3) 74%,var(--sky-4) 100%);opacity:0;transition:opacity var(--rise,90s) linear}
+.sun{position:absolute;left:50%;bottom:0;width:95vmin;height:95vmin;border-radius:50%;background:radial-gradient(circle,var(--sun-core) 0%,var(--sun-mid) 26%,transparent 68%);transform:translate(-50%,62%) scale(.7);opacity:.2;transition:transform var(--rise,90s) cubic-bezier(.25,.6,.3,1),opacity var(--rise,90s) linear}
+.ring.risen .sky{opacity:1}
+.ring.risen .sun{transform:translate(-50%,30%) scale(1);opacity:1}
+.ring-content{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 12vh) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 28px) max(20px,env(safe-area-inset-left,0px))}
+.ring-greet{margin:0;font:600 13px var(--f-display);letter-spacing:.16em;text-transform:uppercase;opacity:.85}
+.ring-time{margin:10px 0 0;font:200 clamp(84px,27vw,156px)/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;animation:breathe 5s ease-in-out infinite}
+.ring-why{margin:14px 0 0;max-width:30ch;font-size:16px;opacity:.9}
+.ring-actions{display:grid;gap:12px;justify-items:center;width:min(100%,360px);margin-top:auto}
+.snooze{width:100%;padding:22px;border-radius:26px;border:1px solid var(--glass-edge);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:600 21px/1.2 var(--f-display);color:var(--text)}
+.snooze small{display:block;margin-top:4px;font:700 13px var(--f-body);opacity:.8}
+.ring .hold{width:100%;background:var(--glass);border-color:var(--glass-edge);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+@keyframes breathe{50%{opacity:.78}}
+@media (prefers-reduced-motion:reduce){
+  .ring-time{animation:none}
+  .sun{transform:translate(-50%,30%) scale(1)}
+  .sleep-stage{transition:none}
+}
+@media (max-width:360px){
+  .score{grid-template-columns:1fr;justify-items:center;text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg-brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="st-dawn-b"/><stop offset="1" class="st-dawn-a"/></linearGradient></defs><path d="M7 22a9 9 0 0 1 18 0z" fill="url(#lg-brand)"/><path d="M3 25.5h26" style="stroke:var(--dawn-deep)" stroke-width="2" stroke-linecap="round"/><path d="M16 6.5v3M8.6 9.6l2 2M23.4 9.6l-2 2M4.8 16h2.6M24.6 16h2.6" style="stroke:var(--dawn)" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Dämmerung
+    </div>
+    <span class="tagline">Smarter Wecker</span>
+  </header>
+
+  <div class="notes" id="notes"></div>
+
+  <main>
+    <section id="view-wecker" class="view" aria-labelledby="h-wecker">
+      <h1 id="h-wecker" class="sr-only">Wecker stellen</h1>
+      <div class="hero">
+        <p class="eyebrow">Spätestens wach um</p>
+        <label class="bigtime"><span id="bigTime" aria-hidden="true">06:30</span><input type="time" id="alarmInput" value="06:30" aria-label="Späteste Weckzeit"></label>
+        <p class="hero-sub" id="windowText">Sanft wecken ab <strong>06:00</strong>, sobald du leicht schläfst</p>
+        <p class="until" id="untilText"></p>
+        <div class="adjust"><button type="button" data-adj="-15">−15 Min</button><button type="button" data-adj="15">+15 Min</button></div>
+      </div>
+
+      <button type="button" class="btn-primary" id="btnStart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+        Gute Nacht
+      </button>
+      <p class="start-hint">Handy ans Ladekabel, Seite geöffnet lassen.</p>
+
+      <section class="install" id="installCard" hidden aria-labelledby="h-install">
+        <img src="icons/icon-192.png" alt="" width="52" height="52">
+        <div>
+          <h2 id="h-install">Als App installieren</h2>
+          <p id="installText"></p>
+          <div class="install-actions">
+            <button type="button" class="btn-small go" id="installGo">Installieren</button>
+            <button type="button" class="btn-small" id="installLater">Später</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="cycles" aria-labelledby="h-cycles">
+        <div class="sec-head"><h2 id="h-cycles">Ins Bett für volle Zyklen</h2><span>je 90 Min + 15 Min Einschlafen</span></div>
+        <div class="cycle-list" id="cycleList"></div>
+      </section>
+
+      <section class="panel" aria-label="Einstellungen">
+        <div class="row">
+          <div class="row-head"><span class="row-label" id="lbl-window">Weckfenster</span><span class="row-val" id="valWindow"></span></div>
+          <div class="seg" role="radiogroup" aria-labelledby="lbl-window" data-key="window">
+            <button type="button" role="radio" data-val="0">Aus</button>
+            <button type="button" role="radio" data-val="10">10</button>
+            <button type="button" role="radio" data-val="20">20</button>
+            <button type="button" role="radio" data-val="30">30</button>
+            <button type="button" role="radio" data-val="45">45</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-head"><span class="row-label" id="lbl-sound">Weckton</span><button type="button" class="play" id="btnPreview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg><span id="previewLabel">Probehören</span></button></div>
+          <div class="seg" role="radiogroup" aria-labelledby="lbl-sound" data-key="sound">
+            <button type="button" role="radio" data-val="schale">Klangschale</button>
+            <button type="button" role="radio" data-val="harfe">Harfe</button>
+            <button type="button" role="radio" data-val="sonne">Morgenrot</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-head"><label class="row-label" for="vol">Lautstärke</label><span class="row-val" id="valVol"></span></div>
+          <input class="range" type="range" id="vol" min="0.2" max="1" step="0.05">
+        </div>
+        <div class="row">
+          <div class="row-head"><span class="row-label" id="lbl-ramp">Lauter werden über</span></div>
+          <div class="seg" role="radiogroup" aria-labelledby="lbl-ramp" data-key="ramp">
+            <button type="button" role="radio" data-val="30">30 s</button>
+            <button type="button" role="radio" data-val="60">1 Min</button>
+            <button type="button" role="radio" data-val="120">2 Min</button>
+            <button type="button" role="radio" data-val="180">3 Min</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row-head"><span class="row-label" id="lbl-snooze">Schlummern</span></div>
+          <div class="seg" role="radiogroup" aria-labelledby="lbl-snooze" data-key="snooze">
+            <button type="button" role="radio" data-val="5">5 Min</button>
+            <button type="button" role="radio" data-val="9">9 Min</button>
+            <button type="button" role="radio" data-val="10">10 Min</button>
+            <button type="button" role="radio" data-val="15">15 Min</button>
+          </div>
+        </div>
+        <div class="row switch-row">
+          <div><span class="row-label" id="lbl-mic">Mikrofon</span><p>Hört Rascheln und Umdrehen. Es wird nichts aufgenommen.</p></div>
+          <button type="button" class="switch" role="switch" data-key="mic" aria-labelledby="lbl-mic"></button>
+        </div>
+        <div class="row switch-row">
+          <div><span class="row-label" id="lbl-motion">Bewegungssensor</span><p>Handy neben das Kopfkissen auf die Matratze legen.</p></div>
+          <button type="button" class="switch" role="switch" data-key="motion" aria-labelledby="lbl-motion"></button>
+        </div>
+      </section>
+
+      <section class="trial" aria-labelledby="h-trial">
+        <h2 class="sec-title" id="h-trial">Vorher ausprobieren</h2>
+        <p>Der Testlauf dauert zwei Minuten. Nach einer Minute öffnet sich das Weckfenster: Bewege dann das Handy oder raschle daneben, und der Wecker sollte klingeln.</p>
+        <button type="button" class="btn-ghost" id="btnTest">Testlauf starten</button>
+      </section>
+    </section>
+
+    <section id="view-naechte" class="view" hidden aria-labelledby="h-naechte">
+      <h1 class="page-title" id="h-naechte">Deine Nächte</h1>
+      <div id="nightsBody"></div>
+    </section>
+
+    <section id="view-info" class="view" hidden aria-labelledby="h-info">
+      <h1 class="page-title" id="h-info">So funktioniert’s</h1>
+      <p class="lead">Dämmerung weckt dich nicht stur zu einer Uhrzeit, sondern im günstigsten Moment davor: wenn du gerade leicht schläfst.</p>
+      <ol class="steps">
+        <li><span><b>Schlaf läuft in Zyklen.</b> Etwa alle 90 Minuten wechselst du zwischen Leicht-, Tief- und Traumschlaf. Wer aus dem Tiefschlaf gerissen wird, fühlt sich oft wie gerädert. Fachleute nennen das Schlafträgheit.</span></li>
+        <li><span><b>Im Leichtschlaf bewegst du dich mehr.</b> Du drehst dich um, die Decke raschelt. Das Mikrofon hört diese Geräusche, der Bewegungssensor spürt die Matratze. Daraus entsteht jede Minute ein Unruhe-Wert.</span></li>
+        <li><span><b>Das Weckfenster entscheidet.</b> In den letzten Minuten vor deiner Weckzeit wartet der Wecker auf Unruhe. Sobald sie kommt, klingelt er leise und wird langsam lauter. Kommt keine, klingelt er spätestens zur eingestellten Zeit.</span></li>
+      </ol>
+      <div class="card">
+        <h2>Beispiel einer Nacht</h2>
+        <div class="graph" id="infoGraph"></div>
+        <p class="caption" id="infoCaption"></p>
+      </div>
+
+      <div class="info-block">
+        <h2 class="sec-title">Damit es zuverlässig klappt</h2>
+        <ul class="checks">
+          <li><b>Ladekabel anschließen.</b> Der Bildschirm bleibt die ganze Nacht an, stark abgedunkelt.</li>
+          <li><b>Seite offen lassen.</b> Nicht sperren und nicht in eine andere App wechseln. Sonst hält der Browser Mikrofon und Uhr an, und der Wecker kann nicht klingeln.</li>
+          <li><b>Richtig hinlegen.</b> Für den Bewegungssensor neben das Kopfkissen auf die Matratze, Display nach oben. Nur mit Mikrofon reicht der Nachttisch.</li>
+          <li><b>iPhone:</b> Stummschalter aus, Lautstärke hoch.</li>
+          <li><b>Einmal testen.</b> Mach den Testlauf, bevor du dich auf den Wecker verlässt.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h2 class="sec-title">Als App installieren</h2>
+        <ul class="checks">
+          <li><b>Android (Chrome):</b> Auf dem Wecker-Bildschirm auf „Installieren“ tippen. Oder oben rechts im Menü ⋮ „App installieren“ wählen.</li>
+          <li><b>iPhone (Safari):</b> Unten auf Teilen tippen, dann „Zum Home-Bildschirm“. Ab iOS 18.4 bleibt der Bildschirm in der App zuverlässig wach.</li>
+          <li><b>Danach</b> startest du Dämmerung wie jede andere App, im Vollbild und auch ohne Internet. Auf dem iPhone hat die App einen eigenen Speicher: Nächte aus dem Safari-Tab erscheinen dort nicht. Am besten gleich installieren und dann nur noch die App benutzen.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h2 class="sec-title">Datenschutz</h2>
+        <p class="prose">Es wird nichts aufgenommen und nichts hochgeladen. Pro Minute merkt sich die App nur zwei Zahlen, wie laut es war und wie viel Bewegung es gab. Gespeichert wird das nur in diesem Browser auf diesem Gerät.</p>
+      </div>
+      <div class="info-block">
+        <h2 class="sec-title">Grenzen</h2>
+        <p class="prose">Die Schlafphasen sind eine Schätzung aus Bewegung, so wie bei Fitness-Armbändern. Ein Schlaflabor misst Hirnströme und ist viel genauer. Ruhiger Traumschlaf sieht für die App aus wie Tiefschlaf. Dämmerung ist kein Medizinprodukt.</p>
+      </div>
+    </section>
+
+    <section id="view-bericht" class="view" hidden><div id="reportBody"></div></section>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="Bereiche">
+  <div class="tabbar-inner">
+    <button type="button" class="tab" data-view="wecker" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 1.8M4.5 5.6 7 3.6M19.5 5.6 17 3.6M7.2 19.6 6 21.2M16.8 19.6 18 21.2"/></svg>Wecker</button>
+    <button type="button" class="tab" data-view="naechte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>Nächte</button>
+    <button type="button" class="tab" data-view="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.2"/></svg>So geht’s</button>
+  </div>
+</nav>
+
+<div id="sleepScreen" class="overlay sleep" hidden>
+  <div class="sleep-stage" id="sleepStage">
+    <p class="sleep-clock" id="sleepClock">00:00</p>
+    <p class="sleep-line" id="sleepLine"></p>
+  </div>
+  <div class="sleep-ui">
+    <div class="sensor-row"><span class="sensor" id="senMic"><i></i>Mikrofon</span><span class="sensor" id="senMot"><i></i>Bewegung</span></div>
+    <p class="sleep-note" id="sleepNote"></p>
+    <button type="button" class="hold" id="holdEnd"><span class="hold-fill"></span><span class="hold-label" id="holdEndLabel">Gedrückt halten zum Beenden</span></button>
+  </div>
+</div>
+
+<div id="ringScreen" class="overlay ring" hidden>
+  <div class="sky"></div>
+  <div class="sun"></div>
+  <div class="ring-content">
+    <p class="ring-greet">Guten Morgen</p>
+    <p class="ring-time" id="ringTime">06:30</p>
+    <p class="ring-why" id="ringWhy"></p>
+    <div class="ring-actions">
+      <button type="button" class="snooze" id="btnSnooze">Schlummern<small id="snoozeLen">9 Min</small></button>
+      <button type="button" class="hold" id="holdStop"><span class="hold-fill"></span><span class="hold-label">Gedrückt halten: Aufstehen</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= Hilfen ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const pad = n => String(n).padStart(2, '0');
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const MIN = 60000;
+const r4 = v => Math.round(v * 1e4) / 1e4;
+const de = (v, d = 1) => v.toLocaleString('de-DE', { maximumFractionDigits: d });
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const KEY = { settings: 'daemmerung-einstellungen', nights: 'daemmerung-naechte', active: 'daemmerung-laufend' };
+
+const DEFAULTS = { time: '06:30', window: 30, sound: 'schale', volume: 0.8, ramp: 120, snooze: 9, mic: true, motion: true };
+const settings = Object.assign({}, DEFAULTS);
+(() => {
+  const s = store.get(KEY.settings, {});
+  if (s && typeof s === 'object') for (const k of Object.keys(DEFAULTS)) if (typeof s[k] === typeof DEFAULTS[k]) settings[k] = s[k];
+  if (!/^\d\d:\d\d$/.test(settings.time)) settings.time = DEFAULTS.time;
+})();
+const saveSettings = () => store.set(KEY.settings, settings);
+
+const fmtHM = ts => { const d = new Date(ts); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+function fmtDur(min) {
+  min = Math.max(0, Math.round(min));
+  const h = Math.floor(min / 60), m = min % 60;
+  if (!h) return m + ' Min';
+  return h + ' Std' + (m ? ' ' + m + ' Min' : '');
+}
+const DAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const MONTHS = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'];
+const fmtDate = ts => { const d = new Date(ts); return `${DAYS[d.getDay()]}, ${d.getDate()}. ${MONTHS[d.getMonth()]}`; };
+function nextAlarm(timeStr, from = Date.now()) {
+  const [h, m] = timeStr.split(':').map(Number);
+  const d = new Date(from); d.setHours(h, m, 0, 0);
+  if (d.getTime() <= from) d.setDate(d.getDate() + 1);
+  return d.getTime();
+}
+function pct(arr, p) {
+  const a = arr.filter(v => v != null && isFinite(v)).sort((x, y) => x - y);
+  if (!a.length) return 0;
+  const i = (a.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i);
+  return a[lo] + (a[hi] - a[lo]) * (i - lo);
+}
+const mean = a => { const b = a.filter(v => v != null); return b.length ? b.reduce((x, y) => x + y, 0) / b.length : 0; };
+
+/* ================= Auswertung =================
+   Pro Epoche (1 Minute, im Testlauf 5 s) gibt es zwei Rohwerte:
+   s = mittlerer Pegel über dem Grundrauschen (dB), m = mittlere Erschütterung (m/s²).
+   Beide werden auf das 90. Perzentil der Nacht skaliert und gewichtet kombiniert. */
+const MIN_S = 0.12, MIN_M = 0.012;
+
+function activity(n, upto) {
+  const len = upto == null ? n.s.length : Math.min(upto, n.s.length);
+  const s = n.s.slice(0, len), m = (n.m || []).slice(0, len);
+  const hasS = !!(n.sensors && n.sensors.mic) && s.some(v => v != null);
+  const hasM = !!(n.sensors && n.sensors.motion) && m.some(v => v != null);
+  const scS = Math.max(MIN_S, pct(s, 0.9)), scM = Math.max(MIN_M, pct(m, 0.9));
+  const wS = hasS ? (hasM ? 0.4 : 1) : 0, wM = hasM ? (hasS ? 0.6 : 1) : 0;
+  const act = new Array(len);
+  for (let i = 0; i < len; i++) {
+    let v = 0, w = 0;
+    if (wS && s[i] != null) { v += wS * Math.min(3, s[i] / scS); w += wS; }
+    if (wM && m[i] != null) { v += wM * Math.min(3, m[i] / scM); w += wM; }
+    act[i] = w ? v / w : null;
+  }
+  return { act, hasS, hasM, scS, scM };
+}
+
+/* Entscheidet im Weckfenster: Ist gerade Leichtschlaf? */
+function lightSleepNow(n, partial) {
+  const { act, hasS, hasM, scS, scM } = activity(n);
+  if (!hasS && !hasM) return null;
+  const last = act.slice(-3).filter(v => v != null);
+  if (last.length >= 2 && mean(last) >= 0.5) return 'leicht';
+  if (partial && partial.frac >= 0.2) {
+    if (hasM && partial.m != null && partial.m / scM >= 0.8) return 'bewegung';
+    if (!hasM && hasS && partial.s != null && partial.s / scS >= 1.5) return 'bewegung';
+  }
+  return null;
+}
+
+function fillGaps(a) {
+  const out = a.slice(), n = out.length; let last = -1;
+  for (let i = 0; i < n; i++) {
+    if (out[i] == null) continue;
+    if (last === -1) { for (let j = 0; j < i; j++) out[j] = out[i]; }
+    else if (i - last > 1) { for (let j = last + 1; j < i; j++) out[j] = out[last] + (out[i] - out[last]) * (j - last) / (i - last); }
+    last = i;
+  }
+  if (last === -1) return out.map(() => 0);
+  for (let j = last + 1; j < n; j++) out[j] = out[last];
+  return out;
+}
+/* Gewichtetes Fenster nach dem Vorbild der Cole-Kripke-Formel aus der Aktigraphie (4 Epochen zurück, 2 voraus) */
+const CK = [0.04, 0.06, 0.1, 0.16, 0.34, 0.18, 0.12];
+function weighted(a) {
+  return a.map((_, i) => {
+    let v = 0, w = 0;
+    for (let k = -4; k <= 2; k++) { const j = i + k; if (j < 0 || j >= a.length) continue; v += CK[k + 4] * a[j]; w += CK[k + 4]; }
+    return w ? v / w : 0;
+  });
+}
+function gauss(a, sigma) {
+  const r = Math.ceil(sigma * 2.5), k = [];
+  for (let i = -r; i <= r; i++) k.push(Math.exp(-(i * i) / (2 * sigma * sigma)));
+  return a.map((_, i) => {
+    let v = 0, w = 0;
+    for (let j = -r; j <= r; j++) { const x = i + j; if (x < 0 || x >= a.length) continue; v += k[j + r] * a[x]; w += k[j + r]; }
+    return v / w;
+  });
+}
+
+const STAGE = { TIEF: 0, LEICHT: 1, WACH: 2 };
+function analyze(n) {
+  const { act, hasS, hasM } = activity(n);
+  const len = act.length, epMin = n.epochMs / MIN;
+  const end = n.wokeAt || (n.start + len * n.epochMs);
+  const res = {
+    len, epMin, end, inBed: (end - n.start) / MIN, hasS, hasM,
+    events: (n.e || []).reduce((a, b) => a + (b || 0), 0),
+    hasData: (hasS || hasM) && len >= 2 && act.some(v => v != null)
+  };
+  if (!res.hasData) return res;
+
+  const filled = fillGaps(act);
+  const sm = weighted(filled);
+  /* Tiefschlaf heißt: über etwa 15 Minuten fast keine Bewegung. Eine einzelne ruhige Minute reicht nicht. */
+  const half = clamp(Math.round(7 / epMin), 1, Math.max(1, Math.floor(len / 6)));
+  const calm = filled.map((_, i) => { let v = 0, c = 0; for (let j = Math.max(0, i - half); j <= Math.min(len - 1, i + half); j++) { v += filled[j]; c++; } return v / c; });
+  /* Auf drei gleich hohe Bänder abbilden: unten Tief, Mitte Leicht, oben Wach */
+  const lvl = sm.map((v, i) => {
+    if (v >= 0.8) return 2 / 3 + Math.min(1, v - 0.8) / 3;
+    if (calm[i] < 0.045 && v < 0.2) return (v / 0.2) * 0.3;
+    return 1 / 3 + Math.min(1, v / 0.8) / 3 * 0.98;
+  });
+  const sigma = clamp(1 / epMin, 1, Math.max(1, len / 12));
+  let curve = gauss(lvl, sigma);
+
+  /* Einschlafen: erste Stelle, ab der 10 Minuten lang keine Wachphase folgt */
+  const K = Math.max(2, Math.min(Math.round(10 / epMin), Math.floor(len / 5)));
+  let onset = len;
+  for (let i = 0; i + K <= len; i++) {
+    let ok = true;
+    for (let j = i; j < i + K; j++) if (curve[j] >= 2 / 3) { ok = false; break; }
+    if (ok) { onset = i; break; }
+  }
+  curve = curve.map((v, i) => i < onset ? Math.max(v, 0.72) : v);
+  const stages = curve.map(v => v >= 2 / 3 ? STAGE.WACH : v >= 1 / 3 ? STAGE.LEICHT : STAGE.TIEF);
+
+  let wake = 0, light = 0, deep = 0;
+  for (let i = onset; i < len; i++) { if (stages[i] === STAGE.WACH) wake++; else if (stages[i] === STAGE.LEICHT) light++; else deep++; }
+  const minRun = Math.max(1, Math.round(2 / epMin));
+  let aw = 0, run = 0;
+  for (let i = onset; i < len; i++) {
+    if (stages[i] === STAGE.WACH) run++;
+    else { if (run >= minRun) aw++; run = 0; }
+  }
+  const latency = onset * epMin;
+  const lightMin = light * epMin, deepMin = deep * epMin, asleep = lightMin + deepMin;
+  const wakeMin = wake * epMin + latency;
+  const gaps = [];
+  for (let i = 0; i < len; i++) if (act[i] == null) gaps.push(i);
+
+  const durScore = Math.min(1, asleep / 450);
+  const deepShare = asleep ? deepMin / asleep : 0;
+  const q = 0.5 * durScore + 0.2 * Math.min(1, deepShare / 0.22) + 0.2 * Math.max(0, 1 - aw / 6) + 0.1 * (latency <= 20 ? 1 : Math.max(0, 1 - (latency - 20) / 40));
+
+  return Object.assign(res, {
+    curve, stages, onset, latency, wakeMin, lightMin, deepMin, asleep,
+    awakenings: aw, gaps, gapMin: gaps.length * epMin, quality: Math.round(q * 100)
+  });
+}
+const verdict = q => q >= 80 ? 'Sehr erholsam' : q >= 65 ? 'Gute Nacht' : q >= 50 ? 'Geht so' : 'Unruhig';
+const qClass = q => q >= 75 ? 'q-hi' : q >= 55 ? 'q-mid' : 'q-lo';
+
+/* ================= Beispielnacht =================
+   Erzeugte Daten mit realistischem Verlauf; das Wecken entscheidet derselbe Algorithmus wie nachts. */
+let _sample = null;
+function sampleNight() {
+  if (_sample) return _sample;
+  let seed = 20261121;
+  const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const tgt = new Date(); tgt.setHours(6, 30, 0, 0);
+  if (tgt.getTime() > Date.now()) tgt.setDate(tgt.getDate() - 1);
+  const target = tgt.getTime(), total = 7 * 60 + 22, start = target - total * MIN;
+  const seq = [];
+  const push = (st, k) => { for (let i = 0; i < k; i++) seq.push(st); };
+  push('W', 13);
+  /* Zyklen: Einschlafen, Leicht, Tief, Leicht, Traum. Tiefschlaf nimmt zum Morgen hin ab, Traumschlaf zu. */
+  [[4, 14, 40, 8, 9], [3, 16, 30, 10, 17], [2, 20, 16, 12, 24], [2, 24, 6, 14, 28], [2, 30, 0, 12, 32], [2, 6, 12, 0, 14]].forEach((c, ci) => {
+    push('L', c[0] + c[1]); push('D', c[2]); push('L', c[3]); push('R', c[4]);
+    if (ci === 2) push('W', 3);
+    if (ci === 4) push('W', 2);
+  });
+  while (seq.length < total) seq.push('L');
+  seq.length = total;
+  const n = { id: 'beispiel', sample: true, start, epochMs: MIN, target, windowMin: 30, alarmTime: '06:30', s: [], m: [], e: [], sensors: { mic: true, motion: true }, snoozes: 0 };
+  const ws = total - 30;
+  let wakeIdx = total;
+  for (let i = 0; i < total; i++) {
+    const st = seq[i], x = rnd();
+    let sv = 0, mv = 0, ev = 0;
+    if (st === 'W') { sv = 0.35 + rnd() * 0.9; mv = 0.025 + rnd() * 0.05; }
+    else if (st === 'L') { if (x < 0.32) { sv = 0.12 + rnd() * 0.45; mv = 0.01 + rnd() * 0.035; } else { sv = rnd() * 0.04; mv = rnd() * 0.003; } }
+    else if (st === 'R') { if (x < 0.14) { sv = 0.06 + rnd() * 0.2; mv = 0.004 + rnd() * 0.012; } else { sv = rnd() * 0.03; mv = rnd() * 0.002; } }
+    else if (x < 0.03) { sv = rnd() * 0.08; mv = rnd() * 0.004; }
+    if (rnd() < 0.012) { ev = 1; sv += 0.25 + rnd() * 0.3; }
+    n.s.push(r4(sv)); n.m.push(r4(mv)); n.e.push(ev);
+    if (i + 1 >= ws && lightSleepNow(n, null)) { wakeIdx = i + 1; break; }
+  }
+  n.wokeAt = start + wakeIdx * MIN;
+  n.wokeReason = wakeIdx < total ? 'leicht' : 'zeit';
+  _sample = n;
+  return n;
+}
+
+/* ================= Klang =================
+   Alle Wecktöne werden live synthetisiert, es gibt keine Audiodateien. */
+const NOTE = k => 440 * Math.pow(2, (k - 69) / 12);
+function tone(ctx, out, o) {
+  const { f, t, type = 'sine', a = 0.01, d = 2, g = 0.2 } = o;
+  const osc = ctx.createOscillator(); osc.type = type; osc.frequency.value = f;
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0.0001, t);
+  env.gain.exponentialRampToValueAtTime(g, t + a);
+  env.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+  osc.connect(env); env.connect(out);
+  osc.start(t); osc.stop(t + a + d + 0.05);
+}
+const VOICES = {
+  schale: {
+    step(ctx, out, t, i) {
+      const base = [NOTE(57), NOTE(52), NOTE(59), NOTE(55)][i % 4];
+      for (const [r, g, d] of [[1, 0.22, 9], [2.72, 0.09, 6], [5.18, 0.05, 3.6], [8.6, 0.025, 2]]) {
+        tone(ctx, out, { f: base * r, t, a: 0.012, d, g });
+        tone(ctx, out, { f: base * r * 1.0025, t, a: 0.02, d: d * 0.9, g: g * 0.6 });
+      }
+      return 4.6 + (i % 3) * 0.7;
+    }
+  },
+  harfe: {
+    step(ctx, out, t, i) {
+      const scale = [62, 64, 66, 69, 71, 74, 76, 78, 81, 83];
+      const phrases = [[0, 2, 4, 5, 7, 5, 4, 2], [1, 3, 5, 6, 8, 6, 5, 3], [0, 2, 4, 6, 7, 8, 9, 7], [2, 4, 5, 7, 6, 4, 2, 1]];
+      const ph = phrases[Math.floor(i / 9) % phrases.length], k = i % 9;
+      if (k === 8) return 1.4;
+      const f = NOTE(scale[ph[k]]);
+      tone(ctx, out, { f, t, type: 'triangle', a: 0.006, d: 1.8, g: 0.16 });
+      tone(ctx, out, { f: f * 2, t, a: 0.004, d: 0.7, g: 0.05 });
+      if (k === 0) tone(ctx, out, { f: f / 2, t, a: 0.01, d: 3, g: 0.12 });
+      return 0.3;
+    }
+  },
+  sonne: {
+    step(ctx, out, t, i) {
+      const chords = [[48, 55, 64, 71, 74], [45, 52, 60, 67, 71], [41, 48, 57, 64, 67], [43, 50, 59, 62, 69]];
+      const ch = chords[i % chords.length], dur = 9, att = 3;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.7;
+      lp.frequency.setValueAtTime(500, t); lp.frequency.linearRampToValueAtTime(2200, t + att + 1); lp.frequency.linearRampToValueAtTime(900, t + dur);
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0.0001, t); env.gain.linearRampToValueAtTime(0.5, t + att); env.gain.setValueAtTime(0.5, t + dur - 3); env.gain.linearRampToValueAtTime(0.0001, t + dur);
+      lp.connect(env); env.connect(out);
+      for (const k of ch) for (const dt of [-7, 7]) {
+        const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = NOTE(k); o.detune.value = dt;
+        const g = ctx.createGain(); g.gain.value = 0.035;
+        o.connect(g); g.connect(lp); o.start(t); o.stop(t + dur + 0.1);
+      }
+      tone(ctx, out, { f: NOTE(ch[4] + 12), t: t + att, a: 0.01, d: 3.5, g: 0.06 });
+      return 6;
+    }
+  }
+};
+function runPattern(ctx, out, kind) {
+  const v = VOICES[kind] || VOICES.schale;
+  let i = 0, t = ctx.currentTime + 0.08;
+  const fill = () => {
+    if (t < ctx.currentTime) t = ctx.currentTime + 0.05;
+    while (t < ctx.currentTime + 1.2) t += v.step(ctx, out, t, i++);
+  };
+  fill();
+  const id = setInterval(fill, 250);
+  return () => clearInterval(id);
+}
+function encodeWav(data, sr) {
+  const n = data.length, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true);
+  v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) { const s = Math.max(-1, Math.min(1, data[i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  return new Blob([buf], { type: 'audio/wav' });
+}
+
+const Sound = {
+  ctx: null, out: null, keep: null, bus: null, stopPattern: null, el: null, silentURL: null, altURL: null, altKind: null,
+  token: 0, mode: null, previewTimer: 0,
+  ensure() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { this.ctx = new AC(); } catch (e) { return null; }
+      const comp = this.ctx.createDynamicsCompressor();
+      comp.threshold.value = -12; comp.knee.value = 10; comp.ratio.value = 4;
+      comp.connect(this.ctx.destination);
+      this.out = comp;
+    }
+    if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {});
+    return this.ctx;
+  },
+  element() {
+    if (!this.el) {
+      this.el = document.createElement('audio');
+      this.el.loop = true; this.el.preload = 'auto'; this.el.setAttribute('playsinline', '');
+      this.silentURL = URL.createObjectURL(encodeWav(new Float32Array(4410), 22050));
+    }
+    return this.el;
+  },
+  /* Muss direkt im Klick laufen: hält den Audio-Kontext die Nacht über wach und gibt das Ersatz-Audio frei. */
+  unlock() {
+    const ctx = this.ensure();
+    if (ctx && !this.keep) {
+      try {
+        const b = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+        const s = ctx.createBufferSource(); s.buffer = b; s.loop = true; s.connect(ctx.destination); s.start();
+        this.keep = s;
+      } catch (e) {}
+    }
+    const el = this.element();
+    try { el.src = this.silentURL; const p = el.play(); if (p && p.then) p.then(() => el.pause()).catch(() => {}); } catch (e) {}
+  },
+  /* Ersatz, falls der Audio-Kontext morgens nicht mehr läuft: der Weckton als fertige Datei */
+  async renderAlt(kind) {
+    try {
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!OAC) return;
+      const sr = 22050, dur = 30, oc = new OAC(1, sr * dur, sr);
+      const g = oc.createGain(); g.connect(oc.destination);
+      const v = VOICES[kind] || VOICES.schale;
+      let t = 0.05, i = 0;
+      while (t < dur - 3) t += v.step(oc, g, t, i++);
+      const buf = await new Promise(res => { const p = oc.startRendering(); if (p && p.then) p.then(res); else oc.oncomplete = e => res(e.renderedBuffer); });
+      const d = buf.getChannelData(0);
+      let peak = 0; for (let k = 0; k < d.length; k++) peak = Math.max(peak, Math.abs(d[k]));
+      const gain = peak > 0 ? 0.9 / peak : 1, fade = sr * 1.5, out = new Float32Array(d.length);
+      for (let k = 0; k < d.length; k++) out[k] = d[k] * gain * (k > d.length - fade ? (d.length - k) / fade : 1);
+      if (this.altURL) URL.revokeObjectURL(this.altURL);
+      this.altURL = URL.createObjectURL(encodeWav(out, sr));
+      this.altKind = kind;
+    } catch (e) {}
+  },
+  async start(kind, vol, ramp) {
+    const my = ++this.token;
+    this.halt();
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    const ctx = this.ensure();
+    if (ctx) { try { await Promise.race([ctx.resume(), wait(700)]); } catch (e) {} }
+    if (my !== this.token) return;
+    if (ctx && ctx.state === 'running') {
+      const bus = ctx.createGain(); bus.connect(this.out);
+      const t = ctx.currentTime;
+      bus.gain.setValueAtTime(0.0001, t);
+      bus.gain.exponentialRampToValueAtTime(Math.max(0.002, vol), t + Math.max(0.5, ramp));
+      this.bus = bus;
+      this.stopPattern = runPattern(ctx, bus, kind);
+      this.mode = 'ctx';
+    } else {
+      if (this.altKind !== kind || !this.altURL) await this.renderAlt(kind);
+      if (my !== this.token || !this.altURL) return;
+      const el = this.element();
+      el.src = this.altURL; el.loop = true; el.volume = vol;
+      el.play().catch(() => {});
+      this.mode = 'el';
+    }
+  },
+  halt() {
+    if (this.stopPattern) { this.stopPattern(); this.stopPattern = null; }
+    if (this.bus && this.ctx) {
+      const b = this.bus, t = this.ctx.currentTime;
+      try { b.gain.cancelScheduledValues(t); b.gain.setValueAtTime(Math.max(0.0001, b.gain.value), t); b.gain.exponentialRampToValueAtTime(0.0001, t + 0.25); } catch (e) {}
+      setTimeout(() => { try { b.disconnect(); } catch (e) {} }, 600);
+      this.bus = null;
+    }
+    if (this.el && this.mode === 'el') { try { this.el.pause(); } catch (e) {} }
+    this.mode = null;
+  },
+  stop() { this.token++; this.halt(); clearTimeout(this.previewTimer); this.previewTimer = 0; $('#btnPreview').classList.remove('on'); $('#previewLabel').textContent = 'Probehören'; },
+  preview(kind, vol) {
+    this.start(kind, vol * 0.8, 1.2);
+    clearTimeout(this.previewTimer);
+    $('#btnPreview').classList.add('on');
+    $('#previewLabel').textContent = 'Stopp';
+    this.previewTimer = setTimeout(() => this.stop(), 7000);
+  }
+};
+
+let vibTimeout = 0, vibTimer = 0;
+function startVibration(delayS) {
+  stopVibration();
+  if (!navigator.vibrate) return;
+  vibTimeout = setTimeout(() => {
+    try { navigator.vibrate([500, 400, 500]); } catch (e) {}
+    vibTimer = setInterval(() => { try { navigator.vibrate([500, 400, 500]); } catch (e) {} }, 3000);
+  }, delayS * 1000);
+}
+function stopVibration() { clearTimeout(vibTimeout); clearInterval(vibTimer); try { navigator.vibrate && navigator.vibrate(0); } catch (e) {} }
+
+/* ================= Sensoren ================= */
+const Sensors = {
+  micOn: false, motionOn: false, motionSeen: false, micError: null,
+  stream: null, src: null, an: null, sink: null, buf: null, timer: 0,
+  floor: null, loudRun: 0, highRun: 0, level: 0, mlevel: 0, lastA: null, acc: null,
+  reset() { this.acc = { sSum: 0, sFrames: 0, events: 0, mSum: 0, mCount: 0 }; },
+  async startMic(ctx) {
+    if (!ctx || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { this.micError = 'unsupported'; return false; }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false });
+      this.stream = stream;
+      this.src = ctx.createMediaStreamSource(stream);
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 120;
+      this.an = ctx.createAnalyser(); this.an.fftSize = 2048; this.an.smoothingTimeConstant = 0;
+      this.sink = ctx.createGain(); this.sink.gain.value = 0;
+      this.src.connect(hp); hp.connect(this.an); this.an.connect(this.sink); this.sink.connect(ctx.destination);
+      this.buf = new Float32Array(this.an.fftSize);
+      this.floor = null; this.loudRun = 0; this.highRun = 0;
+      clearInterval(this.timer);
+      this.timer = setInterval(() => this.sampleMic(), 100);
+      this.micOn = true; this.micError = null;
+      return true;
+    } catch (e) { this.micError = (e && e.name) || 'error'; return false; }
+  },
+  sampleMic() {
+    if (!this.an) return;
+    this.an.getFloatTimeDomainData(this.buf);
+    let sum = 0;
+    for (let i = 0; i < this.buf.length; i++) sum += this.buf[i] * this.buf[i];
+    if (sum === 0) return; /* Kontext pausiert: keine echte Messung */
+    const db = 10 * Math.log10(sum / this.buf.length + 1e-12);
+    if (this.floor == null) this.floor = db;
+    /* Grundrauschen folgt leisen Momenten schnell, lauten nur langsam (Ventilator, Regen werden so ausgeblendet) */
+    this.floor += (db - this.floor) * (db < this.floor ? 0.08 : 0.002);
+    const ex = Math.max(0, db - this.floor - 3);
+    if (ex > 20) { if (++this.highRun > 300) { this.floor = db - 3; this.highRun = 0; } } else this.highRun = 0;
+    this.acc.sSum += ex; this.acc.sFrames++;
+    if (ex > 12) { if (++this.loudRun === 3) this.acc.events++; } else this.loudRun = 0;
+    this.level = this.level * 0.7 + Math.min(1, ex / 12) * 0.3;
+  },
+  handleMotion(e) {
+    const a = e.accelerationIncludingGravity;
+    if (!a || a.x == null) return;
+    this.motionSeen = true;
+    if (this.lastA) {
+      const d = Math.hypot(a.x - this.lastA.x, a.y - this.lastA.y, a.z - this.lastA.z);
+      const ex = Math.max(0, d - 0.04);
+      this.acc.mSum += ex; this.acc.mCount++;
+      this.mlevel = this.mlevel * 0.9 + Math.min(1, ex / 0.5) * 0.1;
+    }
+    this.lastA = { x: a.x, y: a.y, z: a.z };
+  },
+  async startMotion() {
+    if (typeof window.DeviceMotionEvent === 'undefined') return false;
+    try {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        const r = await DeviceMotionEvent.requestPermission();
+        if (r !== 'granted') return false;
+      }
+    } catch (e) { return false; }
+    this.lastA = null; this.motionSeen = false;
+    window.addEventListener('devicemotion', this.onMotion);
+    this.motionOn = true;
+    return true;
+  },
+  take() {
+    const A = this.acc;
+    const r = {
+      s: this.micOn && A.sFrames > 5 ? r4(A.sSum / A.sFrames) : null,
+      m: this.motionOn && this.motionSeen && A.mCount > 5 ? r4(A.mSum / A.mCount) : null,
+      e: A.events
+    };
+    this.reset();
+    return r;
+  },
+  partial() {
+    const A = this.acc;
+    return {
+      s: this.micOn && A.sFrames > 5 ? A.sSum / A.sFrames : null,
+      m: this.motionOn && this.motionSeen && A.mCount > 5 ? A.mSum / A.mCount : null
+    };
+  },
+  stop() {
+    clearInterval(this.timer); this.timer = 0;
+    if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+    try { this.src && this.src.disconnect(); this.sink && this.sink.disconnect(); } catch (e) {}
+    this.stream = this.src = this.an = this.sink = null; this.micOn = false;
+    window.removeEventListener('devicemotion', this.onMotion);
+    this.motionOn = false; this.level = this.mlevel = 0;
+  }
+};
+Sensors.onMotion = e => Sensors.handleMotion(e);
+Sensors.reset();
+
+/* ================= Nächte speichern ================= */
+function loadNights() {
+  const l = store.get(KEY.nights, []);
+  return Array.isArray(l) ? l.filter(n => n && n.id && Array.isArray(n.s)).sort((a, b) => b.start - a.start) : [];
+}
+function saveNight(n) {
+  if (n.sample) return;
+  const l = loadNights().filter(x => x.id !== n.id);
+  l.unshift(n);
+  l.sort((a, b) => b.start - a.start);
+  store.set(KEY.nights, l.slice(0, 120));
+}
+function deleteNight(id) { store.set(KEY.nights, loadNights().filter(x => x.id !== id)); }
+function findNight(id) { return id === 'beispiel' ? sampleNight() : loadNights().find(x => x.id === id); }
+
+/* ================= Ablauf der Nacht ================= */
+let phase = 'idle'; /* idle | starting | sleep | ring | snooze */
+let night = null;
+let snoozeUntil = 0;
+let hiddenInEpoch = false;
+let hiddenWhileSleeping = false;
+let wakeLock = null, wakeLockOK = null;
+
+async function lockScreen() {
+  try {
+    if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+function unlockScreen() { try { wakeLock && wakeLock.release(); } catch (e) {} wakeLock = null; }
+function enterFullscreen() {
+  try {
+    const el = document.documentElement, f = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (f && !document.fullscreenElement) { const p = f.call(el, { navigationUI: 'hide' }); if (p && p.catch) p.catch(() => {}); }
+  } catch (e) {}
+}
+function exitFullscreen() { try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch (e) {} }
+
+function persist() { if (night) store.set(KEY.active, { night, phase, snoozeUntil }); }
+function pushEpoch(a) { night.s.push(a ? a.s : null); night.m.push(a ? a.m : null); night.e.push(a ? a.e : 0); }
+function epochFrac(now) { return ((now - night.start) % night.epochMs) / night.epochMs; }
+
+function catchUp(now) {
+  const idx = Math.floor((now - night.start) / night.epochMs);
+  const missing = idx - night.s.length;
+  if (missing <= 0) return;
+  const a = Sensors.take();
+  pushEpoch(missing === 1 && !hiddenInEpoch ? a : null);
+  for (let k = 1; k < missing; k++) pushEpoch(null);
+  hiddenInEpoch = document.visibilityState !== 'visible';
+  persist();
+}
+function closePartial(now) {
+  const a = Sensors.take();
+  if (epochFrac(now) >= 0.3 && !hiddenInEpoch) pushEpoch(a);
+}
+function decide(now) {
+  if (now >= night.target) return 'zeit';
+  if (!night.windowMin || now < night.target - night.windowMin * MIN) return null;
+  const p = Sensors.partial();
+  p.frac = epochFrac(now);
+  return lightSleepNow(night, p);
+}
+
+async function startNight(opts = {}) {
+  if (phase !== 'idle') return;
+  phase = 'starting';
+  history.pushState({ guard: true }, '', '#nacht');
+  Sound.stop();
+  /* Alles, was eine Nutzergeste braucht, sofort im Klick anstoßen */
+  Sound.unlock();
+  try { if (navigator.audioSession) navigator.audioSession.type = 'auto'; } catch (e) {}
+  const motionP = settings.motion ? Sensors.startMotion() : Promise.resolve(false);
+  const micP = settings.mic ? Sensors.startMic(Sound.ctx) : Promise.resolve(false);
+  enterFullscreen();
+  const [motionOK, micOK] = await Promise.all([motionP, micP]);
+  const now = Date.now();
+  if (opts.resume) {
+    night = opts.resume;
+    night.sensors = night.sensors || {};
+    night.sensors.mic = night.sensors.mic || micOK;
+    night.sensors.motion = night.sensors.motion || motionOK;
+    hiddenInEpoch = true;
+  } else {
+    const test = !!opts.test;
+    const target = test ? now + 2 * MIN : nextAlarm(settings.time, now);
+    night = {
+      id: 'n' + now.toString(36), start: now, epochMs: test ? 5000 : MIN, target,
+      windowMin: test ? 1 : settings.window, alarmTime: fmtHM(target),
+      s: [], m: [], e: [], sensors: { mic: micOK, motion: motionOK }, test, snoozes: 0
+    };
+    hiddenInEpoch = false;
+  }
+  hiddenWhileSleeping = false;
+  Sensors.reset();
+  Sound.renderAlt(settings.sound);
+  phase = 'sleep';
+  wakeLockOK = await lockScreen();
+  persist();
+  showSleep();
+  tick();
+  setTimeout(updateSleepUI, 4000);
+}
+
+function ring(reason) {
+  const now = Date.now();
+  if (phase === 'sleep') {
+    closePartial(now);
+    night.wokeAt = now;
+    night.wokeReason = reason;
+    Sensors.stop();
+    saveNight(night);
+  }
+  phase = 'ring';
+  persist();
+  const ramp = night.test ? Math.min(settings.ramp, 20) : settings.ramp;
+  showRing(reason, ramp);
+  Sound.start(settings.sound, settings.volume, ramp);
+  startVibration(Math.min(30, ramp / 2));
+}
+function snooze() {
+  if (phase !== 'ring') return;
+  Sound.stop(); stopVibration();
+  night.snoozes = (night.snoozes || 0) + 1;
+  saveNight(night);
+  phase = 'snooze';
+  snoozeUntil = Date.now() + settings.snooze * MIN;
+  persist();
+  showSleep();
+}
+function finish() {
+  const now = Date.now();
+  if (phase === 'sleep' && night) {
+    closePartial(now);
+    night.wokeAt = now;
+    night.wokeReason = 'manuell';
+  }
+  Sensors.stop(); Sound.stop(); stopVibration();
+  const n = night;
+  night = null; phase = 'idle';
+  store.del(KEY.active);
+  unlockScreen(); exitFullscreen();
+  $('#sleepScreen').hidden = true; $('#ringScreen').hidden = true;
+  try { if (navigator.audioSession) navigator.audioSession.type = 'auto'; } catch (e) {}
+  if (!n) return;
+  if (!n.test && n.s.length < 3) {
+    showNote('<b>Zu kurz zum Auswerten.</b> Die Aufzeichnung lief weniger als drei Minuten und wurde nicht gespeichert.');
+    show('wecker');
+    return;
+  }
+  saveNight(n);
+  openReport(n.id, { morning: n.wokeReason !== 'manuell' || n.test });
+}
+
+function tick() {
+  const now = Date.now();
+  if (phase === 'sleep' && night) {
+    catchUp(now);
+    const r = decide(now);
+    if (r) ring(r);
+  } else if (phase === 'snooze' && now >= snoozeUntil) {
+    ring('schlummern');
+  }
+  if (!$('#sleepScreen').hidden) updateSleepClock(now);
+  if (!$('#ringScreen').hidden) $('#ringTime').textContent = fmtHM(now);
+  if (!views.wecker.hidden) updateUntil(now);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    if (phase === 'sleep' || phase === 'snooze' || phase === 'ring') {
+      lockScreen().then(ok => { wakeLockOK = ok; });
+      if (Sound.ctx && Sound.ctx.state !== 'running') Sound.ctx.resume().catch(() => {});
+      if (hiddenWhileSleeping) updateSleepUI();
+    }
+    tick();
+  } else if (phase === 'sleep') {
+    hiddenInEpoch = true;
+    hiddenWhileSleeping = true;
+    persist();
+  }
+});
+window.addEventListener('beforeunload', e => {
+  if (phase === 'sleep' || phase === 'snooze' || phase === 'ring') { persist(); e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ================= Schlaf- und Weckbildschirm ================= */
+let dimTimer = 0, driftTimer = 0;
+function wakeUI() {
+  const scr = $('#sleepScreen');
+  scr.classList.add('awake');
+  clearTimeout(dimTimer);
+  dimTimer = setTimeout(() => scr.classList.remove('awake'), 12000);
+}
+function showSleep() {
+  $('#ringScreen').hidden = true;
+  $('#sleepScreen').hidden = false;
+  const winStart = night.target - night.windowMin * MIN;
+  if (phase === 'snooze') {
+    $('#sleepLine').textContent = 'Schlummern bis ' + fmtHM(snoozeUntil);
+    $('#holdEndLabel').textContent = 'Gedrückt halten: Aufstehen';
+  } else {
+    $('#sleepLine').textContent = (night.test ? 'Testlauf · ' : '') + 'Wecker ' + fmtHM(night.target) + (night.windowMin ? ' · sanft ab ' + fmtHM(winStart) : '');
+    $('#holdEndLabel').textContent = 'Gedrückt halten zum Beenden';
+  }
+  updateSleepUI();
+  updateSleepClock(Date.now());
+  wakeUI();
+  clearInterval(driftTimer);
+  driftTimer = setInterval(() => {
+    if ($('#sleepScreen').hidden) return;
+    $('#sleepStage').style.transform = `translate(${Math.round((Math.random() - 0.5) * 8)}vw, ${Math.round((Math.random() - 0.5) * 12)}vh)`;
+  }, 60000);
+}
+function updateSleepClock(now) { $('#sleepClock').textContent = fmtHM(now); }
+function updateSleepUI() {
+  if (!night) return;
+  const mic = $('#senMic'), mot = $('#senMot');
+  const micLive = phase === 'sleep' && Sensors.micOn;
+  const motLive = phase === 'sleep' && Sensors.motionOn && Sensors.motionSeen;
+  mic.classList.toggle('on', micLive); mic.classList.toggle('off', !micLive);
+  mot.classList.toggle('on', motLive); mot.classList.toggle('off', !motLive);
+  const notes = [];
+  if (phase === 'sleep') {
+    if (!Sensors.micOn && !Sensors.motionOn) notes.push('Keine Sensoren aktiv. Der Wecker klingelt zur festen Weckzeit.');
+    else if (settings.mic && !Sensors.micOn) notes.push(Sensors.micError === 'NotAllowedError' ? 'Mikrofon wurde nicht erlaubt.' : 'Mikrofon ist nicht verfügbar.');
+    if (Sensors.motionOn && !Sensors.motionSeen) notes.push('Kein Bewegungssensor gefunden.');
+    if (night.test) notes.push('Ab ' + fmtHM(night.target - MIN) + ' ist das Fenster offen: Dann das Handy bewegen oder rascheln.');
+  }
+  if (wakeLockOK === false) notes.push('Stell die automatische Bildschirmsperre auf „Nie“, sonst kann der Wecker nicht klingeln.');
+  if (hiddenWhileSleeping) notes.push('Die Seite war zwischendurch im Hintergrund. In dieser Zeit wurde nichts gemessen.');
+  $('#sleepNote').textContent = notes.join(' ');
+}
+setInterval(() => {
+  if ($('#sleepScreen').hidden || !$('#sleepScreen').classList.contains('awake')) return;
+  $('#senMic').style.setProperty('--lvl', Sensors.level.toFixed(2));
+  $('#senMot').style.setProperty('--lvl', Math.min(1, Sensors.mlevel * 3).toFixed(2));
+}, 200);
+
+function whyText(n) {
+  const before = Math.round((n.target - n.wokeAt) / MIN);
+  const when = before > 0 ? before + ' Min vor ' + fmtHM(n.target) : 'zur Weckzeit';
+  switch (n.wokeReason) {
+    case 'leicht': return 'Leichtschlaf erkannt · ' + when;
+    case 'bewegung': return 'Du hast dich bewegt · ' + when;
+    case 'zeit': return n.windowMin && (n.sensors.mic || n.sensors.motion) ? 'Kein Leichtschlaf im Fenster gefunden, jetzt ist Weckzeit' : 'Deine Weckzeit';
+    case 'manuell': return 'Du hast die Aufzeichnung selbst beendet';
+    case 'abgebrochen': return 'Die Aufzeichnung wurde unterbrochen';
+  }
+  return '';
+}
+function showRing(reason, ramp) {
+  const scr = $('#ringScreen');
+  $('#sleepScreen').hidden = true;
+  scr.hidden = false;
+  scr.classList.remove('risen');
+  scr.style.setProperty('--rise', Math.max(8, ramp) + 's');
+  void scr.offsetWidth;
+  requestAnimationFrame(() => requestAnimationFrame(() => scr.classList.add('risen')));
+  $('#ringTime').textContent = fmtHM(Date.now());
+  $('#ringWhy').textContent = reason === 'schlummern' ? 'Die Schlummerzeit ist vorbei' : whyText(night);
+  $('#snoozeLen').textContent = settings.snooze + ' Min';
+}
+
+function holdButton(btn, ms, onDone) {
+  let raf = 0, t0 = 0;
+  const reset = () => { cancelAnimationFrame(raf); raf = 0; btn.style.setProperty('--p', 0); };
+  const step = now => {
+    const p = Math.min(1, (now - t0) / ms);
+    btn.style.setProperty('--p', p);
+    if (p >= 1) { reset(); onDone(); } else raf = requestAnimationFrame(step);
+  };
+  btn.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    t0 = performance.now();
+    try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(step);
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => btn.addEventListener(ev, reset));
+  btn.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); onDone(); } });
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+/* ================= Diagramme ================= */
+function smoothPath(pts, minY, maxY) {
+  if (!pts.length) return '';
+  const f = v => v.toFixed(1);
+  let d = `M${f(pts[0][0])},${f(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = clamp(p1[1] + (p2[1] - p0[1]) / 6, minY, maxY);
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = clamp(p2[1] - (p3[1] - p1[1]) / 6, minY, maxY);
+    d += `C${f(c1x)},${f(c1y)} ${f(c2x)},${f(c2y)} ${f(p2[0])},${f(p2[1])}`;
+  }
+  return d;
+}
+let gidCount = 0;
+function graphSVG(n, A, W) {
+  const H = 214, L = 52, R = 12, T = 16, B = 30, pw = W - L - R, ph = H - T - B;
+  const t0 = n.start, t1 = A.end, span = Math.max(1, t1 - t0);
+  const X = ts => L + clamp((ts - t0) / span, 0, 1) * pw;
+  const Y = v => T + (1 - clamp(v, 0, 1)) * ph;
+  const gid = 'gg' + (++gidCount);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Schlafverlauf von ${fmtHM(t0)} bis ${fmtHM(t1)}">`;
+  s += `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="st-wach"/><stop offset=".5" class="st-leicht"/><stop offset="1" class="st-tief"/></linearGradient></defs>`;
+  ['Wach', 'Leicht', 'Tief'].forEach((name, k) => {
+    const y = T + k * ph / 3;
+    s += `<rect x="${L}" y="${y.toFixed(1)}" width="${pw}" height="${(ph / 3).toFixed(1)}" class="g-band${k % 2 ? ' alt' : ''}"/>`;
+    s += `<text x="${L - 10}" y="${(y + ph / 6 + 4).toFixed(1)}" class="g-label" text-anchor="end">${name}</text>`;
+  });
+  const spanMin = span / MIN;
+  const step = [1, 2, 5, 10, 15, 30, 60, 90, 120, 180].find(st => spanMin / st <= (W < 420 ? 4 : 6)) || 240;
+  const stepMs = step * MIN, tzo = new Date(t0).getTimezoneOffset() * MIN;
+  const labels = [[L, fmtHM(t0), 'start'], [L + pw, fmtHM(t1), 'end']];
+  for (let tk = Math.ceil((t0 - tzo) / stepMs) * stepMs + tzo; tk < t1; tk += stepMs) {
+    const x = X(tk);
+    if (x <= L + 2) continue;
+    s += `<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${T}" y2="${T + ph}" class="g-grid"/>`;
+    if (x - L > 44 && L + pw - x > 44) labels.push([x, fmtHM(tk), 'middle']);
+  }
+  if (n.windowMin) {
+    const ws = n.target - n.windowMin * MIN, a = Math.max(ws, t0), b = Math.min(n.target, t1);
+    if (b > a) {
+      const xa = X(a), wd = Math.max(2, X(b) - xa);
+      s += `<rect x="${xa.toFixed(1)}" y="${T}" width="${wd.toFixed(1)}" height="${ph}" class="g-window"/>`;
+      if (wd > 46) s += `<text x="${(xa + wd / 2).toFixed(1)}" y="${T + 12}" class="g-wlabel" text-anchor="middle">FENSTER</text>`;
+    }
+  }
+  /* Für die Anzeige etwas weicher zeichnen, damit der Verlauf auf schmalen Bildschirmen lesbar bleibt */
+  const disp = gauss(A.curve, clamp(2.5 / A.epMin, 1, Math.max(1, A.len / 12)));
+  const pts = [[L, Y(disp[0])]];
+  disp.forEach((v, i) => pts.push([X(t0 + (i + 0.5) * n.epochMs), Y(v)]));
+  pts.push([X(t1), Y(disp[disp.length - 1])]);
+  const line = smoothPath(pts, T, T + ph);
+  s += `<path d="${line} L${X(t1).toFixed(1)},${T + ph} L${L},${T + ph} Z" fill="url(#${gid})"/>`;
+  s += `<path d="${line}" class="g-line"/>`;
+  if (A.gaps && A.gaps.length) {
+    const gw = Math.max(1.5, pw / A.len);
+    A.gaps.forEach(i => { s += `<rect x="${X(t0 + i * n.epochMs).toFixed(1)}" y="${T + ph - 4}" width="${gw.toFixed(1)}" height="4" class="g-gap"/>`; });
+  }
+  const yEnd = Y(disp[disp.length - 1]);
+  s += `<line x1="${X(t1).toFixed(1)}" x2="${X(t1).toFixed(1)}" y1="${T}" y2="${T + ph}" class="g-wake"/><circle cx="${X(t1).toFixed(1)}" cy="${yEnd.toFixed(1)}" r="5" class="g-dot"/>`;
+  labels.forEach(([x, t, anchor]) => { s += `<text x="${x.toFixed(1)}" y="${H - 9}" class="g-tick${anchor !== 'middle' ? ' strong' : ''}" text-anchor="${anchor}">${t}</text>`; });
+  return s + '</svg>';
+}
+function sparkSVG(A) {
+  if (!A.hasData) return '';
+  const w = 72, h = 28, c = A.curve, N = Math.min(36, c.length), pts = [];
+  for (let k = 0; k < N; k++) {
+    const a = Math.floor(k * c.length / N), b = Math.max(a + 1, Math.floor((k + 1) * c.length / N));
+    let v = 0; for (let i = a; i < b; i++) v += c[i]; v /= (b - a);
+    pts.push([2 + k * (w - 4) / Math.max(1, N - 1), 3 + (1 - v) * (h - 6)]);
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${smoothPath(pts, 2, h - 2)}" class="spark"/></svg>`;
+}
+function trendSVG(items, W) {
+  const H = 168, L = 6, R = 6, T = 22, B = 26, pw = W - L - R, ph = H - T - B;
+  const maxH = Math.max(9, ...items.map(x => x.A.asleep / 60));
+  const slot = pw / 14, bw = Math.min(22, slot * 0.58), off = 14 - items.length;
+  const y8 = T + ph - (8 / maxH) * ph;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Schlafdauer der letzten ${items.length} Nächte">`;
+  s += `<line x1="${L}" x2="${L + pw}" y1="${y8.toFixed(1)}" y2="${y8.toFixed(1)}" class="g-guide"/><text x="${L + pw}" y="${(y8 - 6).toFixed(1)}" text-anchor="end" class="g-tick">8 Std</text>`;
+  items.forEach((it, k) => {
+    const cx = L + (off + k + 0.5) * slot, hgt = Math.max(3, (it.A.asleep / 60) / maxH * ph), y = T + ph - hgt;
+    s += `<rect x="${(cx - bw / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${hgt.toFixed(1)}" rx="${Math.min(6, bw / 2).toFixed(1)}" class="bar ${qClass(it.A.quality)}"><title>${fmtDate(it.A.end)}: ${fmtDur(it.A.asleep)}, ${it.A.quality} %</title></rect>`;
+    s += `<text x="${cx.toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" class="g-q">${it.A.quality}</text>`;
+    s += `<text x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle" class="g-tick">${DAYS[new Date(it.A.end).getDay()]}</text>`;
+  });
+  return s + '</svg>';
+}
+
+/* ================= Ansichten ================= */
+const views = { wecker: $('#view-wecker'), naechte: $('#view-naechte'), info: $('#view-info'), bericht: $('#view-bericht') };
+/* Jede Ansicht bekommt einen Eintrag im Verlauf, damit die Zurück-Taste von Android sich wie in einer App verhält */
+function show(name, tab = name, fromHistory = false) {
+  if (!fromHistory) {
+    const hash = name === 'wecker' ? '' : '#' + name;
+    if (location.hash !== hash) history.pushState({ view: name }, '', hash || location.pathname + location.search);
+  }
+  for (const [k, el] of Object.entries(views)) el.hidden = k !== name;
+  $$('.tab').forEach(b => { if (b.dataset.view === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  window.scrollTo(0, 0);
+  if (name === 'wecker') renderHome();
+  if (name === 'naechte') renderNights();
+  if (name === 'info') renderInfo();
+}
+$$('.tab').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
+function routeFromHash() {
+  const v = location.hash.slice(1);
+  if (v === 'bericht' && report) { show('bericht', 'naechte', true); renderReport(); }
+  else show(v === 'naechte' || v === 'info' ? v : 'wecker', undefined, true);
+}
+window.addEventListener('popstate', () => {
+  /* Nachts schließt die Zurück-Taste den Wecker nicht aus Versehen */
+  if (phase !== 'idle') {
+    history.pushState({ guard: true }, '', '#nacht');
+    if (!$('#sleepScreen').hidden) wakeUI();
+    return;
+  }
+  routeFromHash();
+});
+
+function showNote(html, actions) {
+  const box = document.createElement('div');
+  box.className = 'note';
+  box.innerHTML = `<div>${html}</div>`;
+  if (actions && actions.length) {
+    const row = document.createElement('div'); row.className = 'note-actions';
+    actions.forEach(a => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label;
+      if (a.primary) b.className = 'go';
+      b.addEventListener('click', () => { box.remove(); a.run(); });
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+  } else {
+    setTimeout(() => box.remove(), 8000);
+  }
+  $('#notes').appendChild(box);
+  return box;
+}
+
+/* --- Wecker --- */
+function renderHome() {
+  $('#bigTime').textContent = settings.time;
+  if ($('#alarmInput').value !== settings.time) $('#alarmInput').value = settings.time;
+  const now = Date.now(), target = nextAlarm(settings.time, now);
+  if (settings.window) $('#windowText').innerHTML = `Sanft wecken ab <strong>${fmtHM(target - settings.window * MIN)}</strong>, sobald du leicht schläfst`;
+  else $('#windowText').textContent = 'Fester Wecker ohne Weckfenster';
+  updateUntil(now);
+  $('#cycleList').innerHTML = [6, 5, 4].map(c => {
+    const bed = target - c * 90 * MIN - 15 * MIN;
+    return `<div class="cycle${bed < now ? ' past' : ''}"><b>${fmtHM(bed)}</b><small>${c} Zyklen · ${de(c * 1.5)} Std</small></div>`;
+  }).join('');
+  $$('.seg[data-key]').forEach(seg => {
+    const key = seg.dataset.key;
+    $$('button[data-val]', seg).forEach(b => b.setAttribute('aria-checked', String(String(settings[key]) === b.dataset.val)));
+  });
+  $$('.switch[data-key]').forEach(sw => sw.setAttribute('aria-checked', String(!!settings[sw.dataset.key])));
+  $('#vol').value = settings.volume;
+  $('#valVol').textContent = Math.round(settings.volume * 100) + ' %';
+  $('#valWindow').textContent = settings.window ? settings.window + ' Min vor der Weckzeit' : 'aus';
+}
+let lastHomeRender = 0;
+function updateUntil(now) {
+  const target = nextAlarm(settings.time, now);
+  $('#untilText').textContent = `Noch ${fmtDur((target - now) / MIN)} bis ${settings.time}`;
+  if (now - lastHomeRender > 30000) { lastHomeRender = now; renderHome(); }
+}
+$('#alarmInput').addEventListener('input', e => {
+  const v = e.target.value;
+  if (/^\d\d:\d\d/.test(v)) { settings.time = v.slice(0, 5); saveSettings(); renderHome(); }
+});
+$('#alarmInput').addEventListener('click', e => { try { e.target.showPicker && e.target.showPicker(); } catch (_) {} });
+$$('[data-adj]').forEach(b => b.addEventListener('click', () => {
+  const [h, m] = settings.time.split(':').map(Number);
+  const t = ((h * 60 + m + Number(b.dataset.adj)) % 1440 + 1440) % 1440;
+  settings.time = pad(Math.floor(t / 60)) + ':' + pad(t % 60);
+  saveSettings(); renderHome();
+}));
+$$('.seg[data-key]').forEach(seg => seg.addEventListener('click', e => {
+  const b = e.target.closest('button[data-val]');
+  if (!b) return;
+  const key = seg.dataset.key;
+  settings[key] = typeof DEFAULTS[key] === 'number' ? Number(b.dataset.val) : b.dataset.val;
+  saveSettings(); renderHome();
+  if (key === 'sound' && Sound.previewTimer) Sound.preview(settings.sound, settings.volume);
+}));
+$$('.switch[data-key]').forEach(sw => sw.addEventListener('click', () => {
+  settings[sw.dataset.key] = !settings[sw.dataset.key];
+  saveSettings(); renderHome();
+}));
+$('#vol').addEventListener('input', e => { settings.volume = Number(e.target.value); saveSettings(); $('#valVol').textContent = Math.round(settings.volume * 100) + ' %'; });
+$('#btnPreview').addEventListener('click', () => {
+  if (Sound.previewTimer) { Sound.stop(); return; }
+  Sound.preview(settings.sound, settings.volume);
+});
+$('#btnStart').addEventListener('click', () => startNight());
+$('#btnTest').addEventListener('click', () => startNight({ test: true }));
+
+$('#sleepScreen').addEventListener('pointerdown', e => { if (!e.target.closest('.hold')) wakeUI(); });
+holdButton($('#holdEnd'), 1200, () => finish());
+holdButton($('#holdStop'), 1000, () => finish());
+$('#btnSnooze').addEventListener('click', snooze);
+
+/* --- Bericht --- */
+let report = null;
+function openReport(id, opts = {}) {
+  const n = findNight(id);
+  if (!n) { show('naechte'); return; }
+  report = { n, opts };
+  show('bericht', 'naechte');
+  renderReport();
+}
+const MOODS = [['erschoepft', 'Erschöpft'], ['okay', 'Geht so'], ['erholt', 'Ausgeruht']];
+function renderReport() {
+  const { n, opts } = report, A = analyze(n);
+  const title = opts.morning ? (n.test ? 'Testlauf beendet' : 'Guten Morgen') : n.sample ? 'Beispielnacht' : 'Deine Nacht';
+  let h = `<div class="rep-top"><button type="button" class="back" id="repBack" aria-label="Zurück zu den Nächten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><p class="eyebrow">Nacht zum ${fmtDate(A.end)}</p><h1 class="rep-title">${title}</h1></div></div>`;
+  if (n.sample) h += `<p class="note-inline">Erzeugte Beispieldaten, damit du siehst, wie eine Auswertung aussieht. Deine eigenen Nächte erscheinen nach der ersten Aufzeichnung.</p>`;
+  if (n.test) h += `<p class="note-inline"><span class="badge">Testlauf</span> Nur zwei Minuten, die Werte zeigen nur, ob die Sensoren reagieren.</p>`;
+
+  if (!A.hasData) {
+    h += `<div class="card"><h2>Keine Sensordaten</h2><p class="prose" style="margin:0">Mikrofon und Bewegungssensor waren aus oder nicht erlaubt. Der Wecker hat wie ein normaler Wecker geklingelt.</p></div>`;
+    h += `<div class="figs" style="margin-top:14px"><div class="fig"><b>${fmtDur(A.inBed)}</b><span>im Bett</span></div><div class="fig"><b>${fmtHM(n.start)} – ${fmtHM(A.end)}</b><span>Zeitraum</span></div></div>`;
+  } else {
+    const C = 2 * Math.PI * 52, dash = (C * A.quality / 100).toFixed(1);
+    h += `<div class="score">
+      <div class="score-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="st-dawn-a"/><stop offset="1" class="st-dawn-b"/></linearGradient></defs><circle cx="60" cy="60" r="52" class="sr-track"/><circle cx="60" cy="60" r="52" class="sr-val" stroke="url(#sg)" stroke-dasharray="${dash} 999"/></svg>
+        <div class="score-num" aria-label="Schlafqualität ${A.quality} Prozent">${A.quality}<small>Qualität</small></div></div>
+      <div class="facts">
+        <div class="fact"><span class="verdict">${verdict(A.quality)}</span><b>${fmtDur(A.asleep)}</b><span>geschlafen</span></div>
+        <div class="fact"><b>${fmtHM(n.start)} – ${fmtHM(A.end)}</b><span>${fmtDur(A.inBed)} im Bett</span></div>
+      </div></div>`;
+    h += `<div class="woke"><span class="woke-dot" aria-hidden="true"></span><div><b>${fmtHM(A.end)}</b> · ${whyText(n)}</div></div>`;
+    h += `<div class="card"><h2>Schlafverlauf</h2><div class="graph" id="repGraph"></div><p class="caption">Je höher die Linie, desto unruhiger warst du. Hell hinterlegt ist dein Weckfenster${A.gaps.length ? ', graue Striche unten markieren Zeit ohne Messung' : ''}.</p></div>`;
+    const tot = A.wakeMin + A.lightMin + A.deepMin || 1;
+    const short = min => { min = Math.round(min); return min >= 60 ? Math.floor(min / 60) + ':' + pad(min % 60) + ' Std' : min + ' Min'; };
+    const part = (min, cls, label) => `<div><span><i class="${cls}"></i>${label}</span><b>${short(min)}</b><small>${Math.round(min / tot * 100)} %</small></div>`;
+    h += `<div class="card"><h2>Phasen</h2>
+      <div class="stagebar" role="img" aria-label="Wach ${Math.round(A.wakeMin / tot * 100)} %, Leicht ${Math.round(A.lightMin / tot * 100)} %, Tief ${Math.round(A.deepMin / tot * 100)} %">
+        <span class="c-wach" style="flex:${A.wakeMin}"></span><span class="c-leicht" style="flex:${A.lightMin}"></span><span class="c-tief" style="flex:${A.deepMin}"></span></div>
+      <div class="legend">${part(A.wakeMin, 'c-wach', 'Wach')}${part(A.lightMin, 'c-leicht', 'Leicht')}${part(A.deepMin, 'c-tief', 'Tief')}</div></div>`;
+    h += `<div class="figs" style="margin-top:14px">
+      <div class="fig"><b>${fmtDur(A.latency)}</b><span>bis zum Einschlafen</span></div>
+      <div class="fig"><b>${A.awakenings}</b><span>Wachphasen in der Nacht</span></div>
+      <div class="fig"><b>${A.hasS ? A.events : '–'}</b><span>laute Geräusche</span></div>
+      <div class="fig"><b>${n.snoozes || 0} ×</b><span>geschlummert</span></div>
+      ${A.gapMin ? `<div class="fig"><b>${fmtDur(A.gapMin)}</b><span>ohne Messung</span></div>` : ''}
+    </div>`;
+  }
+  if (!n.sample) {
+    h += `<div class="card"><h2 id="lbl-mood">Wie fühlst du dich?</h2><div class="seg mood" role="radiogroup" aria-labelledby="lbl-mood">${MOODS.map(([k, l]) => `<button type="button" role="radio" data-mood="${k}" aria-checked="${n.mood === k}">${l}</button>`).join('')}</div></div>`;
+    h += `<div class="rep-actions"><button type="button" class="btn-ghost" id="repHome">Zum Wecker</button><button type="button" class="danger" id="repDelete">Nacht löschen</button></div>`;
+  } else {
+    h += `<div class="rep-actions"><button type="button" class="btn-ghost" id="repHome">Zum Wecker</button></div>`;
+  }
+  $('#reportBody').innerHTML = h;
+  drawReportGraph();
+
+  $('#repBack').addEventListener('click', () => show('naechte'));
+  $('#repHome').addEventListener('click', () => show('wecker'));
+  const moodSeg = $('#reportBody .mood');
+  if (moodSeg) moodSeg.addEventListener('click', e => {
+    const b = e.target.closest('button[data-mood]');
+    if (!b) return;
+    n.mood = b.dataset.mood;
+    saveNight(n);
+    $$('button[data-mood]', moodSeg).forEach(x => x.setAttribute('aria-checked', String(x === b)));
+  });
+  const del = $('#repDelete');
+  if (del) {
+    let armed = 0;
+    del.addEventListener('click', () => {
+      if (!armed) {
+        del.classList.add('armed'); del.textContent = 'Wirklich löschen?';
+        armed = setTimeout(() => { armed = 0; del.classList.remove('armed'); del.textContent = 'Nacht löschen'; }, 4000);
+        return;
+      }
+      clearTimeout(armed);
+      deleteNight(n.id);
+      show('naechte');
+    });
+  }
+}
+function drawReportGraph() {
+  const box = $('#repGraph');
+  if (!box || !report) return;
+  box.innerHTML = graphSVG(report.n, analyze(report.n), Math.floor(box.clientWidth || 320));
+}
+
+/* --- Nächte --- */
+function renderNights() {
+  const list = loadNights(), body = $('#nightsBody');
+  if (!list.length) {
+    body.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 96 64" aria-hidden="true"><path d="M62 30a16 16 0 1 1-17.5-19A12.5 12.5 0 0 0 62 30z" fill="none" style="stroke:var(--leicht)" stroke-width="2.4" stroke-linejoin="round"/><path d="M6 54h84" style="stroke:var(--dawn)" stroke-width="2.4" stroke-linecap="round"/><path d="M22 60h52" style="stroke:var(--dawn-deep)" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg>
+      <h2>Noch keine Nächte</h2>
+      <p>Stell den Wecker und tippe auf „Gute Nacht“. Am Morgen findest du hier deinen Schlafverlauf.</p>
+      <button type="button" class="btn-ghost" id="btnSample">Beispielnacht ansehen</button></div>`;
+    $('#btnSample').addEventListener('click', () => openReport('beispiel'));
+    return;
+  }
+  const all = list.map(n => ({ n, A: analyze(n) }));
+  const real = all.filter(x => !x.n.test && x.A.hasData);
+  const last7 = real.slice(0, 7);
+  let h = '';
+  if (last7.length) {
+    h += `<p class="lead">Durchschnitt der letzten ${last7.length === 1 ? 'Nacht' : last7.length + ' Nächte'}</p>
+      <div class="summary">
+        <div class="sum"><b>${Math.round(mean(last7.map(x => x.A.quality)))} %</b><span>Qualität</span></div>
+        <div class="sum"><b>${fmtDur(mean(last7.map(x => x.A.asleep))).replace(' Min', '′').replace(' Std', ' h')}</b><span>Schlaf</span></div>
+        <div class="sum"><b>${Math.round(mean(last7.map(x => x.A.latency)))} Min</b><span>Einschlafen</span></div>
+      </div>`;
+    h += `<div class="card"><h2>Schlafdauer</h2><div class="graph" id="trendBox"></div><p class="caption">Zahl über dem Balken: Schlafqualität in Prozent.</p></div>`;
+  }
+  h += `<ul class="nightlist">` + all.map(({ n, A }) => {
+    const mood = MOODS.find(m => m[0] === n.mood);
+    return `<li><button type="button" class="nightitem" data-id="${n.id}">
+      <span class="ni-date">${fmtDate(A.end)}${n.test ? ' <span class="badge">Test</span>' : ''}</span>
+      <span class="ni-q">${sparkSVG(A)}<span class="qpill ${A.hasData && !n.test ? qClass(A.quality) : ''}">${A.hasData && !n.test ? A.quality + ' %' : '–'}</span></span>
+      <span class="ni-meta">${fmtHM(n.start)} – ${fmtHM(A.end)} · ${fmtDur(A.hasData && !n.test ? A.asleep : A.inBed)}${mood ? ' · ' + mood[1] : ''}</span>
+    </button></li>`;
+  }).join('') + `</ul>`;
+  h += `<div class="list-foot"><button type="button" class="btn-ghost" id="btnSample">Beispielnacht ansehen</button><button type="button" class="btn-ghost" id="btnExport">Daten exportieren</button></div>`;
+  body.innerHTML = h;
+  drawTrend();
+  $$('.nightitem', body).forEach(b => b.addEventListener('click', () => openReport(b.dataset.id)));
+  $('#btnSample').addEventListener('click', () => openReport('beispiel'));
+  $('#btnExport').addEventListener('click', exportNights);
+}
+function drawTrend() {
+  const box = $('#trendBox');
+  if (!box) return;
+  const items = loadNights().map(n => ({ n, A: analyze(n) })).filter(x => !x.n.test && x.A.hasData).slice(0, 14).reverse();
+  box.innerHTML = trendSVG(items, Math.floor(box.clientWidth || 320));
+}
+function exportNights() {
+  const blob = new Blob([JSON.stringify(loadNights())], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'daemmerung-naechte-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+/* --- Info --- */
+function renderInfo() {
+  const n = sampleNight(), A = analyze(n), box = $('#infoGraph');
+  box.innerHTML = graphSVG(n, A, Math.floor(box.clientWidth || 320));
+  const before = Math.round((n.target - n.wokeAt) / MIN);
+  $('#infoCaption').textContent = n.wokeReason === 'leicht'
+    ? `Ab ${fmtHM(n.target - n.windowMin * MIN)} ist das Fenster offen. Um ${fmtHM(n.wokeAt)} wird die Linie unruhiger: Leichtschlaf. Der Wecker klingelt ${before} Minuten vor der spätesten Weckzeit ${fmtHM(n.target)}.`
+    : `Im Fenster ab ${fmtHM(n.target - n.windowMin * MIN)} blieb es ruhig, also klingelt der Wecker zur spätesten Weckzeit ${fmtHM(n.target)}.`;
+}
+
+let resizeT = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    if (!views.bericht.hidden) drawReportGraph();
+    if (!views.naechte.hidden) drawTrend();
+    if (!views.info.hidden) renderInfo();
+  }, 150);
+});
+
+/* ================= Start ================= */
+function checkEnvironment() {
+  if (!window.isSecureContext) showNote('<b>Mikrofon und Bewegungssensor brauchen HTTPS.</b> Öffne die Seite über eine https-Adresse, sonst klingelt der Wecker nur zur festen Zeit.', [{ label: 'Verstanden', run() {} }]);
+}
+function checkResume() {
+  const saved = store.get(KEY.active);
+  if (!saved || !saved.night || !Array.isArray(saved.night.s)) { store.del(KEY.active); return; }
+  const n = saved.night, now = Date.now();
+  if (!n.test && !n.wokeAt && n.s.length < 3 && now - n.start > 10 * MIN) { store.del(KEY.active); return; }
+  const canContinue = !n.wokeAt && now < n.target;
+  const actions = [];
+  if (canContinue) actions.push({ label: 'Weiter aufzeichnen', primary: true, run() { store.del(KEY.active); startNight({ resume: n }); } });
+  actions.push({
+    label: 'Auswerten', primary: !canContinue, run() {
+      if (!n.wokeAt) { n.wokeAt = Math.min(now, n.start + Math.max(1, n.s.length) * n.epochMs); n.wokeReason = 'abgebrochen'; }
+      saveNight(n); store.del(KEY.active); openReport(n.id);
+    }
+  });
+  actions.push({ label: 'Verwerfen', run() { store.del(KEY.active); } });
+  showNote(`<b>Eine Aufzeichnung wurde unterbrochen.</b> Sie lief seit ${fmtHM(n.start)} Uhr${canContinue ? ', der Wecker ist noch auf ' + fmtHM(n.target) + ' gestellt' : ''}.`, actions);
+}
+
+/* ================= Als App ================= */
+const KEY_INSTALL = 'daemmerung-installhinweis';
+let installPrompt = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const SHARE_ICON = '<svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Teilen"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function renderInstall() {
+  const card = $('#installCard');
+  const snoozed = store.get(KEY_INSTALL, 0) > Date.now();
+  if (isStandalone() || snoozed || (!installPrompt && !isIOS)) { card.hidden = true; return; }
+  card.hidden = false;
+  if (installPrompt) {
+    $('#installText').textContent = 'Eigenes Symbol auf dem Home-Bildschirm, Vollbild ohne Browserleiste, startet auch ohne Internet.';
+    $('#installGo').hidden = false;
+    $('#installLater').textContent = 'Später';
+  } else {
+    $('#installText').innerHTML = `Tippe in Safari auf <b>Teilen</b> ${SHARE_ICON} und dann auf <b>„Zum Home-Bildschirm“</b>. Danach startet Dämmerung im Vollbild wie eine App.`;
+    $('#installGo').hidden = true;
+    $('#installLater').textContent = 'Verstanden';
+  }
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; renderInstall(); });
+window.addEventListener('appinstalled', () => {
+  installPrompt = null; renderInstall();
+  showNote('<b>Installiert.</b> Du findest Dämmerung jetzt auf deinem Home-Bildschirm.');
+});
+$('#installGo').addEventListener('click', async () => {
+  if (!installPrompt) return;
+  const p = installPrompt; installPrompt = null;
+  try { await p.prompt(); await p.userChoice; } catch (e) {}
+  renderInstall();
+});
+$('#installLater').addEventListener('click', () => { store.set(KEY_INSTALL, Date.now() + 7 * 24 * 3600 * 1000); renderInstall(); });
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+
+renderHome();
+renderInstall();
+checkEnvironment();
+checkResume();
+if (location.hash) routeFromHash();
+setInterval(tick, 1000);
+
+/* Für Tests in der Konsole */
+window.__daemmerung = { analyze, activity, lightSleepNow, sampleNight };
+})();
+</script>
+</body>
+</html>
