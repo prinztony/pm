@@ -1,0 +1,34 @@
+{
+  "id": "./",
+  "name": "Dämmerung – smarter Wecker",
+  "short_name": "Dämmerung",
+  "description": "Weckt dich im Leichtschlaf innerhalb deines Weckfensters. Erkennt Unruhe über Mikrofon und Bewegungssensor, ganz ohne Konto und ohne Cloud.",
+  "lang": "de",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0c1c",
+  "theme_color": "#0a0c1c",
+  "categories": ["health", "lifestyle", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Deine Nächte",
+      "short_name": "Nächte",
+      "description": "Schlafverlauf der letzten Nächte ansehen",
+      "url": "./#naechte",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "screenshots": [
+    { "src": "screenshots/wecker.webp", "sizes": "780x1688", "type": "image/webp", "form_factor": "narrow", "label": "Weckzeit und Weckfenster einstellen" },
+    { "src": "screenshots/bericht.webp", "sizes": "780x1688", "type": "image/webp", "form_factor": "narrow", "label": "Morgenbericht mit Schlafverlauf" }
+  ]
+}

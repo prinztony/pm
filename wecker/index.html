@@ -12,13 +12,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dämmerung">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c1c'/%3E%3Cpath d='M14 42a18 18 0 0 1 36 0z' fill='%23ffb07c'/%3E%3Cpath d='M8 47h48' stroke='%23ef6f7b' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta name="application-name" content="Dämmerung">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c1c'/%3E%3Cpath d='M14 42a18 18 0 0 1 36 0z' fill='%23ffb07c'/%3E%3Cpath d='M8 47h48' stroke='%23ef6f7b' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 /* Schriften liegen lokal im Repo, es wird nichts von fremden Servern geladen. */
-@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(assets/fonts/montserrat-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(assets/fonts/montserrat-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(assets/fonts/nunito-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(assets/fonts/nunito-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(../assets/fonts/montserrat-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Montserrat';font-style:normal;font-display:swap;font-weight:100 900;src:url(../assets/fonts/montserrat-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(../assets/fonts/nunito-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(../assets/fonts/nunito-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 
 /* Layout: eine ruhige Spalte wie ein Nachttisch-Display. Einziges großes Motiv ist das Horizont-Glühen um die Weckzeit.
    Bewusst nur ein dunkles Farbschema: Die App wird nachts benutzt, ein heller Bildschirm würde blenden. */
@@ -60,8 +64,13 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{background:var(--night);-webkit-text-size-adjust:100%}
-body{margin:0;min-height:100vh;background:var(--night);color:var(--text);font:16px/1.5 var(--f-body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+html{background:var(--night);-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+body{margin:0;min-height:100vh;background:var(--night);color:var(--text);font:16px/1.5 var(--f-body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+/* Als installierte App: kein Markieren und kein Kontextmenü beim langen Drücken */
+@media (display-mode:standalone),(display-mode:fullscreen){
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .tagline{display:none}
+}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--dawn);outline-offset:3px;border-radius:10px}
 [hidden]{display:none!important}
@@ -103,6 +112,17 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn-primary:active{transform:translateY(1px)}
 .start-hint{margin:10px 0 0;text-align:center;font-size:13px;color:var(--faint)}
 .btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:14px;border:1px solid var(--line);background:var(--night-2);font-weight:700;font-size:15px}
+
+/* App installieren */
+.install{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;margin-top:22px;padding:14px 16px;border-radius:18px;background:var(--night-2);border:1px solid var(--dawn-edge)}
+.install img{width:52px;height:52px;border-radius:13px;display:block}
+.install h2{margin:0;font:600 15px/1.3 var(--f-display)}
+.install p{margin:3px 0 11px;font-size:13.5px;color:var(--muted)}
+.install p b{color:var(--text)}
+.install-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-small{padding:8px 14px;border-radius:12px;font-weight:800;font-size:14px;border:1px solid var(--line);background:var(--night-3)}
+.btn-small.go{background:var(--dawn);color:var(--on-dawn);border-color:var(--dawn)}
+.share-ico{display:inline-block;width:16px;height:16px;vertical-align:-3px;color:var(--leicht)}
 
 /* Schlafzyklen */
 .cycles{margin-top:28px}
@@ -325,6 +345,18 @@ button{font:inherit;color:inherit;cursor:pointer}
       </button>
       <p class="start-hint">Handy ans Ladekabel, Seite geöffnet lassen.</p>
 
+      <section class="install" id="installCard" hidden aria-labelledby="h-install">
+        <img src="icons/icon-192.png" alt="" width="52" height="52">
+        <div>
+          <h2 id="h-install">Als App installieren</h2>
+          <p id="installText"></p>
+          <div class="install-actions">
+            <button type="button" class="btn-small go" id="installGo">Installieren</button>
+            <button type="button" class="btn-small" id="installLater">Später</button>
+          </div>
+        </div>
+      </section>
+
       <section class="cycles" aria-labelledby="h-cycles">
         <div class="sec-head"><h2 id="h-cycles">Ins Bett für volle Zyklen</h2><span>je 90 Min + 15 Min Einschlafen</span></div>
         <div class="cycle-list" id="cycleList"></div>
@@ -413,8 +445,16 @@ button{font:inherit;color:inherit;cursor:pointer}
           <li><b>Ladekabel anschließen.</b> Der Bildschirm bleibt die ganze Nacht an, stark abgedunkelt.</li>
           <li><b>Seite offen lassen.</b> Nicht sperren und nicht in eine andere App wechseln. Sonst hält der Browser Mikrofon und Uhr an, und der Wecker kann nicht klingeln.</li>
           <li><b>Richtig hinlegen.</b> Für den Bewegungssensor neben das Kopfkissen auf die Matratze, Display nach oben. Nur mit Mikrofon reicht der Nachttisch.</li>
-          <li><b>iPhone:</b> Stummschalter aus, Lautstärke hoch. Am besten über „Teilen → Zum Home-Bildschirm“ als App öffnen.</li>
+          <li><b>iPhone:</b> Stummschalter aus, Lautstärke hoch.</li>
           <li><b>Einmal testen.</b> Mach den Testlauf, bevor du dich auf den Wecker verlässt.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h2 class="sec-title">Als App installieren</h2>
+        <ul class="checks">
+          <li><b>Android (Chrome):</b> Auf dem Wecker-Bildschirm auf „Installieren“ tippen. Oder oben rechts im Menü ⋮ „App installieren“ wählen.</li>
+          <li><b>iPhone (Safari):</b> Unten auf Teilen tippen, dann „Zum Home-Bildschirm“. Ab iOS 18.4 bleibt der Bildschirm in der App zuverlässig wach.</li>
+          <li><b>Danach</b> startest du Dämmerung wie jede andere App, im Vollbild und auch ohne Internet. Auf dem iPhone hat die App einen eigenen Speicher: Nächte aus dem Safari-Tab erscheinen dort nicht. Am besten gleich installieren und dann nur noch die App benutzen.</li>
         </ul>
       </div>
       <div class="info-block">
@@ -1045,6 +1085,7 @@ function decide(now) {
 async function startNight(opts = {}) {
   if (phase !== 'idle') return;
   phase = 'starting';
+  history.pushState({ guard: true }, '', '#nacht');
   Sound.stop();
   /* Alles, was eine Nutzergeste braucht, sofort im Klick anstoßen */
   Sound.unlock();
@@ -1351,7 +1392,12 @@ function trendSVG(items, W) {
 
 /* ================= Ansichten ================= */
 const views = { wecker: $('#view-wecker'), naechte: $('#view-naechte'), info: $('#view-info'), bericht: $('#view-bericht') };
-function show(name, tab = name) {
+/* Jede Ansicht bekommt einen Eintrag im Verlauf, damit die Zurück-Taste von Android sich wie in einer App verhält */
+function show(name, tab = name, fromHistory = false) {
+  if (!fromHistory) {
+    const hash = name === 'wecker' ? '' : '#' + name;
+    if (location.hash !== hash) history.pushState({ view: name }, '', hash || location.pathname + location.search);
+  }
   for (const [k, el] of Object.entries(views)) el.hidden = k !== name;
   $$('.tab').forEach(b => { if (b.dataset.view === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   window.scrollTo(0, 0);
@@ -1360,6 +1406,20 @@ function show(name, tab = name) {
   if (name === 'info') renderInfo();
 }
 $$('.tab').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
+function routeFromHash() {
+  const v = location.hash.slice(1);
+  if (v === 'bericht' && report) { show('bericht', 'naechte', true); renderReport(); }
+  else show(v === 'naechte' || v === 'info' ? v : 'wecker', undefined, true);
+}
+window.addEventListener('popstate', () => {
+  /* Nachts schließt die Zurück-Taste den Wecker nicht aus Versehen */
+  if (phase !== 'idle') {
+    history.pushState({ guard: true }, '', '#nacht');
+    if (!$('#sleepScreen').hidden) wakeUI();
+    return;
+  }
+  routeFromHash();
+});
 
 function showNote(html, actions) {
   const box = document.createElement('div');
@@ -1627,9 +1687,48 @@ function checkResume() {
   showNote(`<b>Eine Aufzeichnung wurde unterbrochen.</b> Sie lief seit ${fmtHM(n.start)} Uhr${canContinue ? ', der Wecker ist noch auf ' + fmtHM(n.target) + ' gestellt' : ''}.`, actions);
 }
 
+/* ================= Als App ================= */
+const KEY_INSTALL = 'daemmerung-installhinweis';
+let installPrompt = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone === true;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const SHARE_ICON = '<svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Teilen"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function renderInstall() {
+  const card = $('#installCard');
+  const snoozed = store.get(KEY_INSTALL, 0) > Date.now();
+  if (isStandalone() || snoozed || (!installPrompt && !isIOS)) { card.hidden = true; return; }
+  card.hidden = false;
+  if (installPrompt) {
+    $('#installText').textContent = 'Eigenes Symbol auf dem Home-Bildschirm, Vollbild ohne Browserleiste, startet auch ohne Internet.';
+    $('#installGo').hidden = false;
+    $('#installLater').textContent = 'Später';
+  } else {
+    $('#installText').innerHTML = `Tippe in Safari auf <b>Teilen</b> ${SHARE_ICON} und dann auf <b>„Zum Home-Bildschirm“</b>. Danach startet Dämmerung im Vollbild wie eine App.`;
+    $('#installGo').hidden = true;
+    $('#installLater').textContent = 'Verstanden';
+  }
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; renderInstall(); });
+window.addEventListener('appinstalled', () => {
+  installPrompt = null; renderInstall();
+  showNote('<b>Installiert.</b> Du findest Dämmerung jetzt auf deinem Home-Bildschirm.');
+});
+$('#installGo').addEventListener('click', async () => {
+  if (!installPrompt) return;
+  const p = installPrompt; installPrompt = null;
+  try { await p.prompt(); await p.userChoice; } catch (e) {}
+  renderInstall();
+});
+$('#installLater').addEventListener('click', () => { store.set(KEY_INSTALL, Date.now() + 7 * 24 * 3600 * 1000); renderInstall(); });
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+
 renderHome();
+renderInstall();
 checkEnvironment();
 checkResume();
+if (location.hash) routeFromHash();
 setInterval(tick, 1000);
 
 /* Für Tests in der Konsole */
